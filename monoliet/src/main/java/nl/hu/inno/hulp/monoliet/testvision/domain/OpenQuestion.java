@@ -1,0 +1,16 @@
+package nl.hu.inno.hulp.monoliet.testvision.domain;
+
+
+public class OpenQuestion extends Question{
+    private String answer;
+
+    public OpenQuestion(){
+
+    }
+
+    public OpenQuestion(int points, String question, String answer){
+        this.setPoints(points);
+        this.setQuestion(question);
+        this.answer = answer;
+    }
+}
