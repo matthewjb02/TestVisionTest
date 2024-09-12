@@ -1,9 +1,6 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,14 +13,19 @@ public class Test {
 
     @OneToMany
     private List<Question> questions;
-
+    @ManyToOne
+    protected Teacher testValidator;
+    @ManyToOne
+    protected Teacher Maker;
     private int totalPoints;
+    protected Validation validation = Validation.WAITING;
+    protected String reason;
 
     public Test(){
 
     }
 
-    public Test(Question... questions){
+    protected Test(Question... questions){
         this.questions = Arrays.asList(questions);
         calculateTotalPoints();
     }
@@ -39,4 +41,11 @@ public class Test {
     public int getTotalPoints(){
         return  totalPoints;
     }
+
+    protected List<Question> getQuestions() {
+        return questions;
+    }
+
+
 }
+
