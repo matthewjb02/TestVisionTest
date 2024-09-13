@@ -16,12 +16,12 @@ public class ExamController {
     public void startExam() {
     }
 
-    @GetMapping("/getQuestion")
-    public void getQuestion() {
+    @GetMapping("/getQuestion/{nr}")
+    public void getQuestion(@PathVariable("nr") int testNr) {
     }
 
-    @PostMapping("/answer")
-    public void enterAnswer() {
+    @PostMapping("/answer/{nr}")
+    public void enterAnswer(@PathVariable("nr") int testNr) {
     }
 
     @PostMapping("/end")
