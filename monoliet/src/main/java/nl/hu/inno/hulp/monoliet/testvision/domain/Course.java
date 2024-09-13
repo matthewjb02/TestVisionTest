@@ -1,6 +1,9 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,31 +13,27 @@ public class Course {
     @Id
     @GeneratedValue
     private Long id;
-    private int year;
-    private int semester;
+
     private String name;
-    @ManyToMany(mappedBy = "courses")
-    private List<Teacher> teacher;
 
     @OneToMany
-    private List<Test> approvedTests;
+    private List<Test> approvedTests=new ArrayList<>();
     @OneToMany
-    private List<Test> validatingTests;
+    private List<Test> validatingTests=new ArrayList<>();
     @OneToMany
-    private List<Test> rejectedTests;
+    private List<Test> rejectedTests=new ArrayList<>();
 
     public Course(){
 
     }
 
-    public Course(String name, int year, int semester){
+    public Course(String name){
         this.name = name;
-        this.year = year;
-        this.semester = semester;
-        this.approvedTests = new ArrayList<>();
-        this.validatingTests = new ArrayList<>();
     }
 
+    public void addTest(Test test){
+        approvedTests.add(test);
+    }
 
     public List<Test> getApprovedTests(){
         return approvedTests;

@@ -4,7 +4,7 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.*;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        Course course1 = new Course("Course1", 2024,1);
+        Course course1 = new Course("Course1");
 
         Question question1 = new MultipleChoiceQuestion(1, "What is D?", 3, "A", "B", "C", "D");
         Question question2 = new MultipleChoiceQuestion(1, "What is B?", 1, "A", "B", "C", "D");

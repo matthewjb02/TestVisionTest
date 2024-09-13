@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class Test {
@@ -18,16 +19,16 @@ public class Test {
     @ManyToOne
     protected Teacher Maker;
     private int totalPoints;
-    protected Validation validation = Validation.WAITING;
-    protected String reason;
 
     public Test(){
 
     }
 
     protected Test(Question... questions){
-        this.questions = Arrays.asList(questions);
-        calculateTotalPoints();
+        if (questions.length > 0){
+            this.questions = Arrays.asList(questions);
+            calculateTotalPoints();
+        }
     }
 
     public void calculateTotalPoints(){
@@ -41,11 +42,17 @@ public class Test {
     public int getTotalPoints(){
         return  totalPoints;
     }
+    public Long getId(){
+        return id;
+    }
 
-    protected List<Question> getQuestions() {
+    public List<Question> getQuestions(){
         return questions;
     }
 
-
+    public List<String> getQuestionsAsString(){
+        return questions.stream()
+                .map(Question::getQuestion)
+                .collect(Collectors.toList());
+    }
 }
-

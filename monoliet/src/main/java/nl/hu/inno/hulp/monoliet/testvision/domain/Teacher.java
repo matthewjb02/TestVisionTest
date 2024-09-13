@@ -14,10 +14,10 @@ public class Teacher {
     @Embedded
     private TeacherEmail email;
     @ManyToMany
-    @JoinTable(
-            name = "teacher_course",
-            joinColumns = @JoinColumn(name = "teacher_id"),
-            inverseJoinColumns = @JoinColumn(name = "course_id"))
+//    @JoinTable(
+//            name = "teacher_course",
+//            joinColumns = @JoinColumn(name = "teacher_id"),
+//            inverseJoinColumns = @JoinColumn(name = "course_id"))
     private List<Course> courses;
     public Teacher() {}
     public Teacher(String firstName, String lastName, String email) {
