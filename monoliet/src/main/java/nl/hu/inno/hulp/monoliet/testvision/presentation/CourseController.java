@@ -1,10 +1,10 @@
 package nl.hu.inno.hulp.monoliet.testvision.presentation;
 
 import nl.hu.inno.hulp.monoliet.testvision.application.CourseDTO;
+import nl.hu.inno.hulp.monoliet.testvision.application.TestDTO;
 import nl.hu.inno.hulp.monoliet.testvision.domain.Course;
 import nl.hu.inno.hulp.monoliet.testvision.application.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,5 +38,15 @@ public class CourseController {
     @DeleteMapping("/{id}")
     public CourseDTO deleteCourse(@PathVariable Long id) {
         return courseService.deleteCourse(id);
+    }
+
+    @PostMapping("/{courseId}/tests/{testId}")
+    public CourseDTO addTestToCourse(@PathVariable Long courseId, @PathVariable Long testId) {
+        return courseService.addTestToCourse(courseId, testId);
+    }
+
+    @GetMapping("/{courseId}/tests")
+    public List<TestDTO> getAllTestsByCourseId(@PathVariable Long courseId) {
+        return courseService.getAllTestsByCourseId(courseId);
     }
 }

@@ -1,5 +1,6 @@
 package nl.hu.inno.hulp.monoliet.testvision.application;
 
+import nl.hu.inno.hulp.monoliet.testvision.data.TestRepository;
 import nl.hu.inno.hulp.monoliet.testvision.domain.Course;
 import nl.hu.inno.hulp.monoliet.testvision.data.CourseRepository;
 import nl.hu.inno.hulp.monoliet.testvision.domain.Test;
@@ -15,10 +16,12 @@ import java.util.List;
 public class CourseService {
 
     private final CourseRepository courseRepository;
+    private final TestRepository testRepository;
 
     @Autowired
-    public CourseService(CourseRepository courseRepository) {
+    public CourseService(CourseRepository courseRepository, TestRepository testRepository) {
         this.courseRepository = courseRepository;
+        this.testRepository = testRepository;
     }
 
     public List<CourseDTO> getAllCourses() {
@@ -47,6 +50,31 @@ public class CourseService {
         CourseDTO oldDTO = getCourseById(id);
         courseRepository.deleteById(id);
         return oldDTO;
+    }
+
+    public CourseDTO addTestToCourse(Long courseId, Long testId) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found"));
+
+        Test test = testRepository.findById(testId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Test not found"));
+
+        course.addTest(test);
+        courseRepository.save(course);
+
+        return getDTO(course);
+    }
+
+    public List<TestDTO> getAllTestsByCourseId(Long courseId) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No course with id: " + courseId + " found!"));
+
+        List<TestDTO> testDTOs = new ArrayList<>();
+        for (Test test : course.getTests()) {
+            testDTOs.add(getTestDTO(test));
+        }
+
+        return testDTOs;
     }
 
     private CourseDTO getDTO(Course course){

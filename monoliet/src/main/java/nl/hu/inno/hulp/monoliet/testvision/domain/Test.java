@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,7 +17,7 @@ public class Test {
     private Long id;
 
     @OneToMany
-    private List<Question> questions;
+    private List<Question> questions = new ArrayList<>();
 
     private int totalPoints;
 
@@ -25,8 +26,10 @@ public class Test {
     }
 
     public Test(Question... questions){
-        this.questions = Arrays.asList(questions);
-        calculateTotalPoints();
+        if (questions.length > 0){
+            this.questions = Arrays.asList(questions);
+            calculateTotalPoints();
+        }
     }
 
     public void calculateTotalPoints(){
@@ -43,6 +46,10 @@ public class Test {
 
     public Long getId(){
         return id;
+    }
+
+    public List<Question> getQuestions(){
+        return questions;
     }
 
     public List<String> getQuestionsAsString(){
