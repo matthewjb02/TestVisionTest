@@ -16,8 +16,16 @@ public class Question {
     public Question(){
     }
 
+    public Long getId(){
+        return id;
+    }
+
     public int getPoints(){
         return points;
+    }
+
+    public String getQuestion(){
+        return question;
     }
 
     public void setQuestion(String question){

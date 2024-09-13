@@ -17,7 +17,7 @@ public class Course {
     private String name;
 
     @OneToMany
-    private List<Test> tests;
+    private List<Test> tests = new ArrayList<>();
 
     public Course(){
 
@@ -25,7 +25,14 @@ public class Course {
 
     public Course(String name){
         this.name = name;
-        this.tests = new ArrayList<>();
+    }
+
+    public Long getId(){
+        return id;
+    }
+
+    public String getName(){
+        return name;
     }
 
     public void addTest(Test test){
