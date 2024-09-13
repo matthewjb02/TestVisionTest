@@ -7,6 +7,7 @@ import jakarta.persistence.OneToMany;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class Test {
@@ -38,5 +39,15 @@ public class Test {
 
     public int getTotalPoints(){
         return  totalPoints;
+    }
+
+    public Long getId(){
+        return id;
+    }
+
+    public List<String> getQuestionsAsString(){
+        return questions.stream()
+                .map(Question::getQuestion)
+                .collect(Collectors.toList());
     }
 }
