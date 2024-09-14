@@ -1,18 +1,20 @@
 package nl.hu.inno.hulp.monoliet.testvision.application;
 
+import nl.hu.inno.hulp.monoliet.testvision.domain.Question;
+
 import java.util.List;
 
 public class TestDTO {
 
     private Long id;
-    private List<String> questions;
+    private List<Question> questions;
     private int totalPoints;
 
     public TestDTO(){
 
     }
 
-    public TestDTO(Long id, List<String> questions, int totalPoints) {
+    public TestDTO(Long id, List<Question> questions, int totalPoints) {
         this.id = id;
         this.questions = questions;
         this.totalPoints = totalPoints;
@@ -22,7 +24,7 @@ public class TestDTO {
         return id;
     }
 
-    public List<String> getQuestions() {
+    public List<Question> getQuestions() {
         return questions;
     }
 
