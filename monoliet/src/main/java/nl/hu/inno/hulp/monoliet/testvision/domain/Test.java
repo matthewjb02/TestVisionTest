@@ -1,9 +1,6 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +12,12 @@ public class Test {
     @Id
     @GeneratedValue
     private Long id;
+
+    @Embedded
+    private GradingCriteria gradingCriteria;
+
+    @OneToMany
+    private List<Submission> submissions = new ArrayList<>();
 
     @OneToMany
     private List<Question> questions = new ArrayList<>();
