@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 @Embeddable
 public class TeacherEmail {
-    @Column(name = "email")
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
     private final static String emailRegex = "^[a-z]+\\.[a-z]+@hu\\.nl$";
 

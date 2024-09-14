@@ -32,7 +32,13 @@ public class Course {
     }
 
     public void addTest(Test test){
-        approvedTests.add(test);
+        if (test.validationStatus.equals(Validation.APPROVED)){
+        approvedTests.add(test);}
+        else if(test.validationStatus.equals(Validation.WAITING)){
+            validatingTests.add(test);
+        } else if (test.validationStatus.equals(Validation.DENIED) ) {
+            rejectedTests.add(test);
+        }
     }
 
     public List<Test> getApprovedTests(){
@@ -44,5 +50,13 @@ public class Course {
     }
     public List<Test> getRejectedTests(){
         return rejectedTests;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
     }
 }

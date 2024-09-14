@@ -2,28 +2,49 @@ package nl.hu.inno.hulp.monoliet.testvision.domain;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Teacher {
     @GeneratedValue
     @Id
     private long id;
-   @Embedded
-   private Person person;
+    private String firstName;
+    private String lastName;
     @Embedded
     private TeacherEmail email;
     @ManyToMany
-//    @JoinTable(
-//            name = "teacher_course",
-//            joinColumns = @JoinColumn(name = "teacher_id"),
-//            inverseJoinColumns = @JoinColumn(name = "course_id"))
     private List<Course> courses;
     public Teacher() {}
     public Teacher(String firstName, String lastName, String email) {
-        this.person = new Person(firstName, lastName);
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = new TeacherEmail(email);
+        this.courses = new ArrayList<>();
     }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public List<Course> getCourses() {
+        return courses;
+    }
+
+    public TeacherEmail getEmail() {
+        return email;
+    }
+
     public void addCourse(Course course) {
         courses.add(course);
     }
@@ -50,26 +71,26 @@ public class Teacher {
     }
     public void approveTest(Course course,Test test) throws Exception {
         if (doesTeacherTeachCourse(course)&&canIApproveThisTest(this,course,test)){
-            test.validation =Validation.APPROVED;
+            test.validationStatus =Validation.APPROVED;
             course.getValidatingTests().remove(test);
             course.getApprovedTests().add(test);
         }
     }
     public void rejectTest(Course course,Test test, String reason) throws Exception {
         if (doesTeacherTeachCourse(course)&&canIApproveThisTest(this,course,test)) {
-            test.validation =Validation.DENIED;
+            test.validationStatus =Validation.DENIED;
             course.getValidatingTests().remove(test);
             course.getRejectedTests().add(test);
             test.reason=reason;
         }
     }
-    public void viewWrongTest(Course course,Test test) throws Exception {
-        if (test.Maker==this&&course.getRejectedTests().contains(test)){
+    public void viewWrongTest(Course course,Test test) {
+        if (Objects.equals(test.makerMail, this.email.getEmail()) &&course.getRejectedTests().contains(test)){
             System.out.println(test.reason);
         }
     }
     public void modifyQuestions(Course course, Test test, List<Question> oldQuestions, List<Question> newQuestion) throws Exception {
-        if (test.Maker==this&&course.getRejectedTests().contains(test)){
+        if (Objects.equals(test.makerMail, this.email.getEmail()) &&course.getRejectedTests().contains(test)){
             System.out.println(test.reason);
             test.getQuestions().removeAll(oldQuestions);
             test.getQuestions().addAll(newQuestion);
@@ -77,16 +98,16 @@ public class Teacher {
     }
     public void ensembleTest(Teacher testValidator, Course course, Question... questions) throws Exception {
 
-        if (doesTeacherTeachCourse(course)&&testValidator.courses.contains(course)&&this!=testValidator) {
-            Test test = new Test(questions);
-            test.Maker=this;
-            course.getValidatingTests().add(test);
-            test.testValidator=testValidator;
-        }if(!testValidator.courses.contains(course)){
-            throw new Exception("The Validator does not teach this course");
-        }
-        if (this==testValidator){
-            throw new Exception("You cannot Validate your own test");
-        }
+//        if (doesTeacherTeachCourse(course)&&testValidator.courses.contains(course)&&this!=testValidator) {
+//            Test test = new Test(questions);
+//            test.maker =this;
+//            course.getValidatingTests().add(test);
+//            test.testValidator=testValidator;
+//        }if(!testValidator.courses.contains(course)){
+//            throw new Exception("The Validator does not teach this course");
+//        }
+//        if (this==testValidator){
+//            throw new Exception("You cannot Validate your own test");
+//        }
     }
 }

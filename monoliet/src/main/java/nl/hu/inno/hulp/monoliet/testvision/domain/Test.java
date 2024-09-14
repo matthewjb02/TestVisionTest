@@ -11,22 +11,24 @@ public class Test {
     @Id
     @GeneratedValue
     private Long id;
-
+    protected Validation validationStatus= Validation.WAITING;
+    protected String reason;
     @OneToMany
     private List<Question> questions;
-    @ManyToOne
-    protected Teacher testValidator;
-    @ManyToOne
-    protected Teacher Maker;
+    protected String testValidatorMail;
+
+    protected String makerMail;
     private int totalPoints;
 
     public Test(){
 
     }
 
-    protected Test(Question... questions){
+    public Test(String makerMail, String testValidatorMail, Question... questions){
         if (questions.length > 0){
             this.questions = Arrays.asList(questions);
+            this.makerMail = makerMail;
+            this.testValidatorMail = testValidatorMail;
             calculateTotalPoints();
         }
     }
@@ -50,9 +52,34 @@ public class Test {
         return questions;
     }
 
+    public String getTestValidatorMail() {
+        return testValidatorMail;
+    }
+
+    public String getMakerMail() {
+        return makerMail;
+    }
+
+    public Validation getValidationStatus() {
+        return validationStatus;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
     public List<String> getQuestionsAsString(){
         return questions.stream()
                 .map(Question::getQuestion)
                 .collect(Collectors.toList());
     }
+
+    public void setTestValidatorMail(String testValidator) {
+        this.testValidatorMail = testValidator;
+    }
+
+    public void setMakerMail(String maker) {
+        this.makerMail = maker;
+    }
+
 }
