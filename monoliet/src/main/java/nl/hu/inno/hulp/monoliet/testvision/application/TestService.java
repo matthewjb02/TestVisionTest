@@ -41,6 +41,12 @@ public class TestService {
         return toDTO(test);
     }
 
+    public Test getTest(Long id) {
+        Test test = testRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No test with id: " + id + " found!"));
+        return test;
+    }
+
     public TestDTO addTest(Test test) {
         Test savedTest = testRepository.save(test);
         return toDTO(savedTest);
@@ -67,7 +73,7 @@ public class TestService {
     private TestDTO toDTO(Test test) {
         return new TestDTO(
                 test.getId(),
-                test.getQuestionsAsString(),
+                test.getQuestions(),
                 test.getTotalPoints()
         );
     }

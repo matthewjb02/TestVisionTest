@@ -93,7 +93,7 @@ public class CourseService {
     private TestDTO getTestDTO(Test test){
         return new TestDTO(
                 test.getId(),
-                test.getQuestionsAsString(),
+                test.getQuestions(),
                 test.getTotalPoints()
         );
     }

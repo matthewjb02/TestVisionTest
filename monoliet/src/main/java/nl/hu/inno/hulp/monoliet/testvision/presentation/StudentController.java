@@ -1,8 +1,8 @@
 package nl.hu.inno.hulp.monoliet.testvision.presentation;
 
 import nl.hu.inno.hulp.monoliet.testvision.application.StudentService;
-import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.StudentRequest;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.StudentResponse;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,16 +15,16 @@ public class StudentController {
     }
 
     @GetMapping("/{id}")
-    public Student getStudent(@PathVariable Long id) {
-        return studentService.getStudent(id);
+    public StudentResponse getStudent(@PathVariable Long id) {
+        return new StudentResponse(studentService.getStudent(id));
     }
 
     @PostMapping("/add")
-    public Student addStudent(@RequestBody StudentRequest studentRequest) {
-        return studentService.addStudent(studentRequest);
+    public StudentResponse addStudent(@RequestBody StudentRequest studentRequest) {
+        return new StudentResponse(studentService.addStudent(studentRequest));
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/delete/{id}")
     public void deleteStudent(@PathVariable Long id) {
         studentService.deleteStudent(id);
     }

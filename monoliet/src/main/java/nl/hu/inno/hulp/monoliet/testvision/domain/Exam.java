@@ -1,9 +1,6 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
 
 @Entity
@@ -12,10 +9,10 @@ public class Exam {
     @GeneratedValue
     private Long id;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Student student;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Test test;
 
     private State state;
@@ -29,11 +26,13 @@ public class Exam {
         this.state = State.Active;
     }
 
-    public void seeQuestion() {
-        test.getQuestions();
+    public Question seeQuestion(int nr) {
+        return test.getQuestion(nr);
     }
 
-    public void answerQuestion(String answer) {
+    public void answerQuestion(int questionNr, String answer) {
+        Question question = seeQuestion(questionNr);
+        question.answerQuestion(answer);
     }
 
     public Exam endExam() {

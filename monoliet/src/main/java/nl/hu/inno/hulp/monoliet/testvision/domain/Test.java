@@ -8,7 +8,6 @@ import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 public class Test {
@@ -52,9 +51,7 @@ public class Test {
         return questions;
     }
 
-    public List<String> getQuestionsAsString(){
-        return questions.stream()
-                .map(Question::getQuestion)
-                .collect(Collectors.toList());
+    public Question getQuestion(int nr) {
+        return questions.get(nr - 1);
     }
 }

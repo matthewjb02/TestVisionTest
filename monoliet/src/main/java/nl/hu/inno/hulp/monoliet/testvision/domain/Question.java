@@ -12,8 +12,9 @@ public class Question {
 
     private int points;
     private String question;
+    private String answer = "";
 
-    public Question(){
+    protected Question(){
     }
 
     public Long getId(){
@@ -26,6 +27,14 @@ public class Question {
 
     public String getQuestion(){
         return question;
+    }
+
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void answerQuestion(String answer) {
+        this.answer = answer;
     }
 
     public void setQuestion(String question){
