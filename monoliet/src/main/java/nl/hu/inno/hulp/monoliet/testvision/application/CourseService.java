@@ -1,5 +1,8 @@
 package nl.hu.inno.hulp.monoliet.testvision.application;
 
+import nl.hu.inno.hulp.monoliet.testvision.application.dto.GradingCriteriaDTO;
+import nl.hu.inno.hulp.monoliet.testvision.application.dto.StatisticsDTO;
+import nl.hu.inno.hulp.monoliet.testvision.application.dto.SubmissionDTO;
 import nl.hu.inno.hulp.monoliet.testvision.data.TestRepository;
 import nl.hu.inno.hulp.monoliet.testvision.domain.Course;
 import nl.hu.inno.hulp.monoliet.testvision.data.CourseRepository;
@@ -11,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CourseService {
@@ -90,11 +94,39 @@ public class CourseService {
         );
     }
 
-    private TestDTO getTestDTO(Test test){
+
+    private TestDTO getTestDTO(Test test) {
+        GradingCriteriaDTO gradingCriteriaDTO = null;
+        if (test.getGradingCriteria() != null) {
+            gradingCriteriaDTO = new GradingCriteriaDTO(
+                    test.getGradingCriteria().getOpenQuestionWeight(),
+                    test.getGradingCriteria().getClosedQuestionWeight()
+            );
+        }
+
+        List<SubmissionDTO> submissionDTOs = test.getSubmissions().stream()
+                .map(submission -> new SubmissionDTO(submission.getId(), submission.getStatus()))
+                .collect(Collectors.toList());
+
+        StatisticsDTO statisticsDTO = null;
+        if (test.getStatistics() != null) {
+            statisticsDTO = new StatisticsDTO(
+                    test.getStatistics().getId(),
+                    test.getStatistics().getSubmissionCount(),
+                    test.getStatistics().getPassCount(),
+                    test.getStatistics().getFailCount(),
+                    test.getStatistics().getAverageScore()
+            );
+        }
+
         return new TestDTO(
                 test.getId(),
                 test.getQuestionsAsString(),
-                test.getTotalPoints()
+                test.getTotalPoints(),
+                gradingCriteriaDTO,
+                submissionDTOs,
+                statisticsDTO
         );
     }
+
 }
