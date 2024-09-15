@@ -37,7 +37,7 @@ public class Test {
 
     public Test(String makerMail, String testValidatorMail, Question... questions){
         if (questions.length > 0){
-            this.questions = Arrays.asList(questions);
+            this.questions = new ArrayList<>(Arrays.asList(questions));
             this.makerMail = makerMail;
             this.testValidatorMail = testValidatorMail;
             calculateTotalPoints();
@@ -55,6 +55,7 @@ public class Test {
     public int getTotalPoints(){
         return  totalPoints;
     }
+
     public Long getId(){
         return id;
     }
@@ -62,12 +63,15 @@ public class Test {
     public List<Question> getQuestions(){
         return questions;
     }
-    public void removeAllQuestions(List<Question> questions){
+
+    public void removeQuestions(List<Question> questions){
         this.questions.removeAll(questions);
     }
-    public void addAllQuestion(List<Question> question){
-        this.questions.addAll(question);
+
+    public void addQuestions(List<Question> questions){
+        this.questions.addAll(questions);
     }
+
     public String getTestValidatorMail() {
         return testValidatorMail;
     }

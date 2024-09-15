@@ -32,7 +32,7 @@ public class Exam {
 
     public void answerQuestion(int questionNr, String answer) {
         Question question = seeQuestion(questionNr);
-        question.answerQuestion(answer);
+        question.setAnswer(answer);
     }
 
     public Exam endExam() {
