@@ -4,13 +4,19 @@ package nl.hu.inno.hulp.monoliet.testvision.application;
 import nl.hu.inno.hulp.monoliet.testvision.application.dto.GradingCriteriaDTO;
 import nl.hu.inno.hulp.monoliet.testvision.application.dto.SubmissionDTO;
 import nl.hu.inno.hulp.monoliet.testvision.application.dto.StatisticsDTO;
+import nl.hu.inno.hulp.monoliet.testvision.domain.Question;
+import nl.hu.inno.hulp.monoliet.testvision.domain.Validation;
 
 import java.util.List;
 
 public class TestDTO {
 
     private Long id;
-    private List<String> questions;
+    private List<Question> questions;
+    private String makerMail;
+    private String testValidatorMail;
+    private Validation validation;
+    private String reason;
     private int totalPoints;
     private GradingCriteriaDTO gradingCriteria;
     private List<SubmissionDTO> submissions;
@@ -19,10 +25,14 @@ public class TestDTO {
     public TestDTO() {
     }
 
-    public TestDTO(Long id, List<String> questions, int totalPoints, GradingCriteriaDTO gradingCriteria, List<SubmissionDTO> submissions, StatisticsDTO statistics) {
+    public TestDTO(Long id, List<Question> questions, int totalPoints, String makerMail, String testValidatorMail, Validation validation, String reason, GradingCriteriaDTO gradingCriteria, List<SubmissionDTO> submissions, StatisticsDTO statistics) {
         this.id = id;
         this.questions = questions;
         this.totalPoints = totalPoints;
+        this.makerMail = makerMail;
+        this.testValidatorMail = testValidatorMail;
+        this.validation = validation;
+        this.reason = reason;
         this.gradingCriteria = gradingCriteria;
         this.submissions = submissions;
         this.statistics = statistics;
@@ -50,5 +60,21 @@ public class TestDTO {
 
     public StatisticsDTO getStatistics() {
         return statistics;
+    }
+  
+    public String getMakerMail() {
+        return makerMail;
+    }
+
+    public String getTestValidatorMail() {
+        return testValidatorMail;
+    }
+
+    public Validation getValidation() {
+        return validation;
+    }
+
+    public String getReason() {
+        return reason;
     }
 }

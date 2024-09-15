@@ -2,7 +2,6 @@ package nl.hu.inno.hulp.monoliet.testvision.domain;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,28 +11,34 @@ public class Test {
     @Id
     @GeneratedValue
     private Long id;
-
     @Embedded
     private GradingCriteria gradingCriteria;
 
     @OneToMany
     private List<Submission> submissions = new ArrayList<>();
 
+    protected Validation validationStatus= Validation.WAITING;
+    protected String reason;
+  
     @OneToMany
-    private List<Question> questions = new ArrayList<>();
+    private List<Question> questions;
+    protected String testValidatorMail;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Statistics statistics;
 
+    protected String makerMail;
     private int totalPoints;
 
     public Test(){
 
     }
 
-    public Test(Question... questions){
+    public Test(String makerMail, String testValidatorMail, Question... questions){
         if (questions.length > 0){
             this.questions = Arrays.asList(questions);
+            this.makerMail = makerMail;
+            this.testValidatorMail = testValidatorMail;
             calculateTotalPoints();
         }
     }
@@ -49,7 +54,6 @@ public class Test {
     public int getTotalPoints(){
         return  totalPoints;
     }
-
     public Long getId(){
         return id;
     }
@@ -57,13 +61,32 @@ public class Test {
     public List<Question> getQuestions(){
         return questions;
     }
+    public void removeAllQuestions(List<Question> questions){
+        this.questions.removeAll(questions);
+    }
+    public void addAllQuestion(List<Question> question){
+        this.questions.addAll(question);
+    }
+    public String getTestValidatorMail() {
+        return testValidatorMail;
+    }
+
+    public String getMakerMail() {
+        return makerMail;
+    }
+
+    public Validation getValidationStatus() {
+        return validationStatus;
+    }
+
+    public String getReason() {
+        return reason;
+    }
 
     public List<String> getQuestionsAsString(){
         return questions.stream()
                 .map(Question::getQuestion)
                 .collect(Collectors.toList());
-    }
-
 
     public void addGradingCriteria(GradingCriteria gradingCriteria) {
         this.gradingCriteria = gradingCriteria;
@@ -87,5 +110,12 @@ public class Test {
 
     public void addStatistics(Statistics statistics) {
         this.statistics = statistics;
+
+    public void setTestValidatorMail(String testValidator) {
+        this.testValidatorMail = testValidator;
+    }
+
+    public void setMakerMail(String maker) {
+        this.makerMail = maker;
     }
 }

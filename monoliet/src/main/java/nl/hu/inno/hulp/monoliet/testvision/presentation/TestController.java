@@ -33,9 +33,9 @@ public class TestController {
         return testService.getTestById(id);
     }
 
-    @PostMapping
-    public TestDTO addTest(@RequestBody Test test) {
-        return testService.addTest(test);
+    @PostMapping("testMaker/{makerId}/testValidator/{testValidatorId}")
+    public TestDTO addTest(@RequestBody Test test, @PathVariable Long makerId, @PathVariable Long testValidatorId) {
+        return testService.addTest(test, makerId, testValidatorId);
     }
 
     @DeleteMapping("/{id}")
