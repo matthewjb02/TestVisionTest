@@ -43,7 +43,7 @@ public class ExamServiceTest {
         Question question1 = new Question(1, "Wat is de hoofdstad van parijs.");
         Question question2 = new Question(1, "Hoe zeg je hallo in het engels.");
         nl.hu.inno.hulp.monoliet.testvision.domain.Test test =
-                new nl.hu.inno.hulp.monoliet.testvision.domain.Test(question1, question2);
+                new nl.hu.inno.hulp.monoliet.testvision.domain.Test("", "", question1, question2);
         when(testService.getTest(1L)).thenReturn(test);
 
         repository = mock(ExamRepository.class);
