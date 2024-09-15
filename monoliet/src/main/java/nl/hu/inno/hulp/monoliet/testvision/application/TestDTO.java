@@ -1,5 +1,9 @@
+// In de TestDTO klasse
 package nl.hu.inno.hulp.monoliet.testvision.application;
 
+import nl.hu.inno.hulp.monoliet.testvision.application.dto.GradingCriteriaDTO;
+import nl.hu.inno.hulp.monoliet.testvision.application.dto.SubmissionDTO;
+import nl.hu.inno.hulp.monoliet.testvision.application.dto.StatisticsDTO;
 import nl.hu.inno.hulp.monoliet.testvision.domain.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.Validation;
 
@@ -14,13 +18,14 @@ public class TestDTO {
     private Validation validation;
     private String reason;
     private int totalPoints;
+    private GradingCriteriaDTO gradingCriteria;
+    private List<SubmissionDTO> submissions;
+    private StatisticsDTO statistics;
 
-    public TestDTO(){
-
+    public TestDTO() {
     }
 
-
-    public TestDTO(Long id, List<Question> questions, int totalPoints, String makerMail, String testValidatorMail, Validation validation, String reason) {
+    public TestDTO(Long id, List<Question> questions, int totalPoints, String makerMail, String testValidatorMail, Validation validation, String reason, GradingCriteriaDTO gradingCriteria, List<SubmissionDTO> submissions, StatisticsDTO statistics) {
         this.id = id;
         this.questions = questions;
         this.totalPoints = totalPoints;
@@ -28,13 +33,16 @@ public class TestDTO {
         this.testValidatorMail = testValidatorMail;
         this.validation = validation;
         this.reason = reason;
+        this.gradingCriteria = gradingCriteria;
+        this.submissions = submissions;
+        this.statistics = statistics;
     }
 
     public Long getId() {
         return id;
     }
 
-    public List<Question> getQuestions() {
+    public List<String> getQuestions() {
         return questions;
     }
 
@@ -42,6 +50,18 @@ public class TestDTO {
         return totalPoints;
     }
 
+    public GradingCriteriaDTO getGradingCriteria() {
+        return gradingCriteria;
+    }
+
+    public List<SubmissionDTO> getSubmissions() {
+        return submissions;
+    }
+
+    public StatisticsDTO getStatistics() {
+        return statistics;
+    }
+  
     public String getMakerMail() {
         return makerMail;
     }

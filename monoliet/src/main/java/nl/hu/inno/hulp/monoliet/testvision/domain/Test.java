@@ -4,17 +4,28 @@ import jakarta.persistence.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class Test {
     @Id
     @GeneratedValue
     private Long id;
+    @Embedded
+    private GradingCriteria gradingCriteria;
+
+    @OneToMany
+    private List<Submission> submissions = new ArrayList<>();
+
     protected Validation validationStatus= Validation.WAITING;
     protected String reason;
+  
     @OneToMany
     private List<Question> questions;
     protected String testValidatorMail;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Statistics statistics;
 
     protected String makerMail;
     private int totalPoints;
@@ -72,15 +83,33 @@ public class Test {
         return reason;
     }
 
-    public Question getQuestion(int nr) {
-        return questions.get(nr - 1);
-    }
-
-    /*public List<String> getQuestionsAsString(){
+    public List<String> getQuestionsAsString(){
         return questions.stream()
                 .map(Question::getQuestion)
                 .collect(Collectors.toList());
-    }*/
+
+    public void addGradingCriteria(GradingCriteria gradingCriteria) {
+        this.gradingCriteria = gradingCriteria;
+    }
+
+    public void addSubmission(Submission submission) {
+        this.submissions.add(submission);
+    }
+
+    public GradingCriteria getGradingCriteria() {
+        return gradingCriteria;
+    }
+
+    public List<Submission> getSubmissions() {
+        return submissions;
+    }
+
+    public Statistics getStatistics() {
+        return statistics;
+    }
+
+    public void addStatistics(Statistics statistics) {
+        this.statistics = statistics;
 
     public void setTestValidatorMail(String testValidator) {
         this.testValidatorMail = testValidator;
