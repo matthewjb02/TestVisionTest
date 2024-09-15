@@ -17,7 +17,11 @@ public class Course {
     private String name;
 
     @OneToMany
-    private List<Test> tests = new ArrayList<>();
+    private List<Test> approvedTests=new ArrayList<>();
+    @OneToMany
+    private List<Test> validatingTests=new ArrayList<>();
+    @OneToMany
+    private List<Test> rejectedTests=new ArrayList<>();
 
     public Course(){
 
@@ -27,19 +31,32 @@ public class Course {
         this.name = name;
     }
 
-    public Long getId(){
+    public void addTest(Test test){
+        if (test.validationStatus.equals(Validation.APPROVED)){
+        approvedTests.add(test);}
+        else if(test.validationStatus.equals(Validation.WAITING)){
+            validatingTests.add(test);
+        } else if (test.validationStatus.equals(Validation.DENIED) ) {
+            rejectedTests.add(test);
+        }
+    }
+
+    public List<Test> getApprovedTests(){
+        return approvedTests;
+    }
+
+    public List<Test> getValidatingTests() {
+        return validatingTests;
+    }
+    public List<Test> getRejectedTests(){
+        return rejectedTests;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
-    }
-
-    public void addTest(Test test){
-        tests.add(test);
-    }
-
-    public List<Test> getTests(){
-        return tests;
     }
 }

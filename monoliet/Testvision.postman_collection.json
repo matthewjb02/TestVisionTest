@@ -1,0 +1,235 @@
+{
+	"info": {
+		"_postman_id": "b3fa32ae-968e-4400-9123-a7756f8c1a08",
+		"name": "Testvision",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "29563195"
+	},
+	"item": [
+		{
+			"name": "Course",
+			"item": [
+				{
+					"name": "GetAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": ""
+					},
+					"response": []
+				},
+				{
+					"name": "NewCourse",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Course1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/courses"
+					},
+					"response": []
+				},
+				{
+					"name": "AddTestToCourse",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tests",
+			"item": [
+				{
+					"name": "GetAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/tests"
+					},
+					"response": []
+				},
+				{
+					"name": "NewTest",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/tests"
+					},
+					"response": []
+				},
+				{
+					"name": "AddQuestionsToTest",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    1,\r\n    2\r\n]\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/tests/1/questions"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Question",
+			"item": [
+				{
+					"name": "GetAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/questions"
+					},
+					"response": []
+				},
+				{
+					"name": "NewQuestion",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"points\" : 1,\r\n    \"question\" : \"Hi\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/questions"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "teacher",
+			"item": [
+				{
+					"name": "teacherAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/teacher/all"
+					},
+					"response": []
+				},
+				{
+					"name": "addTeacher",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"firstName\" : \"Henk\",\r\n\"lastName\": \"de Tank\",\r\n\"email\": \"henk.detank@hu.nl\"}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/teacher"
+					},
+					"response": []
+				},
+				{
+					"name": "getTeacher",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "http://localhost:8080/teacher/1"
+					},
+					"response": []
+				},
+				{
+					"name": "addCoursetoTeacher",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": "http://localhost:8080/teacher/1/1"
+					},
+					"response": []
+				},
+				{
+					"name": "ValidateTests",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/teacher/1/courses/1/tests/1"
+					},
+					"response": []
+				},
+				{
+					"name": "acceptTest",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": "http://localhost:8080/teacher/1/courses/1/tests/1/accept"
+					},
+					"response": []
+				},
+				{
+					"name": "refuseTest",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": "http://localhost:8080/teacher/1/courses/1/tests/1/refuse"
+					},
+					"response": []
+				},
+				{
+					"name": "viewWrongQuestion",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "modifyQustions",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": "http://localhost:8080/teacher/1/courses/1/tests/1/refuse/modify"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
