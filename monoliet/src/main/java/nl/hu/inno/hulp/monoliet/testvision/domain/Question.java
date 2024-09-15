@@ -17,6 +17,11 @@ public class Question {
     protected Question(){
     }
 
+    public Question(int points, String question) {
+        this.points = points;
+        this.question = question;
+    }
+
     public Long getId(){
         return id;
     }

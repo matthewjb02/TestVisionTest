@@ -1,5 +1,13 @@
 package nl.hu.inno.hulp.monoliet.testvision.presentation.dto;
 
 public class ExamRequest {
-    public Long examId;
+    private final Long examId;
+
+    public ExamRequest(Long examId) {
+        this.examId = examId;
+    }
+
+    public Long getExamId() {
+        return examId;
+    }
 }

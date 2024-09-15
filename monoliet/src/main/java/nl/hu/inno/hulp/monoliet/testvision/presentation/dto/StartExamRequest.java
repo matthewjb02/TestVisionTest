@@ -1,6 +1,19 @@
 package nl.hu.inno.hulp.monoliet.testvision.presentation.dto;
 
 public class StartExamRequest {
-    public Long studentId;
-    public Long testId;
+    private Long studentId;
+    private Long testId;
+
+    public StartExamRequest(Long studentId, Long testId) {
+        this.studentId = studentId;
+        this.testId = testId;
+    }
+
+    public Long getStudentId() {
+        return studentId;
+    }
+
+    public Long getTestId() {
+        return testId;
+    }
 }

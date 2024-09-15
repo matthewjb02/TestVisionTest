@@ -21,7 +21,7 @@ public class QuestionResponse {
         return question;
     }
 
-    public String answer() {
+    public String getAnswer() {
         return answer;
     }
 }

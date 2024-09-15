@@ -28,38 +28,38 @@ public class ExamService {
     }
 
     public Exam startExam(StartExamRequest examRequest) {
-        Student student = studentService.getStudent(examRequest.studentId);
-        Test test = testService.getTest(examRequest.testId);
+        Student student = studentService.getStudent(examRequest.getStudentId());
+        Test test = testService.getTest(examRequest.getTestId());
         Exam exam = new Exam(student, test);
         examRepository.save(exam);
 
-        return getExamById(exam.getId());
+        return exam;
     }
 
     public Question seeQuestion(SeeQuestion examRequest)  {
-        Exam exam = getExamById(examRequest.examId);
+        Exam exam = getExamById(examRequest.getExamId());
 
         if (exam.getState() == State.Active) {
-            return exam.seeQuestion(examRequest.questionNr);
+            return exam.seeQuestion(examRequest.getQuestionNr());
         } else {
             throw new ExamInactiveException("This exam is inactive");
         }
     }
 
     public Exam enterAnswer(AnswerRequest answerRequest) {
-        Exam exam = getExamById(answerRequest.examId);
+        Exam exam = getExamById(answerRequest.getExamId());
 
         if (exam.getState() == State.Active) {
-            exam.answerQuestion(answerRequest.questionNr, answerRequest.answer);
+            exam.answerQuestion(answerRequest.getQuestionNr(), answerRequest.getAnswer());
             examRepository.save(exam);
-            return getExamById(exam.getId());
+            return exam;
         } else {
             throw new ExamInactiveException("This exam is inactive");
         }
     }
 
     public Exam endExam(ExamRequest examRequest) {
-        Exam exam = getExamById(examRequest.examId);
+        Exam exam = getExamById(examRequest.getExamId());
 
         if (exam.getState() == State.Active) {
             return exam.endExam();
