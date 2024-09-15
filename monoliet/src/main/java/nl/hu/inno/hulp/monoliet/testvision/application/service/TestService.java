@@ -89,8 +89,8 @@ public class TestService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Test not found"));
 
         GradingCriteria gradingCriteria = new GradingCriteria(
-                gradingCriteriaDTO.getOpenQuestionWeight(),
-                gradingCriteriaDTO.getClosedQuestionWeight()
+                gradingCriteriaDTO.openQuestionWeight(),
+                gradingCriteriaDTO.closedQuestionWeight()
         );
 
         test.addGradingCriteria(gradingCriteria);
