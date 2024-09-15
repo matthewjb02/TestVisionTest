@@ -36,12 +36,5 @@ public class Question {
         this.points = points;
     }
 
-    @Override
-    public String toString() {
-        return "Question{" +
-                "id=" + id +
-                ", points=" + points +
-                ", question='" + question + '\'' +
-                '}';
-    }
+
 }
