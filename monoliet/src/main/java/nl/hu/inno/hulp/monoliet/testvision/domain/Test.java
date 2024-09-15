@@ -51,7 +51,12 @@ public class Test {
     public List<Question> getQuestions(){
         return questions;
     }
-
+    public void removeAllQuestions(List<Question> questions){
+        this.questions.removeAll(questions);
+    }
+    public void addAllQuestion(List<Question> question){
+        this.questions.addAll(question);
+    }
     public String getTestValidatorMail() {
         return testValidatorMail;
     }

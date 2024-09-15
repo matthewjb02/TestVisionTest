@@ -1,5 +1,6 @@
 package nl.hu.inno.hulp.monoliet.testvision.application;
 
+import nl.hu.inno.hulp.monoliet.testvision.domain.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.Validation;
 
 import java.util.List;
@@ -9,7 +10,7 @@ public class TestDTO {
     private Long id;
     private String makerMail;
     private String testValidatorMail;
-    private List<String> questions;
+    private List<Question> questions;
     private Validation validation;
     private String reason;
     private int totalPoints;
@@ -18,7 +19,7 @@ public class TestDTO {
 
     }
 
-    public TestDTO(Long id, List<String> questions, int totalPoints, String makerMail, String testValidatorMail, Validation validation, String reason) {
+    public TestDTO(Long id, List<Question> questions, int totalPoints, String makerMail, String testValidatorMail, Validation validation, String reason) {
         this.id = id;
         this.questions = questions;
         this.totalPoints = totalPoints;
@@ -32,7 +33,7 @@ public class TestDTO {
         return id;
     }
 
-    public List<String> getQuestions() {
+    public List<Question> getQuestions() {
         return questions;
     }
 

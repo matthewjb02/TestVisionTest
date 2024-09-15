@@ -84,30 +84,23 @@ public class Teacher {
             test.reason=reason;
         }
     }
-    public void viewWrongTest(Course course,Test test) {
+    public void viewWrongTest(Course course,Test test) throws Exception {
         if (Objects.equals(test.makerMail, this.email.getEmail()) &&course.getRejectedTests().contains(test)){
             System.out.println(test.reason);
         }
+        else throw new Exception("This test was not rejected");
     }
     public void modifyQuestions(Course course, Test test, List<Question> oldQuestions, List<Question> newQuestion) throws Exception {
         if (Objects.equals(test.makerMail, this.email.getEmail()) &&course.getRejectedTests().contains(test)){
             System.out.println(test.reason);
-            test.getQuestions().removeAll(oldQuestions);
-            test.getQuestions().addAll(newQuestion);
+            test.removeAllQuestions(oldQuestions);
+            test.addAllQuestion(newQuestion);
+            System.out.println(test.getQuestions());
+            course.getValidatingTests().add(test);
+            course.getRejectedTests().remove(test);
+            test.validationStatus=Validation.WAITING;
+            test.reason="";
         }
     }
-    public void ensembleTest(Teacher testValidator, Course course, Question... questions) throws Exception {
 
-//        if (doesTeacherTeachCourse(course)&&testValidator.courses.contains(course)&&this!=testValidator) {
-//            Test test = new Test(questions);
-//            test.maker =this;
-//            course.getValidatingTests().add(test);
-//            test.testValidator=testValidator;
-//        }if(!testValidator.courses.contains(course)){
-//            throw new Exception("The Validator does not teach this course");
-//        }
-//        if (this==testValidator){
-//            throw new Exception("You cannot Validate your own test");
-//        }
-    }
 }

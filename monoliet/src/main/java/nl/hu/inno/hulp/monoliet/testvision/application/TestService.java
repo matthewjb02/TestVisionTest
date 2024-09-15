@@ -73,7 +73,7 @@ public class TestService {
     private TestDTO toDTO(Test test) {
         return new TestDTO(
                 test.getId(),
-                test.getQuestionsAsString(),
+                test.getQuestions(),
                 test.getTotalPoints(),
                 test.getMakerMail(),
                 test.getTestValidatorMail(),

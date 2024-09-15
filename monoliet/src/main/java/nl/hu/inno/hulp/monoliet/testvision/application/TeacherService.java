@@ -2,9 +2,11 @@ package nl.hu.inno.hulp.monoliet.testvision.application;
 
 import jakarta.transaction.Transactional;
 import nl.hu.inno.hulp.monoliet.testvision.data.CourseRepository;
+import nl.hu.inno.hulp.monoliet.testvision.data.QuestionRepository;
 import nl.hu.inno.hulp.monoliet.testvision.data.TeacherRepository;
 import nl.hu.inno.hulp.monoliet.testvision.data.TestRepository;
 import nl.hu.inno.hulp.monoliet.testvision.domain.Course;
+import nl.hu.inno.hulp.monoliet.testvision.domain.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.Teacher;
 import nl.hu.inno.hulp.monoliet.testvision.domain.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,8 @@ public class TeacherService {
     CourseRepository courseRepository;
     @Autowired
     TestRepository testRepository;
+    @Autowired
+    QuestionRepository questionRepository;
 
     public TeacherService() {
     }
@@ -52,7 +56,49 @@ public class TeacherService {
         teacherRepository.save(teacher);
         return new TeacherDTO(teacher.getId(),teacher.getFirstName(),teacher.getLastName(),teacher.getEmail().getEmail(),teacher.getCourses());
     }
+    public TestDTO validateTests(long teacherId, long courseId, long testId) throws Exception {
+        Teacher teacher=teacherRepository.findById(teacherId).orElseThrow();
+        Course course=courseRepository.findById(courseId).orElseThrow();
+        Test test=testRepository.findById(testId).orElseThrow();
+        teacher.validateOtherTests(course,test);
+        return new TestDTO(test.getId(),test.getQuestions(),test.getTotalPoints(),test.getMakerMail(),test.getTestValidatorMail(),test.getValidationStatus(),test.getReason());
+    }
+    public TestDTO acceptTest(long testId, long teacherId, long courseId) throws Exception {
+        Teacher teacher=teacherRepository.findById(teacherId).orElseThrow();
+        Course course=courseRepository.findById(courseId).orElseThrow();
+        Test test=testRepository.findById(testId).orElseThrow();
+        teacher.approveTest(course,test);
+        testRepository.save(test);
+        return new TestDTO(test.getId(),test.getQuestions(),test.getTotalPoints(),test.getMakerMail(),test.getTestValidatorMail(),test.getValidationStatus(),test.getReason());
+    }
+    public TestDTO refuseTest(long testId, long teacherId, long courseId,String reason) throws Exception {
+        Teacher teacher=teacherRepository.findById(teacherId).orElseThrow();
+        Course course=courseRepository.findById(courseId).orElseThrow();
+        Test test=testRepository.findById(testId).orElseThrow();
+        teacher.rejectTest(course, test, reason);
+       testRepository.save(test);
+        return new TestDTO(test.getId(),test.getQuestions(),test.getTotalPoints(),test.getMakerMail(),test.getTestValidatorMail(),test.getValidationStatus(),test.getReason());
+    }
+    public TestDTO viewWrongTest(long testId, long teacherId, long courseId) throws Exception {
+        Teacher teacher=teacherRepository.findById(teacherId).orElseThrow();
+        Course course=courseRepository.findById(courseId).orElseThrow();
+        Test test=testRepository.findById(testId).orElseThrow();
+        teacher.viewWrongTest(course,test);
+        return new TestDTO(test.getId(),test.getQuestions(),test.getTotalPoints(),test.getMakerMail(),test.getTestValidatorMail(),test.getValidationStatus(),test.getReason());
+    }
+    public TestDTO modifyWrongTest(long testId, long teacherId, long courseId, List<Question>newQuestions) throws Exception {
+        Teacher teacher=teacherRepository.findById(teacherId).orElseThrow();
+        Course course=courseRepository.findById(courseId).orElseThrow();
+        Test test=testRepository.findById(testId).orElseThrow();
 
+        teacher.modifyQuestions(course,test,test.getQuestions(),newQuestions);
+        System.out.println(test.getQuestionsAsString());
 
+        questionRepository.saveAll(test.getQuestions());
+        testRepository.save(test);
+        Test test1=testRepository.findById(testId).orElseThrow();
+        System.out.println(test1.getQuestionsAsString());
+        return new TestDTO(test.getId(),test.getQuestions(),test.getTotalPoints(),test.getMakerMail(),test.getTestValidatorMail(),test.getValidationStatus(),test.getReason());
+    }
 
 }
