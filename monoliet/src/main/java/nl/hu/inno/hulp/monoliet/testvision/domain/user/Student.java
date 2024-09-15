@@ -10,8 +10,8 @@ public class Student extends User {
     @GeneratedValue
     private Long id;
 
-    public Student(String voornaam, String achternaam) {
-        super(voornaam, achternaam);
+    public Student(String firstName, String lastName) {
+        super(firstName, lastName);
     }
 
     protected Student() {

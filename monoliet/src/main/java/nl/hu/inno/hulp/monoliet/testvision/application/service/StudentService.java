@@ -23,7 +23,7 @@ public class StudentService {
     }
 
     public Student addStudent(StudentRequest studentRequest) {
-        Student student = new Student(studentRequest.voornaam, studentRequest.achternaam);
+        Student student = new Student(studentRequest.firstName, studentRequest.lastName);
         studentRepository.save(student);
         return getStudent(student.getId());
     }
