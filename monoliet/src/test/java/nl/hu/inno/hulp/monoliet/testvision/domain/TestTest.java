@@ -1,5 +1,7 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain;
 
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
+import nl.hu.inno.hulp.monoliet.testvision.domain.test.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 //import org.junit.jupiter.api.Test;
@@ -16,14 +18,8 @@ class TestTest {
 
     @BeforeEach
     void createTest() {
-        question1 = new Question();
-        question1.setPoints(5);
-        question1.setQuestion("Question 1");
-
-        question2 = new Question();
-        question2.setPoints(10);
-        question2.setQuestion("Question 2");
-
+        question1 = new Question(5, "Question 1");
+        question2 = new Question(10, "Question 2");
         test = new Test("maker@example.com", "validator@example.com", question1, question2);
     }
 
@@ -36,9 +32,7 @@ class TestTest {
     @org.junit.jupiter.api.Test
     @DisplayName("Questions can be added and removed")
     void testAddAndRemoveQuestions() {
-        Question question3 = new Question();
-        question3.setPoints(20);
-        question3.setQuestion("Question 3");
+        Question question3 = new Question(20, "Question 3");
 
         test.addQuestions(List.of(question3));
         assertEquals(3, test.getQuestions().size());

@@ -1,16 +1,19 @@
 package nl.hu.inno.hulp.monoliet.testvision.application;
 
+import nl.hu.inno.hulp.monoliet.testvision.application.service.ExamService;
+import nl.hu.inno.hulp.monoliet.testvision.application.service.StudentService;
+import nl.hu.inno.hulp.monoliet.testvision.application.service.TestService;
 import nl.hu.inno.hulp.monoliet.testvision.data.ExamRepository;
-import nl.hu.inno.hulp.monoliet.testvision.domain.Exam;
-import nl.hu.inno.hulp.monoliet.testvision.domain.Question;
-import nl.hu.inno.hulp.monoliet.testvision.domain.State;
+import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
+import nl.hu.inno.hulp.monoliet.testvision.domain.exam.State;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exception.ExamInactiveException;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exception.NoExamFoundException;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.AnswerRequest;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.ExamRequest;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.SeeQuestion;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.StartExamRequest;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.AnswerRequest;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.ExamRequest;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.SeeQuestion;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.StartExamRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,8 +45,8 @@ public class ExamServiceTest {
         testService = mock(TestService.class);
         Question question1 = new Question(1, "Wat is de hoofdstad van parijs.");
         Question question2 = new Question(1, "Hoe zeg je hallo in het engels.");
-        nl.hu.inno.hulp.monoliet.testvision.domain.Test test =
-                new nl.hu.inno.hulp.monoliet.testvision.domain.Test("", "", question1, question2);
+        nl.hu.inno.hulp.monoliet.testvision.domain.test.Test test =
+                new nl.hu.inno.hulp.monoliet.testvision.domain.test.Test("", "", question1, question2);
         when(testService.getTest(1L)).thenReturn(test);
 
         repository = mock(ExamRepository.class);

@@ -2,6 +2,9 @@ package nl.hu.inno.hulp.monoliet.testvision.domain.user;
 
 import jakarta.persistence.*;
 import nl.hu.inno.hulp.monoliet.testvision.domain.*;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
+import nl.hu.inno.hulp.monoliet.testvision.domain.test.Test;
+import nl.hu.inno.hulp.monoliet.testvision.domain.test.Validation;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import nl.hu.inno.hulp.monoliet.testvision.domain.test.Test;
+import nl.hu.inno.hulp.monoliet.testvision.domain.test.Validation;
 
 import java.util.ArrayList;
 import java.util.List;
