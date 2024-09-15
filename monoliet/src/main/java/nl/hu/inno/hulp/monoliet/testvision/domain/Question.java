@@ -38,7 +38,7 @@ public class Question {
         return answer;
     }
 
-    public void answerQuestion(String answer) {
+    public void setAnswer(String answer) {
         this.answer = answer;
     }
 
