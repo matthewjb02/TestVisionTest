@@ -8,9 +8,9 @@ import java.util.List;
 public class TestDTO {
 
     private Long id;
+    private List<Question> questions;
     private String makerMail;
     private String testValidatorMail;
-    private List<Question> questions;
     private Validation validation;
     private String reason;
     private int totalPoints;
@@ -18,6 +18,7 @@ public class TestDTO {
     public TestDTO(){
 
     }
+
 
     public TestDTO(Long id, List<Question> questions, int totalPoints, String makerMail, String testValidatorMail, Validation validation, String reason) {
         this.id = id;

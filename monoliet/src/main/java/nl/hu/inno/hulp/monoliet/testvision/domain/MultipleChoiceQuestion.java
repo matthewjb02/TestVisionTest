@@ -3,12 +3,11 @@ package nl.hu.inno.hulp.monoliet.testvision.domain;
 import java.util.Arrays;
 import java.util.List;
 
-public class MultipleChoiceQuestion extends Question{
+public class MultipleChoiceQuestion extends Question {
     private List<String> answers;
     private int correctAnswerIndex;
 
-    public MultipleChoiceQuestion(){
-
+    protected MultipleChoiceQuestion(){
     }
 
     public MultipleChoiceQuestion(int points, String question, int correctAnswerIndex, String... answers) {

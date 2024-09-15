@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 public class Test {
@@ -73,11 +72,15 @@ public class Test {
         return reason;
     }
 
-    public List<String> getQuestionsAsString(){
+    public Question getQuestion(int nr) {
+        return questions.get(nr - 1);
+    }
+
+    /*public List<String> getQuestionsAsString(){
         return questions.stream()
                 .map(Question::getQuestion)
                 .collect(Collectors.toList());
-    }
+    }*/
 
     public void setTestValidatorMail(String testValidator) {
         this.testValidatorMail = testValidator;
@@ -86,5 +89,4 @@ public class Test {
     public void setMakerMail(String maker) {
         this.makerMail = maker;
     }
-
 }

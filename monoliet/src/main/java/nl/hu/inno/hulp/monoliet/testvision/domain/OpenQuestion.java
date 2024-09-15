@@ -1,11 +1,10 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain;
 
 
-public class OpenQuestion extends Question{
+public class OpenQuestion extends Question {
     private String answer;
 
-    public OpenQuestion(){
-
+    protected OpenQuestion(){
     }
 
     public OpenQuestion(int points, String question, String answer){
