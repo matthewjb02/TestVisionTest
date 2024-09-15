@@ -35,4 +35,13 @@ public class Question {
     public void setPoints(int points){
         this.points = points;
     }
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                "id=" + id +
+                ", points=" + points +
+                ", question='" + question + '\'' +
+                '}';
+    }
 }

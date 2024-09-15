@@ -70,7 +70,7 @@ public class CourseService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No course with id: " + courseId + " found!"));
 
         List<TestDTO> testDTOs = new ArrayList<>();
-        for (Test test : course.getTests()) {
+        for (Test test : course.getApprovedTests()) {
             testDTOs.add(getTestDTO(test));
         }
 
@@ -78,23 +78,39 @@ public class CourseService {
     }
 
     private CourseDTO getDTO(Course course){
-        List<TestDTO> testDTOs = new ArrayList<>();
-        for (Test test : course.getTests()){
-            testDTOs.add(getTestDTO(test));
+        List<TestDTO> approvedTestDTOs = new ArrayList<>();
+        for (Test test : course.getApprovedTests()){
+            approvedTestDTOs.add(getTestDTO(test));
         }
+        List<TestDTO>rejectedTestDTOs = new ArrayList<>();
+        for (Test test : course.getRejectedTests()){
+            rejectedTestDTOs.add(getTestDTO(test));
+        }
+        List<TestDTO> validatingTestDTOs = new ArrayList<>();
+        for (Test test : course.getValidatingTests()){
+            validatingTestDTOs.add(getTestDTO(test));
+        }
+
 
         return new CourseDTO(
                 course.getId(),
                 course.getName(),
-                testDTOs
+                approvedTestDTOs,
+                rejectedTestDTOs,
+                validatingTestDTOs
+
         );
     }
 
     private TestDTO getTestDTO(Test test){
         return new TestDTO(
                 test.getId(),
-                test.getQuestionsAsString(),
-                test.getTotalPoints()
+                test.getQuestions(),
+                test.getTotalPoints(),
+                test.getMakerMail(),
+                test.getTestValidatorMail(),
+                test.getValidationStatus(),
+                test.getReason()
         );
     }
 }

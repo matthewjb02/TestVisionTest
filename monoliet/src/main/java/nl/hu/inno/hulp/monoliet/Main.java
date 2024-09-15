@@ -3,7 +3,7 @@ package nl.hu.inno.hulp.monoliet;
 import nl.hu.inno.hulp.monoliet.testvision.domain.*;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         Course course1 = new Course("Course1");
 
         Question question1 = new MultipleChoiceQuestion(1, "What is D?", 3, "A", "B", "C", "D");
@@ -12,14 +12,12 @@ public class Main {
         Question question4 = new MultipleChoiceQuestion(1, "What is A?", 0, "A", "B", "C", "D");
         Question question5 = new OpenQuestion(1, "Is true true?", "Yes");
         Question question6 = new OpenQuestion(1, "Is true false?", "No");
+        Teacher teacher1= new Teacher("Jim","van Bim","jim.vanbim@hu.nl");
+        Teacher teacher2=new Teacher("Elco", "Noom", "elco.noom@hu.nl");
+        teacher1.addCourse(course1);
+        teacher2.addCourse(course1);
 
-        Test test1 = new Test(question1, question2, question3, question4);
-        Test test2 = new Test(question5, question6);
-
-        course1.addTest(test1);
-        course1.addTest(test2);
-
-        System.out.println(course1.getTests().get(0).getTotalPoints());
-        System.out.println(course1.getTests().get(1).getTotalPoints());
+        System.out.println(course1.getApprovedTests().get(0).getTotalPoints());
+        System.out.println(course1.getApprovedTests().get(1).getTotalPoints());
     }
 }
