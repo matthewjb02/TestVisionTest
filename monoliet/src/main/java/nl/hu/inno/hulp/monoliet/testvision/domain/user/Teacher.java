@@ -94,8 +94,8 @@ public class Teacher extends User {
     public void modifyQuestions(Course course, Test test, List<Question> oldQuestions, List<Question> newQuestion) throws Exception {
         if (Objects.equals(test.getMakerMail(), this.email.getEmail()) &&course.getRejectedTests().contains(test)){
             System.out.println(test.getReason());
-            test.removeAllQuestions(oldQuestions);
-            test.addAllQuestion(newQuestion);
+            test.removeQuestions(oldQuestions);
+            test.addQuestions(newQuestion);
             System.out.println(test.getQuestions());
             course.getValidatingTests().add(test);
             course.getRejectedTests().remove(test);
