@@ -27,7 +27,7 @@ public class Exam {
     }
 
     public Question seeQuestion(int nr) {
-        return test.getQuestion(nr);
+        return test.getQuestions().get(nr - 1);
     }
 
     public void answerQuestion(int questionNr, String answer) {

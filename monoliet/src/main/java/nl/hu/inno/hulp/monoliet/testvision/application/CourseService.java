@@ -133,7 +133,6 @@ public class CourseService {
 
       return new TestDTO(
                 test.getId(),
-                test.getTotalPoints(),
                 test.getQuestions(),
                 test.getTotalPoints(),
                 test.getMakerMail(),

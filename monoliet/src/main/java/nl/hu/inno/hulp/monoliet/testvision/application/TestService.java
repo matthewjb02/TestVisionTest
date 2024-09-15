@@ -156,7 +156,7 @@ public class TestService {
                 test.getMakerMail(),
                 test.getTestValidatorMail(),
                 test.getValidationStatus(),
-                test.getReason().
+                test.getReason(),
                 gradingCriteriaDTO,
                 submissionDTOs,
                 statisticsDTO

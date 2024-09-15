@@ -32,11 +32,11 @@ public class Course {
     }
 
     public void addTest(Test test){
-        if (test.validationStatus.equals(Validation.APPROVED)){
+        if (test.getValidationStatus().equals(Validation.APPROVED)){
         approvedTests.add(test);}
-        else if(test.validationStatus.equals(Validation.WAITING)){
+        else if(test.getValidationStatus().equals(Validation.WAITING)){
             validatingTests.add(test);
-        } else if (test.validationStatus.equals(Validation.DENIED) ) {
+        } else if (test.getValidationStatus().equals(Validation.DENIED) ) {
             rejectedTests.add(test);
         }
     }

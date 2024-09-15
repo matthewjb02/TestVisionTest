@@ -2,6 +2,7 @@ package nl.hu.inno.hulp.monoliet.testvision.domain;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,17 +18,17 @@ public class Test {
     @OneToMany
     private List<Submission> submissions = new ArrayList<>();
 
-    protected Validation validationStatus= Validation.WAITING;
-    protected String reason;
+    private Validation validationStatus= Validation.WAITING;
+    private String reason;
   
     @OneToMany
     private List<Question> questions;
-    protected String testValidatorMail;
+    private String testValidatorMail;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Statistics statistics;
 
-    protected String makerMail;
+    private String makerMail;
     private int totalPoints;
 
     public Test(){
@@ -75,6 +76,7 @@ public class Test {
         return makerMail;
     }
 
+
     public Validation getValidationStatus() {
         return validationStatus;
     }
@@ -83,10 +85,11 @@ public class Test {
         return reason;
     }
 
-    public List<String> getQuestionsAsString(){
+    public List<String> getQuestionsAsString() {
         return questions.stream()
                 .map(Question::getQuestion)
                 .collect(Collectors.toList());
+    }
 
     public void addGradingCriteria(GradingCriteria gradingCriteria) {
         this.gradingCriteria = gradingCriteria;
@@ -110,6 +113,7 @@ public class Test {
 
     public void addStatistics(Statistics statistics) {
         this.statistics = statistics;
+    }
 
     public void setTestValidatorMail(String testValidator) {
         this.testValidatorMail = testValidator;
@@ -117,5 +121,13 @@ public class Test {
 
     public void setMakerMail(String maker) {
         this.makerMail = maker;
+    }
+
+    public void setValidationStatus(Validation validationStatus) {
+        this.validationStatus = validationStatus;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 }

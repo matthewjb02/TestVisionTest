@@ -42,7 +42,7 @@ public class TestDTO {
         return id;
     }
 
-    public List<String> getQuestions() {
+    public List<Question> getQuestions() {
         return questions;
     }
 

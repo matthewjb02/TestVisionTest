@@ -4,7 +4,7 @@ import nl.hu.inno.hulp.monoliet.testvision.application.TeacherDTO;
 import nl.hu.inno.hulp.monoliet.testvision.application.TeacherService;
 import nl.hu.inno.hulp.monoliet.testvision.application.TestDTO;
 import nl.hu.inno.hulp.monoliet.testvision.domain.Question;
-import nl.hu.inno.hulp.monoliet.testvision.domain.Teacher;
+import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

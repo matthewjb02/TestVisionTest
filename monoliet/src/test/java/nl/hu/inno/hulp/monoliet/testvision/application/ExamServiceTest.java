@@ -60,8 +60,8 @@ public class ExamServiceTest {
         Exam exam = examService.startExam(startExamRequest);
 
         assertEquals(State.Active, exam.getState());
-        assertEquals("Jan", exam.getStudent().getVoornaam());
-        assertEquals("Steen", exam.getStudent().getAchternaam());
+        assertEquals("Jan", exam.getStudent().getFirstName());
+        assertEquals("Steen", exam.getStudent().getLastName());
         assertEquals(exam.getTest().getId(), exam.getTest().getId());
     }
 

@@ -9,8 +9,8 @@ public class StudentResponse {
 
     public StudentResponse(Student student) {
         this.id = student.getId();
-        this.voornaam = student.getVoornaam();
-        this.achternaam = student.getAchternaam();
+        this.voornaam = student.getFirstName();
+        this.achternaam = student.getLastName();
     }
 
     public Long getId() {

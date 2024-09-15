@@ -4,22 +4,22 @@ import jakarta.persistence.MappedSuperclass;
 
 @MappedSuperclass
 public class User {
-    private String voornaam;
-    private String achternaam;
+    private String firstName;
+    private String lastName;
 
     protected User() {
     }
 
-    public User(String voornaam, String achternaam) {
-        this.voornaam = voornaam;
-        this.achternaam = achternaam;
+    public User(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
-    public String getVoornaam() {
-        return voornaam;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public String getAchternaam() {
-        return achternaam;
+    public String getLastName() {
+        return lastName;
     }
 }
