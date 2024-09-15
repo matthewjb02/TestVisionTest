@@ -1,13 +1,11 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class Test {
@@ -15,8 +13,17 @@ public class Test {
     @GeneratedValue
     private Long id;
 
+    @Embedded
+    private GradingCriteria gradingCriteria;
+
+    @OneToMany
+    private List<Submission> submissions = new ArrayList<>();
+
     @OneToMany
     private List<Question> questions = new ArrayList<>();
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Statistics statistics;
 
     private int totalPoints;
 
@@ -51,13 +58,34 @@ public class Test {
         return questions;
     }
 
-    public Question getQuestion(int nr) {
-        return questions.get(nr - 1);
-    }
-
-    /*public List<String> getQuestionsAsString(){
+    public List<String> getQuestionsAsString(){
         return questions.stream()
                 .map(Question::getQuestion)
                 .collect(Collectors.toList());
-    }*/
+    }
+
+
+    public void addGradingCriteria(GradingCriteria gradingCriteria) {
+        this.gradingCriteria = gradingCriteria;
+    }
+
+    public void addSubmission(Submission submission) {
+        this.submissions.add(submission);
+    }
+
+    public GradingCriteria getGradingCriteria() {
+        return gradingCriteria;
+    }
+
+    public List<Submission> getSubmissions() {
+        return submissions;
+    }
+
+    public Statistics getStatistics() {
+        return statistics;
+    }
+
+    public void addStatistics(Statistics statistics) {
+        this.statistics = statistics;
+    }
 }
