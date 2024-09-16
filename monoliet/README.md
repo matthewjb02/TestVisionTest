@@ -12,7 +12,7 @@ Er is voor dit systeem gekozen omdat dit systeem logisch en effectief is, een ve
 Er is  niet te veel aandacht besteed aan login omdat dit redelijk eenvoudig is om hierna nog toe te voegen.
 
 
-## Toetsen kunnen aangemaakt worden(Rik)
+## Toetsen kunnen aangemaakt worden(Rik Prins)
 Met deze use case kan een docent een toets aanmaken.
 Hiervoor moesten een paar dingen gebeuren:
 
@@ -23,8 +23,8 @@ Hiervoor moesten een paar dingen gebeuren:
 1. De toets kan aan een cursus worden gekoppeld
 
 De domeinklassen die hier nodig waren:
-Course, Question en Test
-Hiervoor zijn ook services, repositories en controllers voor gemaakt(voor CRUD)
+Course, Question en Test.
+Hiervoor zijn ook services, repositories en controllers voor gemaakt(voor CRUD).
 
 Todo's: 
 Er kunnen verschillende type vragen gemaakt worden(multiple choice, open vragen)
