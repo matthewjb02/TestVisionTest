@@ -77,5 +77,7 @@ public class Submission {
     }
 
     public void addGrading(Grading grading) {
+        this.grading = grading;
+        this.status = SubmissionStatus.NAGEKEKEN;
     }
 }
