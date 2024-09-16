@@ -18,8 +18,7 @@ public class Statistics {
     private double averageScore;
 
 
-    public Statistics(Long testId, int submissionCount, int passCount, int failCount, double averageScore) {
-        this.id = id;
+    public Statistics(int submissionCount, int passCount, int failCount, double averageScore) {
         this.submissionCount = submissionCount;
         this.passCount = passCount;
         this.failCount = failCount;

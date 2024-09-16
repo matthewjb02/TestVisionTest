@@ -4,7 +4,7 @@ import nl.hu.inno.hulp.monoliet.testvision.application.dto.TestDTO;
 import nl.hu.inno.hulp.monoliet.testvision.application.service.TestService;
 import nl.hu.inno.hulp.monoliet.testvision.application.dto.GradingCriteriaDTO;
 import nl.hu.inno.hulp.monoliet.testvision.application.dto.StatisticsDTO;
-import nl.hu.inno.hulp.monoliet.testvision.domain.test.Submission;
+import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
 import nl.hu.inno.hulp.monoliet.testvision.domain.test.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

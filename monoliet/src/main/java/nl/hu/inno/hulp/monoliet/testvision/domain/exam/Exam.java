@@ -61,4 +61,8 @@ public class Exam {
     public Long getId() {
         return id;
     }
+
+    public Long getStudentId() {
+        return student.getId();
+    }
 }

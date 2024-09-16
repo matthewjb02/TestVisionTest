@@ -13,8 +13,10 @@ public class Question {
     private int points;
     private String question;
     private String answer = "";
+    private int givenPoints;
+    private String teacher_feedback = "";
 
-    protected Question(){
+    protected Question() {
     }
 
     public Question(int points, String question) {
@@ -26,11 +28,11 @@ public class Question {
         return id;
     }
 
-    public int getPoints(){
+    public int getPoints() {
         return points;
     }
 
-    public String getQuestion(){
+    public String getQuestion() {
         return question;
     }
 
@@ -38,17 +40,39 @@ public class Question {
         return answer;
     }
 
-    public void setAnswer(String answer) {
+    public void answerQuestion(String answer) {
         this.answer = answer;
     }
 
-    public void setQuestion(String question){
+    public void setQuestion(String question) {
         this.question = question;
     }
 
-    public void setPoints(int points){
+    public void setPoints(int points) {
         this.points = points;
     }
 
+    public int getGivenPoints() {
+        return givenPoints;
+
+    }
+
+    public String getTeacherFeedback() {
+        return teacher_feedback;
+    }
+
+    public void addGivenPoints(int points) {
+        this.givenPoints += points;
+    }
+
+    public void addTeacherFeedback(String feedback) {
+        this.teacher_feedback += feedback;
+
+
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
 
 }

@@ -10,7 +10,7 @@ import nl.hu.inno.hulp.monoliet.testvision.data.TestRepository;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.test.GradingCriteria;
 import nl.hu.inno.hulp.monoliet.testvision.domain.test.Statistics;
-import nl.hu.inno.hulp.monoliet.testvision.domain.test.Submission;
+import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
 import nl.hu.inno.hulp.monoliet.testvision.domain.test.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -114,7 +114,6 @@ public class TestService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Test not found"));
 
         Statistics statistics = new Statistics(
-                statisticsDTO.getId(),
                 statisticsDTO.getSubmissionCount(),
                 statisticsDTO.getPassCount(),
                 statisticsDTO.getFailCount(),
@@ -130,6 +129,8 @@ public class TestService {
 
 
     private TestDTO toDTO(Test test) {
+
+        // is by default null
         GradingCriteriaDTO gradingCriteriaDTO = null;
         if (test.getGradingCriteria() != null) {
             gradingCriteriaDTO = new GradingCriteriaDTO(
@@ -142,10 +143,10 @@ public class TestService {
                 .map(submission -> new SubmissionDTO(submission.getId(), submission.getStatus()))
                 .collect(Collectors.toList());
 
+        // is by default null
         StatisticsDTO statisticsDTO = null;
         if (test.getStatistics() != null) {
             statisticsDTO = new StatisticsDTO(
-                    test.getStatistics().getId(),
                     test.getStatistics().getSubmissionCount(),
                     test.getStatistics().getPassCount(),
                     test.getStatistics().getFailCount(),
@@ -166,6 +167,11 @@ public class TestService {
                 submissionDTOs,
                 statisticsDTO
         );
+    }
+
+
+    public void saveTest(Test test) {
+        testRepository.save(test);
     }
 
 }

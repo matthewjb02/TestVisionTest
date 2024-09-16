@@ -1,11 +1,13 @@
 package nl.hu.inno.hulp.monoliet.testvision.application.service;
 
 import nl.hu.inno.hulp.monoliet.testvision.data.ExamRepository;
+import nl.hu.inno.hulp.monoliet.testvision.data.SubmissionRepository;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.State;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exception.ExamInactiveException;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exception.NoExamFoundException;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
+import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
 import nl.hu.inno.hulp.monoliet.testvision.domain.test.Test;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.AnswerRequest;
@@ -22,12 +24,15 @@ public class ExamService {
     private final ExamRepository examRepository;
     private final StudentService studentService;
     private final TestService testService;
+    private final SubmissionRepository submissionRepository;
+
 
     @Autowired
-    public ExamService(ExamRepository examRepository, StudentService studentService, TestService testService) {
+    public ExamService(ExamRepository examRepository, StudentService studentService, TestService testService, SubmissionRepository submissionRepository) {
         this.examRepository = examRepository;
         this.studentService = studentService;
         this.testService = testService;
+        this.submissionRepository = submissionRepository;
     }
 
     public Exam startExam(StartExamRequest examRequest) {
@@ -65,7 +70,14 @@ public class ExamService {
         Exam exam = getExamById(examRequest.examId());
 
         if (exam.getState() == State.Active) {
-            return exam.endExam();
+            exam.endExam();
+
+            Submission submission = new Submission(exam);
+            exam.getTest().addSubmission(submission);
+            submissionRepository.save(submission);
+
+            return exam;
+
         } else {
             throw new ExamInactiveException("This exam is already completed");
         }
