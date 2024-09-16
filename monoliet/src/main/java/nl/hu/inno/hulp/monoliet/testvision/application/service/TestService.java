@@ -10,7 +10,7 @@ import nl.hu.inno.hulp.monoliet.testvision.data.TestRepository;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.test.GradingCriteria;
 import nl.hu.inno.hulp.monoliet.testvision.domain.test.Statistics;
-import nl.hu.inno.hulp.monoliet.testvision.domain.test.Submission;
+import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
 import nl.hu.inno.hulp.monoliet.testvision.domain.test.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

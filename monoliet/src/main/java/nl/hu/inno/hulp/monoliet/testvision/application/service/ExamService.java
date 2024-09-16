@@ -7,7 +7,7 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.exam.State;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exception.ExamInactiveException;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exception.NoExamFoundException;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
-import nl.hu.inno.hulp.monoliet.testvision.domain.test.Submission;
+import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
 import nl.hu.inno.hulp.monoliet.testvision.domain.test.Test;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.AnswerRequest;

@@ -2,6 +2,7 @@ package nl.hu.inno.hulp.monoliet.testvision.domain.test;
 
 import jakarta.persistence.*;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
+import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -94,6 +95,25 @@ public class Test {
         return questions.stream()
                 .map(Question::getQuestion)
                 .collect(Collectors.toList());
+    }
+
+    public void updateStatistics() {
+        double passGrade = 5.5;
+
+        int submissionCount = submissions.size();
+
+        int passCount = (int) submissions.stream()
+                .filter(submission -> submission.calculateGrade() >= passGrade)
+                .count();
+
+        int failCount = submissionCount - passCount;
+
+        double averageScore = submissions.stream()
+                .mapToDouble(Submission::calculateGrade)
+                .average()
+                .orElse(0);
+
+        statistics = new Statistics(submissionCount, passCount, failCount, averageScore);
     }
 
     public void addGradingCriteria(GradingCriteria gradingCriteria) {
