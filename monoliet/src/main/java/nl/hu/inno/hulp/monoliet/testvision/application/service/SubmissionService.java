@@ -51,9 +51,9 @@ public class SubmissionService {
         Test test = testRepository.findById(testId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Test not found"));
 
-        return test.getSubmissions().stream().filter(submission -> submission.getExam().getStudent().getId().equals(studentId))
+        return test.getSubmissions().stream().filter(submission -> submission.getStudentIDtFromExamSubmission().equals(studentId))
                 .map(submission -> new SubmissionResponse(
-                        new Exam(submission.getExam().getStudent(), test),
+                        new Exam(submission.getStudentFromExamSubmission(), test),
                         submission.getId(),
                         submission.getStatus(),
                         submission.getGrading())).collect(Collectors.toList());
@@ -76,7 +76,6 @@ public class SubmissionService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Submission not found for the given student and test");
         }
     }
-
 
     public void addGrading(Long testId, Long studentId, GradingRequest request) {
         Test test = testRepository.findById(testId)

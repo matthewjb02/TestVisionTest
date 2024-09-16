@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import nl.hu.inno.hulp.monoliet.testvision.domain.Grading;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
+import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
 
 
 @Entity
@@ -30,9 +31,6 @@ public class Submission {
     public Submission() {
     }
 
-    public void setGrading(Grading grading) {
-        this.grading = grading;
-    }
 
     public Long getId() {
         return id;
@@ -69,7 +67,15 @@ public class Submission {
         return Math.round(grade * 10.0) / 10.0;
     }
 
+    public Student getStudentFromExamSubmission() {
+        return exam.getStudent();
 
+    }
+
+    public Long getStudentIDtFromExamSubmission() {
+        return exam.getStudentId();
+
+    }
 
     public void addGrading(Grading grading) {
         this.grading = grading;
