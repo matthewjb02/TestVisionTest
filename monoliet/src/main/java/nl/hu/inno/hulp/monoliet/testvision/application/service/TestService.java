@@ -114,7 +114,6 @@ public class TestService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Test not found"));
 
         Statistics statistics = new Statistics(
-                statisticsDTO.getId(),
                 statisticsDTO.getSubmissionCount(),
                 statisticsDTO.getPassCount(),
                 statisticsDTO.getFailCount(),
@@ -145,7 +144,6 @@ public class TestService {
         StatisticsDTO statisticsDTO = null;
         if (test.getStatistics() != null) {
             statisticsDTO = new StatisticsDTO(
-                    test.getStatistics().getId(),
                     test.getStatistics().getSubmissionCount(),
                     test.getStatistics().getPassCount(),
                     test.getStatistics().getFailCount(),

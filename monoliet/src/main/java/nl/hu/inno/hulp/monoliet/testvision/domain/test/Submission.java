@@ -1,6 +1,7 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain.test;
 
 import jakarta.persistence.*;
+import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
 
 @Entity
 public class Submission {
@@ -10,7 +11,7 @@ public class Submission {
     private Long id;
 
     @OneToOne
-    private TestAttempt testAttempt;
+    private Exam exam;
 
     @OneToOne
     private Grading grading;
@@ -18,8 +19,8 @@ public class Submission {
     @Enumerated(EnumType.STRING)
     private SubmissionStatus status;
 
-    public Submission(TestAttempt testAttempt) {
-        this.testAttempt = testAttempt;
+    public Submission(Exam exam) {
+        this.exam  = exam;
         this.status = SubmissionStatus.INGELEVERD;
     }
 

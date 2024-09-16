@@ -4,6 +4,7 @@ import nl.hu.inno.hulp.monoliet.testvision.application.service.ExamService;
 import nl.hu.inno.hulp.monoliet.testvision.application.service.StudentService;
 import nl.hu.inno.hulp.monoliet.testvision.application.service.TestService;
 import nl.hu.inno.hulp.monoliet.testvision.data.ExamRepository;
+import nl.hu.inno.hulp.monoliet.testvision.data.SubmissionRepository;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.State;
@@ -35,6 +36,7 @@ public class ExamServiceTest {
     private ExamRepository repository;
     private ExamService examService;
     private Exam exam;
+    private SubmissionRepository submissionRepository;
 
     @BeforeEach
     @DisplayName("Get repositories and services")
@@ -50,7 +52,8 @@ public class ExamServiceTest {
         when(testService.getTest(1L)).thenReturn(test);
 
         repository = mock(ExamRepository.class);
-        examService = new ExamService(repository, studentService, testService);
+        submissionRepository = mock(SubmissionRepository.class);
+        examService = new ExamService(repository, studentService, testService, submissionRepository);
 
         StartExamRequest startExamRequest = new StartExamRequest(1L, 1L);
         exam = examService.startExam(startExamRequest);

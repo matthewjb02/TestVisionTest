@@ -120,7 +120,7 @@ public class TeacherService {
         StatisticsDTO statisticsDTO = null;
         if (test.getStatistics() != null) {
             statisticsDTO = new StatisticsDTO(
-                    test.getStatistics().getId(),
+
                     test.getStatistics().getSubmissionCount(),
                     test.getStatistics().getPassCount(),
                     test.getStatistics().getFailCount(),

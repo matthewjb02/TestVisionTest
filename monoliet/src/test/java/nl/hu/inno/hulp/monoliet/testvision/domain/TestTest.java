@@ -69,7 +69,7 @@ class TestTest {
     @org.junit.jupiter.api.Test
     @DisplayName("You can add statistics")
     void testAddStatistics() {
-        Statistics stats = new Statistics(test.getId(), 1, 1, 0, 1);
+        Statistics stats = new Statistics( 1, 1, 0, 1);
         test.addStatistics(stats);
         assertEquals(stats, test.getStatistics());
     }
