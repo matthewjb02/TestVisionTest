@@ -1,6 +1,7 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain.submission;
 
 import jakarta.persistence.*;
+import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
 
 @Entity
 public class Grading {
@@ -11,6 +12,9 @@ public class Grading {
 
     private double grade = 0.0;
     private String comments;
+
+    @OneToOne
+    private Teacher grader;
 
 
     public Grading(double grade, String comments) {
@@ -34,5 +38,14 @@ public class Grading {
 
     public String getComments() {
         return comments;
+    }
+
+    public Teacher getGrader() {
+        return grader;
+    }
+
+    public void setGrader(Teacher grader) {
+        this.grader = grader;
+
     }
 }

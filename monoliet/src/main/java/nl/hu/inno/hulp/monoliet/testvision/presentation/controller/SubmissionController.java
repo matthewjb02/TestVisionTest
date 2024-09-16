@@ -1,6 +1,5 @@
-
+// SubmissionController.java
 package nl.hu.inno.hulp.monoliet.testvision.presentation.controller;
-
 
 import nl.hu.inno.hulp.monoliet.testvision.application.service.SubmissionService;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.GradingRequest;
@@ -41,6 +40,4 @@ public class SubmissionController {
     public void addGrading(@PathVariable Long testId, @PathVariable Long studentId, @RequestBody GradingRequest request) {
         submissionService.addGrading(testId, studentId, request);
     }
-
-
 }
