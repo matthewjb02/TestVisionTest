@@ -24,7 +24,7 @@ public class Submission {
 
     public Submission(Exam exam) {
         this.exam = exam;
-        this.status = SubmissionStatus.INGELEVERD;
+        this.status = SubmissionStatus.SUBMITTED;
     }
 
     public Submission() {
@@ -58,6 +58,9 @@ public class Submission {
     }
 
     public double calculateGrade() {
+        if(exam.getTest().getQuestions().isEmpty()) {
+            return 1.0;
+        }
         int totalGivenPoints = exam.getTest().getQuestions().stream()
                 .mapToInt(Question::getGivenPoints)
                 .sum();
@@ -78,6 +81,10 @@ public class Submission {
 
     public void addGrading(Grading grading) {
         this.grading = grading;
-        this.status = SubmissionStatus.NAGEKEKEN;
+        this.status = SubmissionStatus.GRADED;
     }
+
+
+
+
 }

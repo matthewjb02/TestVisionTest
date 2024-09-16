@@ -31,4 +31,12 @@ public class Grading {
         this.grader = grader;
 
     }
+
+    public int getGrade() {
+        return (int) grade;
+    }
+
+    public String getComments() {
+        return comments;
+    }
 }

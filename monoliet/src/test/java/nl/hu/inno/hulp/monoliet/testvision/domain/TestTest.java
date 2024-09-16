@@ -5,11 +5,17 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
 import nl.hu.inno.hulp.monoliet.testvision.domain.test.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-//import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class TestTest {
 
@@ -70,8 +76,47 @@ class TestTest {
     @org.junit.jupiter.api.Test
     @DisplayName("You can add statistics")
     void testAddStatistics() {
-        Statistics stats = new Statistics( 1, 1, 0, 1);
+        Statistics stats = new Statistics(1, 1, 0, 1);
         test.addStatistics(stats);
         assertEquals(stats, test.getStatistics());
     }
+
+    // Added tests by Matthew
+    @ParameterizedTest(name = "{index} => grades={0}, expectedPassCount={1}, expectedFailCount={2}, expectedAverage={3}")
+    @MethodSource("provideTestData")
+    @DisplayName("Parameterized test for updateStatistics")
+    void testUpdateStatistics(List<Double> grades, int expectedPassCount, int expectedFailCount, double expectedAverage) {
+
+        Test test = new Test();
+        Submission submission = mock(Submission.class);
+
+
+        for (double grade : grades) {
+            Submission mockSubmission = mock(Submission.class);
+            when(mockSubmission.calculateGrade()).thenReturn(grade);
+            test.addSubmission(mockSubmission);
+        }
+
+
+        test.updateStatistics();
+
+        Statistics statistics = test.getStatistics();
+
+        assertEquals(grades.size(), statistics.getSubmissionCount());
+        assertEquals(expectedPassCount, statistics.getPassCount());
+        assertEquals(expectedFailCount, statistics.getFailCount());
+        assertEquals(expectedAverage, statistics.getAverageScore(), 0.01);
+    }
+
+    private static Stream<Arguments> provideTestData() {
+        return Stream.of(
+
+                Arguments.of(List.of(6.0, 7.0, 8.0), 3, 0, 7.0),
+                Arguments.of(List.of(4.0, 5.0, 6.0), 1, 2, 5.0),
+                Arguments.of(List.of(5.5, 5.4, 5.6), 2, 1, 5.5),
+                Arguments.of(List.of(3.0, 2.0, 1.0), 0, 3, 2.0)
+        );
+    }
 }
+
+
