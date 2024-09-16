@@ -1,9 +1,9 @@
 package nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response;
 
-import nl.hu.inno.hulp.monoliet.testvision.domain.Grading;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
+import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Grading;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.SubmissionStatus;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.ExamResponse;
+
 
 public class SubmissionResponse extends ExamResponse {
     private Long submissionId;

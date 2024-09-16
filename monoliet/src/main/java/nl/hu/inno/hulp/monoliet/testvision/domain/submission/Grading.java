@@ -1,5 +1,4 @@
-// Grading.java
-package nl.hu.inno.hulp.monoliet.testvision.domain;
+package nl.hu.inno.hulp.monoliet.testvision.domain.submission;
 
 import jakarta.persistence.*;
 
@@ -22,19 +21,4 @@ public class Grading {
     public Grading() {}
 
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public double getGrade() {
-        return grade;
-    }
-
-    public String getComments() {
-        return comments;
-    }
 }

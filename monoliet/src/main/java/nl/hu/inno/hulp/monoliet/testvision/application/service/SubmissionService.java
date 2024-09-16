@@ -3,8 +3,8 @@ package nl.hu.inno.hulp.monoliet.testvision.application.service;
 import jakarta.transaction.Transactional;
 import nl.hu.inno.hulp.monoliet.testvision.data.SubmissionRepository;
 import nl.hu.inno.hulp.monoliet.testvision.data.TestRepository;
-import nl.hu.inno.hulp.monoliet.testvision.domain.Grading;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
+import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Grading;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
 import nl.hu.inno.hulp.monoliet.testvision.domain.test.Test;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.GradingRequest;
@@ -89,6 +89,8 @@ public class SubmissionService {
             Submission submission = submissionOpt.get();
             Grading grading = new Grading(submission.calculateGrade(), request.getComments());
             submission.addGrading(grading);
+
+            // after the final grade we update the test statistics
             test.updateStatistics();
             testRepository.save(test);
             submissionRepository.save(submission);

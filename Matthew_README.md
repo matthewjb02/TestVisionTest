@@ -10,12 +10,11 @@
 ### Entity vs Value Objects 
 
 #### Entities
-- `Submission` met `SubmissionService` en `SubmissionRepository`
-- `Grading`
-- `Statistics`
+- `Submission` met `SubmissionService` en `SubmissionRepository` -> als een toets wordt ingeleverd, wordt er een `Submission` aangemaakt. Een docent kan elke vraag apart beoordelen en van commentaar voorzien.
+- `Statistics` -> Bij elke beoordeling van een exam worden de toetsstatistieken bijgewerkt.
 
 ##### Value Objects
-- `GradingCriteria`(hoort bij een `Test`)- **DISCLIAMER**: Het value object `GradingCriteria` kan momenteel nog niet gebruikt worden in de applicatie. Dit komt doordat de use cases voor Test en Exam nog geen rekening houden met het onderscheid tussen open en gesloten vragen. 
+- `GradingCriteria`(hoort bij een `Test`en heeft invloed op de `Grading`)- **DISCLIAMER**: Het value object `GradingCriteria` kan momenteel nog niet gebruikt worden in de applicatie en heeft dus de **MINSTE** aandacht gekregen. Dit komt doordat de use cases voor Test en Exam nog geen rekening houden met het onderscheid tussen open en gesloten vragen. 
 - `GradingCriteria` is Immutable, met Equals/Hashcode override
 
 ### Aggegrates

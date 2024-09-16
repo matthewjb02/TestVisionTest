@@ -1,7 +1,6 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain.submission;
 
 import jakarta.persistence.*;
-import nl.hu.inno.hulp.monoliet.testvision.domain.Grading;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
@@ -78,6 +77,5 @@ public class Submission {
     }
 
     public void addGrading(Grading grading) {
-        this.grading = grading;
     }
 }
