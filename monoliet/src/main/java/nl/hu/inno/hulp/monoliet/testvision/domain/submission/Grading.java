@@ -16,7 +16,6 @@ public class Grading {
     @OneToOne
     private Teacher grader;
 
-
     public Grading(double grade, String comments) {
         this.grade = grade;
         this.comments = comments;
@@ -26,22 +25,6 @@ public class Grading {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public double getGrade() {
-        return grade;
-    }
-
-    public String getComments() {
-        return comments;
-    }
-
-    public Teacher getGrader() {
-        return grader;
     }
 
     public void setGrader(Teacher grader) {
