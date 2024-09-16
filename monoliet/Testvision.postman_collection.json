@@ -230,6 +230,65 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "submisssions",
+			"item": [
+				{
+					"name": "get all submissions for for an exam",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/submission/1"
+					},
+					"response": []
+				},
+				{
+					"name": "get submission of a exam per student",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/submission/1/1"
+					},
+					"response": []
+				},
+				{
+					"name": "Give points and comments on a question of an exam of a student from a submission",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"givenPoints\": 6,\n    \"feedback\": \"goed gedaan\"\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/submission/1/1/question/1"
+					},
+					"response": []
+				},
+				{
+					"name": "Give a final grade of the exam with comments from a submission",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"comments\": \"goed gedaan\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/submission/1/1/grading"
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
