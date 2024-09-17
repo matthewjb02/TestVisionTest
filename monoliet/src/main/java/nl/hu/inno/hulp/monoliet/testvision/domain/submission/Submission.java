@@ -30,6 +30,9 @@ public class Submission {
     public Submission() {
     }
 
+    public static Submission createSubmission(Exam exam) {
+        return new Submission(exam);
+    }
 
     public Long getId() {
         return id;

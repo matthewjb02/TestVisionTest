@@ -99,15 +99,6 @@ public class TestService {
         return toDTO(test);
     }
 
-    public TestDTO addSubmissionToTest(Long testId, Submission submission) {
-        Test test = testRepository.findById(testId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Test not found"));
-
-        test.addSubmission(submission);
-        testRepository.save(test);
-
-        return toDTO(test);
-    }
 
     public TestDTO addStatisticsToTest(Long testId) {
         Test test = testRepository.findById(testId)

@@ -72,7 +72,7 @@ public class ExamService {
         if (exam.getState() == State.Active) {
             exam.endExam();
 
-            Submission submission = new Submission(exam);
+            Submission submission = Submission.createSubmission(exam);
             exam.getTest().addSubmission(submission);
             submissionRepository.save(submission);
 

@@ -52,10 +52,6 @@ public class TestController {
         return testService.addGradingCriteriaToTest(testId, gradingCriteriaDTO);
     }
 
-    @PostMapping("/{testId}/submissions")
-    public TestDTO addSubmissionToTest(@PathVariable Long testId, @RequestBody Submission submission) {
-        return testService.addSubmissionToTest(testId, submission);
-    }
 
     @PostMapping("/{testId}/statistics")
     public TestDTO addStatisticsToTest(@PathVariable Long testId) {
