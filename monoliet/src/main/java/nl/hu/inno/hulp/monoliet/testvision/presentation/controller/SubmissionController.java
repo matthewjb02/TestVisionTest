@@ -33,6 +33,7 @@ public class SubmissionController {
 
     @PutMapping("/{testId}/{studentId}/question/{questionNr}")
     public void updateQuestionGrading(@PathVariable Long testId, @PathVariable Long studentId, @PathVariable int questionNr, @RequestBody UpdateQuestionGradingRequest request) {
+
         submissionService.updateQuestionGrading(testId, studentId, questionNr, request);
     }
 

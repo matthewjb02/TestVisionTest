@@ -79,7 +79,8 @@ public class SubmissionService {
         Submission submission = findSubmissionByTestAndStudentId(test, studentId);
         Teacher teacher = teacherService.getTeacherById(request.getTeacherId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Teacher not found"));
-        Grading grading = new Grading(submission.calculateGrade(), request.getComments());
+
+        Grading grading = Grading.createGrading(submission.calculateGrade(), request.getComments());
         grading.setGrader(teacher);
         submission.addGrading(grading);
 

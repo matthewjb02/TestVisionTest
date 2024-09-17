@@ -23,6 +23,10 @@ public class Grading {
 
     public Grading() {}
 
+    public static Grading createGrading(double grade, String comments) {
+        return new Grading(grade, comments);
+    }
+
     public Long getId() {
         return id;
     }

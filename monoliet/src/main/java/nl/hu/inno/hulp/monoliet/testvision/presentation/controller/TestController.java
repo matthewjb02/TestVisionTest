@@ -51,11 +51,4 @@ public class TestController {
     public TestDTO addGradingCriteriaToTest(@PathVariable Long testId, @RequestBody GradingCriteriaDTO gradingCriteriaDTO) {
         return testService.addGradingCriteriaToTest(testId, gradingCriteriaDTO);
     }
-
-
-    @PostMapping("/{testId}/statistics")
-    public TestDTO addStatisticsToTest(@PathVariable Long testId) {
-        return testService.addStatisticsToTest(testId);
-    }
-
 }

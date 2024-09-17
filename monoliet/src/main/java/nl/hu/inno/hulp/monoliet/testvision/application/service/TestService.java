@@ -63,6 +63,9 @@ public class TestService {
         String testValidator=teacherRepository.findById(testValidatorId).orElseThrow().getEmail().getEmail();
         test.setTestValidatorMail(testValidator);
         test.setMakerMail(maker);
+
+        Statistics statistics = Statistics.createStatistics(0, 0, 0, 0);
+        test.addStatistics(statistics);
         Test savedTest = testRepository.save(test);
 
         return toDTO(savedTest);
@@ -98,20 +101,6 @@ public class TestService {
 
         return toDTO(test);
     }
-
-
-    public TestDTO addStatisticsToTest(Long testId) {
-        Test test = testRepository.findById(testId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Test not found"));
-
-        Statistics statistics = Statistics.createStatistics(0, 0, 0, 0);
-        test.addStatistics(statistics);
-
-        testRepository.save(test);
-
-        return toDTO(test);
-    }
-
 
     private TestDTO toDTO(Test test) {
 
