@@ -1,5 +1,8 @@
 # Swagger UI
-We hebben voor onze POSTMAN collection ook een swagger-UI -> http://localhost:8080/swagger-ui/index.html
+We hebben voor onze POSTMAN collection ook een swagger-UI: 
+- local: http://localhost:8080/swagger-ui/index.html
+- public: https://testvision2-team4.victoriousbeach-ec764c0c.westeurope.azurecontainerapps.io/swagger-ui/index.html
+
 # HULP Start Repository
 
 Bij deze de start-repository voor de HULP opdracht.
