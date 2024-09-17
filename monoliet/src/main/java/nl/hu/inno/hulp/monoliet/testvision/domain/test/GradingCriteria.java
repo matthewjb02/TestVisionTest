@@ -9,8 +9,8 @@ public class GradingCriteria {
     private double closedQuestionWeight;
 
     public GradingCriteria(double openQuestionWeight, double closedQuestionWeight) {
-        if (openQuestionWeight + closedQuestionWeight != 1.0) {
-            throw new IllegalArgumentException("The sum of the weights should be 1.0");
+        if (openQuestionWeight + closedQuestionWeight != 1.0 || openQuestionWeight < 0 || closedQuestionWeight < 0) {
+            throw new IllegalArgumentException("The sum of the weights must be 1.0 and both weights must be positive");
         }
 
         this.openQuestionWeight = openQuestionWeight;
