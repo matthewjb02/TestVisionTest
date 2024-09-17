@@ -17,7 +17,7 @@ public class Test {
     @Embedded
     private GradingCriteria gradingCriteria;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Submission> submissions = new ArrayList<>();
 
     private Validation validationStatus= Validation.WAITING;
