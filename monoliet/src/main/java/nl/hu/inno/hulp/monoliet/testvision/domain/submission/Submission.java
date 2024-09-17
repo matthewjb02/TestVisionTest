@@ -50,8 +50,8 @@ public class Submission {
     public void updateGradingForQuestion(int questionNr, int givenPoints, String feedback) {
         Question question = exam.seeQuestion(questionNr);
         if (question != null) {
-            if(givenPoints > question.getPoints()) {
-                throw new IllegalArgumentException("Given points cannot be higher than the total points for the question");
+            if(givenPoints > question.getPoints() || givenPoints < 0) {
+                throw new IllegalArgumentException("Given points must be between 0 and the maximum points of the question");
             }
             question.addGivenPoints(givenPoints);
             question.addTeacherFeedback(feedback);
