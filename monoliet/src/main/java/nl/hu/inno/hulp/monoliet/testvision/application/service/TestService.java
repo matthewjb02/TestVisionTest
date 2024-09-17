@@ -109,17 +109,11 @@ public class TestService {
         return toDTO(test);
     }
 
-    public TestDTO addStatisticsToTest(Long testId, StatisticsDTO statisticsDTO) {
+    public TestDTO addStatisticsToTest(Long testId) {
         Test test = testRepository.findById(testId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Test not found"));
 
-        Statistics statistics = new Statistics(
-                statisticsDTO.getSubmissionCount(),
-                statisticsDTO.getPassCount(),
-                statisticsDTO.getFailCount(),
-                statisticsDTO.getAverageScore()
-        );
-
+        Statistics statistics = Statistics.createStatistics(0, 0, 0, 0);
         test.addStatistics(statistics);
 
         testRepository.save(test);

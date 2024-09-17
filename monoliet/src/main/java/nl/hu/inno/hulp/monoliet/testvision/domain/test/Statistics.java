@@ -28,6 +28,11 @@ public class Statistics {
     public Statistics() {
     }
 
+    public static Statistics createStatistics(int submissionCount, int passCount, int failCount, double averageScore) {
+        return new Statistics(submissionCount, passCount, failCount, averageScore);
+    }
+
+
     public Long getId() {
         return id;
     }

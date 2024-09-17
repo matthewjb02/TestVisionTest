@@ -58,8 +58,8 @@ public class TestController {
     }
 
     @PostMapping("/{testId}/statistics")
-    public TestDTO addStatisticsToTest(@PathVariable Long testId, @RequestBody StatisticsDTO statisticsDTO) {
-        return testService.addStatisticsToTest(testId, statisticsDTO);
+    public TestDTO addStatisticsToTest(@PathVariable Long testId) {
+        return testService.addStatisticsToTest(testId);
     }
 
 }
