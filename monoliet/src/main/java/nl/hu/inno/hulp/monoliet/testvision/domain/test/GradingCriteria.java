@@ -2,6 +2,8 @@ package nl.hu.inno.hulp.monoliet.testvision.domain.test;
 
 import jakarta.persistence.Embeddable;
 
+import java.util.Objects;
+
 @Embeddable
 public class GradingCriteria {
 
@@ -33,5 +35,15 @@ public class GradingCriteria {
         return closedQuestionWeight;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof GradingCriteria that)) return false;
+        return Double.compare(openQuestionWeight, that.openQuestionWeight) == 0 && Double.compare(closedQuestionWeight, that.closedQuestionWeight) == 0;
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(openQuestionWeight, closedQuestionWeight);
+    }
 }
