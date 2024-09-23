@@ -8,15 +8,8 @@ public class GradingRequest {
         return comments;
     }
 
-    public void setComments(String comments) {
-        this.comments = comments;
-    }
-
     public Long getTeacherId() {
         return teacherId;
     }
 
-    public void setTeacherId(Long teacherId) {
-        this.teacherId = teacherId;
-    }
 }

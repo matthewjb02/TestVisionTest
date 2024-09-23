@@ -106,7 +106,7 @@ public class CourseService {
 
 
     private TestDTO getTestDTO(Test test) {
-        GradingCriteriaDTO gradingCriteriaDTO = null;
+        GradingCriteriaDTO gradingCriteriaDTO = new GradingCriteriaDTO(0, 0);
         if (test.getGradingCriteria() != null) {
             gradingCriteriaDTO = new GradingCriteriaDTO(
                     test.getGradingCriteria().getOpenQuestionWeight(),
@@ -118,7 +118,7 @@ public class CourseService {
                 .map(submission -> new SubmissionDTO(submission.getId(), submission.getStatus()))
                 .collect(Collectors.toList());
 
-        StatisticsDTO statisticsDTO = null;
+        StatisticsDTO statisticsDTO = new StatisticsDTO(0, 0, 0, 0);
         if (test.getStatistics() != null) {
             statisticsDTO = new StatisticsDTO(
                     test.getStatistics().getSubmissionCount(),
