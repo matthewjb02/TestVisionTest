@@ -22,7 +22,7 @@ public class TeacherGradesStudentExam {
         Student student = new Student("Elon", "Musk");
 
         // Een docent maakt een vraag aan die hij kan toevoegen aan de aangemaakte toets. Ook voegt de docent toetsstatistieken toe
-        Question question = new OpenQuestion(10, "What does the atomic symbol K name", "Potassium");
+        OpenQuestion question = new OpenQuestion(10, "What does the atomic symbol K name", "Potassium");
         Test test = new Test(maker.getFirstName(), maker.getLastName(), question);
         test.addStatistics(new Statistics());
 
@@ -43,8 +43,10 @@ public class TeacherGradesStudentExam {
 
         Statistics statistics = test.getStatistics();
 
+        OpenQuestion examQuestion = (OpenQuestion)submission.getExam().seeQuestion(1);
+
         assertEquals(1, test.getSubmissions().size());
-        assertEquals("Potassium", submission.getExam().seeQuestion(1).getAnswer());
+        assertEquals("Potassium", examQuestion.getAnswer());
         assertEquals(10, submission.getExam().seeQuestion(1).getGivenPoints());
         assertEquals("Well Done!", submission.getExam().seeQuestion(1).getTeacherFeedback());
         assertEquals(10, submission.getGrading().getGrade());

@@ -6,6 +6,7 @@ import nl.hu.inno.hulp.monoliet.testvision.application.service.TestService;
 import nl.hu.inno.hulp.monoliet.testvision.data.ExamRepository;
 import nl.hu.inno.hulp.monoliet.testvision.data.SubmissionRepository;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.State;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exception.ExamInactiveException;
@@ -45,8 +46,8 @@ public class ExamServiceTest {
         when(studentService.getStudent(1L)).thenReturn(new Student("Jan", "Steen"));
 
         testService = mock(TestService.class);
-        Question question1 = new Question(1, "Wat is de hoofdstad van parijs.");
-        Question question2 = new Question(1, "Hoe zeg je hallo in het engels.");
+        Question question1 = new OpenQuestion(1, "Wat is de hoofdstad van parijs.", "is er niet");
+        Question question2 = new OpenQuestion(1, "Hoe zeg je hallo in het engels.", "Hello");
         nl.hu.inno.hulp.monoliet.testvision.domain.test.Test test =
                 new nl.hu.inno.hulp.monoliet.testvision.domain.test.Test("", "", question1, question2);
         when(testService.getTest(1L)).thenReturn(test);
@@ -100,7 +101,8 @@ public class ExamServiceTest {
 
         answerRequest = new AnswerRequest(examId, questionNr, answer);
         exam = examService.enterAnswer(answerRequest);
-        assertEquals(answer, exam.seeQuestion(questionNr).getAnswer());
+        OpenQuestion question = (OpenQuestion)exam.seeQuestion(questionNr);
+        assertEquals(answer, question.getAnswer());
     }
 
     public static Stream<Arguments> answers() {
