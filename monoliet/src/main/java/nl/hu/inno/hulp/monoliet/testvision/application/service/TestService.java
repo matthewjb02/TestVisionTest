@@ -1,12 +1,11 @@
 package nl.hu.inno.hulp.monoliet.testvision.application.service;
 
-import nl.hu.inno.hulp.monoliet.testvision.application.dto.GradingCriteriaDTO;
-import nl.hu.inno.hulp.monoliet.testvision.application.dto.StatisticsDTO;
-import nl.hu.inno.hulp.monoliet.testvision.application.dto.SubmissionDTO;
-import nl.hu.inno.hulp.monoliet.testvision.application.dto.TestDTO;
+import nl.hu.inno.hulp.monoliet.testvision.application.dto.*;
 import nl.hu.inno.hulp.monoliet.testvision.data.QuestionRepository;
 import nl.hu.inno.hulp.monoliet.testvision.data.TeacherRepository;
 import nl.hu.inno.hulp.monoliet.testvision.data.TestRepository;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.test.GradingCriteria;
 import nl.hu.inno.hulp.monoliet.testvision.domain.test.Statistics;
@@ -130,7 +129,7 @@ public class TestService {
        
       return new TestDTO(
                 test.getId(),
-                test.getQuestions(),
+                getQuestionDTOs(test.getQuestions()),
                 test.getTotalPoints(),
                 test.getMakerMail(),
                 test.getTestValidatorMail(),
@@ -141,6 +140,40 @@ public class TestService {
                 statisticsDTO
         );
     }
+
+    private List<QuestionDTO> getQuestionDTOs(List<Question> questions) {
+
+        if (questions == null){
+            return null;
+        }
+
+        List<QuestionDTO> dtos = new ArrayList<>();
+
+        for (Question question : questions){
+            if (question.getClass().equals(MultipleChoiceQuestion.class)){
+                MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion)question;
+
+                dtos.add(new MultipleChoiceQuestionDTO(
+                        mcQuestion.getId(),
+                        mcQuestion.getPoints(),
+                        mcQuestion.getQuestion(),
+                        mcQuestion.getAnswers(),
+                        mcQuestion.getCorrectAnswerIndex(),
+                        mcQuestion.getAnswer()));
+            } else {
+                OpenQuestion openQuestion = (OpenQuestion)question;
+
+                dtos.add(new OpenQuestionDTO(
+                        openQuestion.getId(),
+                        openQuestion.getPoints(),
+                        openQuestion.getQuestion(),
+                        openQuestion.getCorrectAnswer(),
+                        openQuestion.getAnswer()));
+            }
+        }
+        return dtos;
+    }
+
 
 
     public void saveTest(Test test) {

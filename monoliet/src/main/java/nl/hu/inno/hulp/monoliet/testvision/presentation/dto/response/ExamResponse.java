@@ -1,13 +1,14 @@
 package nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response;
 
-import nl.hu.inno.hulp.monoliet.testvision.application.dto.TestDTO;
-import nl.hu.inno.hulp.monoliet.testvision.application.dto.GradingCriteriaDTO;
-import nl.hu.inno.hulp.monoliet.testvision.application.dto.StatisticsDTO;
-import nl.hu.inno.hulp.monoliet.testvision.application.dto.SubmissionDTO;
+import nl.hu.inno.hulp.monoliet.testvision.application.dto.*;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.State;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.test.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,7 +44,7 @@ public class ExamResponse {
         }
 
         this.test = new TestDTO(exam.getTest().getId(),
-                                exam.getTest().getQuestions(),
+                                getQuestionDTOs(exam.getTest().getQuestions()),
                                 exam.getTest().getTotalPoints(),
                                 exam.getTest().getMakerMail(),
                                 exam.getTest().getTestValidatorMail(),
@@ -55,6 +56,35 @@ public class ExamResponse {
                 );
         this.state = exam.getState();
     }
+
+    private List<QuestionDTO> getQuestionDTOs(List<Question> questions) {
+        List<QuestionDTO> dtos = new ArrayList<>();
+
+        for (Question question : questions){
+            if (question.getClass().equals(MultipleChoiceQuestion.class)){
+                MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion)question;
+
+                dtos.add(new MultipleChoiceQuestionDTO(
+                        mcQuestion.getId(),
+                        mcQuestion.getPoints(),
+                        mcQuestion.getQuestion(),
+                        mcQuestion.getAnswers(),
+                        mcQuestion.getCorrectAnswerIndex(),
+                        mcQuestion.getAnswer()));
+            } else {
+                OpenQuestion openQuestion = (OpenQuestion)question;
+
+                dtos.add(new OpenQuestionDTO(
+                        openQuestion.getId(),
+                        openQuestion.getPoints(),
+                        openQuestion.getQuestion(),
+                        openQuestion.getCorrectAnswer(),
+                        openQuestion.getAnswer()));
+            }
+        }
+        return dtos;
+    }
+
 
     public StudentResponse getStudent() {
         return student;

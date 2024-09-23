@@ -1,5 +1,17 @@
 package nl.hu.inno.hulp.monoliet.testvision.application.dto;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type"
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = OpenQuestionDTO.class, name = "open"),
+        @JsonSubTypes.Type(value = MultipleChoiceQuestionDTO.class, name = "multipleChoice")
+})
 public class QuestionDTO {
 
     private Long id;

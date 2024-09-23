@@ -1,13 +1,15 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain.question;
 
-import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
+import jakarta.persistence.Entity;
 
 import java.util.Arrays;
 import java.util.List;
 
+@Entity
 public class MultipleChoiceQuestion extends Question {
     private List<String> answers;
     private int correctAnswerIndex;
+    private int answer;
 
     protected MultipleChoiceQuestion(){
     }
@@ -19,11 +21,19 @@ public class MultipleChoiceQuestion extends Question {
         this.correctAnswerIndex = correctAnswerIndex;
     }
 
+    public void setAnswer(int answer){
+        this.answer = answer;
+    }
+
     public List<String> getAnswers() {
         return answers;
     }
 
     public int getCorrectAnswerIndex() {
         return correctAnswerIndex;
+    }
+
+    public int getAnswer() {
+        return answer;
     }
 }
