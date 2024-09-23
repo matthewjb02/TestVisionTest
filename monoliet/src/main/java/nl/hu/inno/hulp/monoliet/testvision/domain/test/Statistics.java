@@ -33,10 +33,6 @@ public class Statistics {
     }
 
 
-    public Long getId() {
-        return id;
-    }
-
     public int getSubmissionCount() {
         return submissionCount;
     }
@@ -44,6 +40,7 @@ public class Statistics {
     public int getPassCount() {
         return passCount;
     }
+
 
     public int getFailCount() {
         return failCount;

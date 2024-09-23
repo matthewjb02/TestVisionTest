@@ -3,6 +3,7 @@ package nl.hu.inno.hulp.monoliet.testvision.domain.submission;
 import jakarta.persistence.*;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
+import nl.hu.inno.hulp.monoliet.testvision.domain.test.GradingCriteria;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
 
 

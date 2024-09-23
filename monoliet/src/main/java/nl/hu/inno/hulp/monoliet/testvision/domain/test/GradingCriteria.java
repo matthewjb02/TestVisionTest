@@ -23,9 +23,6 @@ public class GradingCriteria {
 
     }
 
-    public double calculateWeightedScore(int openQuestionScore, int closedQuestionScore) {
-        return (openQuestionScore * openQuestionWeight) + (closedQuestionScore * closedQuestionWeight);
-    }
 
     public double getOpenQuestionWeight() {
         return openQuestionWeight;

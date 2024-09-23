@@ -104,8 +104,7 @@ public class TestService {
 
     private TestDTO toDTO(Test test) {
 
-        // is by default null
-        GradingCriteriaDTO gradingCriteriaDTO = null;
+        GradingCriteriaDTO gradingCriteriaDTO = new  GradingCriteriaDTO(0,0);
         if (test.getGradingCriteria() != null) {
             gradingCriteriaDTO = new GradingCriteriaDTO(
                     test.getGradingCriteria().getOpenQuestionWeight(),
@@ -117,8 +116,8 @@ public class TestService {
                 .map(submission -> new SubmissionDTO(submission.getId(), submission.getStatus()))
                 .collect(Collectors.toList());
 
-        // is by default null
-        StatisticsDTO statisticsDTO = null;
+
+        StatisticsDTO statisticsDTO = new StatisticsDTO(0, 0, 0, 0);
         if (test.getStatistics() != null) {
             statisticsDTO = new StatisticsDTO(
                     test.getStatistics().getSubmissionCount(),

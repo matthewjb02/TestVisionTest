@@ -21,23 +21,13 @@ public class SubmissionResponse extends ExamResponse {
         return submissionId;
     }
 
-    public void setSubmissionId(Long submissionId) {
-        this.submissionId = submissionId;
-    }
-
     public SubmissionStatus getStatus() {
         return status;
-    }
-
-    public void setStatus(SubmissionStatus status) {
-        this.status = status;
     }
 
     public Grading getGrading() {
         return grading;
     }
 
-    public void setGrading(Grading grading) {
-        this.grading = grading;
-    }
+
 }
