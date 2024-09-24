@@ -2,6 +2,7 @@ package nl.hu.inno.hulp.monoliet.testvision.domain.submission;
 
 import jakarta.persistence.*;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.test.GradingCriteria;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
@@ -65,14 +66,36 @@ public class Submission {
     }
 
     public double calculateGrade() {
-        if(exam.getTest().getQuestions().isEmpty()) {
+        if (exam.getTest().getQuestions().isEmpty()) {
             return 1.0;
         }
-        int totalGivenPoints = exam.getTest().getQuestions().stream()
-                .mapToInt(Question::getGivenPoints)
-                .sum();
-        int totalPoints = exam.getTest().getTotalPoints();
-        double grade = ((double) totalGivenPoints / totalPoints) * 9 + 1;
+
+        GradingCriteria criteria = exam.getTest().getGradingCriteria();
+        double openQuestionWeight = criteria.getOpenQuestionWeight();
+        double closedQuestionWeight = criteria.getClosedQuestionWeight();
+
+        int totalOpenGivenPoints = 0;
+        int totalClosedGivenPoints = 0;
+        int totalOpenPoints = 0;
+        int totalClosedPoints = 0;
+
+        for (Question question : exam.getTest().getQuestions()) {
+            if (question instanceof MultipleChoiceQuestion) {
+                MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion) question;
+                totalClosedPoints += mcQuestion.getPoints();
+                if (mcQuestion.getCorrectAnswerIndex() == mcQuestion.getAnswer()) {
+                    totalClosedGivenPoints += mcQuestion.getPoints();
+                }
+            } else {
+                totalOpenPoints += question.getPoints();
+                totalOpenGivenPoints += question.getGivenPoints();
+            }
+        }
+
+        double weightedOpenPoints = (double) totalOpenGivenPoints / totalOpenPoints * openQuestionWeight;
+        double weightedClosedPoints = (double) totalClosedGivenPoints / totalClosedPoints * closedQuestionWeight;
+
+        double grade = (weightedOpenPoints + weightedClosedPoints) * 9 + 1;
         return Math.round(grade * 10.0) / 10.0;
     }
 
