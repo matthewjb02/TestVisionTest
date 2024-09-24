@@ -48,7 +48,7 @@ public class TeacherGradesStudentExam {
         assertEquals(1, test.getSubmissions().size());
         assertEquals("Potassium", examQuestion.getAnswer());
         assertEquals(10, submission.getExam().seeQuestion(1).getGivenPoints());
-        assertEquals("Well Done!", submission.getExam().seeQuestion(1).getTeacherFeedback());
+        assertEquals("Well Done!", examQuestion.getTeacherFeedback());
         assertEquals(10, submission.getGrading().getGrade());
         assertEquals("Well Done!", submission.getGrading().getComments());
         assertEquals(1, statistics.getPassCount());

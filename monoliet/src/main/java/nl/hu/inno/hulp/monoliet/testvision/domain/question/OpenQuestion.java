@@ -6,7 +6,8 @@ import jakarta.persistence.Entity;
 public class OpenQuestion extends Question {
 
     private String correctAnswer;
-    private String answer;
+    private String answer = "";
+    private String teacherFeedback = "";
 
     protected OpenQuestion(){
     }
@@ -28,5 +29,13 @@ public class OpenQuestion extends Question {
 
     public String getCorrectAnswer(){
         return correctAnswer;
+    }
+
+    public String getTeacherFeedback() {
+        return teacherFeedback;
+    }
+
+    public void setTeacherFeedback(String feedback) {
+        this.teacherFeedback += feedback;
     }
 }

@@ -18,17 +18,15 @@ public class QuestionDTO {
     private int points;
     private String question;
     private double givenPoints;
-    private String teacherFeedback;
 
     public QuestionDTO() {
     }
 
-    public QuestionDTO(Long id, int points, String question, double givenPoints, String teacherFeedback) {
+    public QuestionDTO(Long id, int points, String question, double givenPoints) {
         this.id = id;
         this.points = points;
         this.question = question;
         this.givenPoints = givenPoints;
-        this.teacherFeedback = teacherFeedback;
     }
 
     public Long getId() {

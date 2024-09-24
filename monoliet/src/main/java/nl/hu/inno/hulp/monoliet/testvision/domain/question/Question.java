@@ -23,7 +23,6 @@ public class Question {
     private int points;
     private String question;
     private int givenPoints;
-    private String teacherFeedback = "";
 
     protected Question() {
     }
@@ -57,15 +56,7 @@ public class Question {
         return givenPoints;
     }
 
-    public String getTeacherFeedback() {
-        return teacherFeedback;
-    }
-
     public void addGivenPoints(int points) {
         this.givenPoints += points;
-    }
-
-    public void addTeacherFeedback(String feedback) {
-        this.teacherFeedback += feedback;
     }
 }

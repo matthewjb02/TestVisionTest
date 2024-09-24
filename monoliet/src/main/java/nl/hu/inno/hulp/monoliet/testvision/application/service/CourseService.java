@@ -157,7 +157,6 @@ public class CourseService {
                         mcQuestion.getPoints(),
                         mcQuestion.getQuestion(),
                         mcQuestion.getGivenPoints(),
-                        mcQuestion.getTeacherFeedback(),
                         mcQuestion.getAnswers(),
                         mcQuestion.getCorrectAnswerIndex(),
                         mcQuestion.getAnswer()));
