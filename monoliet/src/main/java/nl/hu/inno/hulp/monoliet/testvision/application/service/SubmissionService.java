@@ -67,7 +67,7 @@ public class SubmissionService {
                         submission.getGrading())).collect(Collectors.toList());
     }
 
-    public void updateQuestionGrading(Long testId, Long studentId, int questionNr, UpdateQuestionGradingRequest request) {
+    public void updateOpenQuestionGrading(Long testId, Long studentId, int questionNr, UpdateQuestionGradingRequest request) {
         Test test = findTestById(testId);
         Submission submission = findSubmissionByTestAndStudentId(test, studentId);
         submission.updateGradingForQuestion(questionNr, request.getGivenPoints(), request.getFeedback());
