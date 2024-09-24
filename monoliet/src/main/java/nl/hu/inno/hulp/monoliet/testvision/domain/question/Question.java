@@ -1,10 +1,20 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain.question;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import jakarta.persistence.*;
 
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type"
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = OpenQuestion.class, name = "open"),
+        @JsonSubTypes.Type(value = MultipleChoiceQuestion.class, name = "multipleChoice")
+})
 public class Question {
     @Id
     @GeneratedValue
@@ -12,7 +22,6 @@ public class Question {
 
     private int points;
     private String question;
-    private String answer = "";
     private int givenPoints;
     private String teacher_feedback = "";
 
@@ -36,14 +45,6 @@ public class Question {
         return question;
     }
 
-    public String getAnswer() {
-        return answer;
-    }
-
-    public void answerQuestion(String answer) {
-        this.answer = answer;
-    }
-
     public void setQuestion(String question) {
         this.question = question;
     }
@@ -54,7 +55,6 @@ public class Question {
 
     public int getGivenPoints() {
         return givenPoints;
-
     }
 
     public String getTeacherFeedback() {
@@ -67,12 +67,5 @@ public class Question {
 
     public void addTeacherFeedback(String feedback) {
         this.teacher_feedback += feedback;
-
-
     }
-
-    public void setAnswer(String answer) {
-        this.answer = answer;
-    }
-
 }
