@@ -8,8 +8,8 @@ public class MultipleChoiceQuestionDTO extends QuestionDTO{
     private int correctAnswerIndex;
     private int answer;
 
-    public MultipleChoiceQuestionDTO(Long id, int points, String question, List<String> answers, int correctAnswerIndex, int answer) {
-        super(id, points, question);
+    public MultipleChoiceQuestionDTO(Long id, int points, String question, double givenPoints, String teacherFeedback, List<String> answers, int correctAnswerIndex, int answer) {
+        super(id, points, question, givenPoints, teacherFeedback);
         this.answers = answers;
         this.correctAnswerIndex = correctAnswerIndex;
         this.answer = answer;

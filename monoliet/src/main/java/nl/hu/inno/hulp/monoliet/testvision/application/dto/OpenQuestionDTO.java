@@ -8,8 +8,8 @@ public class OpenQuestionDTO extends QuestionDTO{
     public OpenQuestionDTO() {
     }
 
-    public OpenQuestionDTO(Long id, int points, String question, String correctAnswer, String answer) {
-        super(id, points, question);
+    public OpenQuestionDTO(Long id, int points, String question, double givenPoints, String teacherFeedback, String correctAnswer, String answer) {
+        super(id, points, question, givenPoints, teacherFeedback);
         this.correctAnswer = correctAnswer;
         this.answer = answer;
     }

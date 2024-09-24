@@ -62,6 +62,8 @@ public class QuestionService {
                     mcQuestion.getId(),
                     mcQuestion.getPoints(),
                     mcQuestion.getQuestion(),
+                    mcQuestion.getGivenPoints(),
+                    mcQuestion.getTeacherFeedback(),
                     mcQuestion.getAnswers(),
                     mcQuestion.getCorrectAnswerIndex(),
                     mcQuestion.getAnswer());
@@ -72,6 +74,8 @@ public class QuestionService {
                     openQuestion.getId(),
                     openQuestion.getPoints(),
                     openQuestion.getQuestion(),
+                    openQuestion.getGivenPoints(),
+                    openQuestion.getTeacherFeedback(),
                     openQuestion.getCorrectAnswer(),
                     openQuestion.getAnswer());
         }
