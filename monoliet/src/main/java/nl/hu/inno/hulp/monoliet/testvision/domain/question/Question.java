@@ -57,6 +57,21 @@ public class Question {
     }
 
     public void addGivenPoints(int points) {
+        if(this instanceof MultipleChoiceQuestion) {
+            throw new IllegalArgumentException("Points for multiple choice questions are automatically calculated and cannot be manually assigned.");
+        }
         this.givenPoints += points;
     }
+
+
+    public void addTeacherFeedback(String feedback) {
+
+        if(this instanceof MultipleChoiceQuestion) {
+            throw new IllegalArgumentException("Points for multiple choice questions are automatically calculated and cannot be manually assigned. You can only provide feedback for open questions.");
+        }
+        this.teacher_feedback += feedback;
+    }
+
+
+
 }
