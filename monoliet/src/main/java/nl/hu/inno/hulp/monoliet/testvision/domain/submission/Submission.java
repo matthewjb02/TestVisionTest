@@ -74,38 +74,61 @@ public class Submission {
     }
 
     public double calculateGrade() {
-        if (exam.getTest().getQuestions().isEmpty()) {
+        if (exam.getTest().getQuestions().isEmpty() || exam.getTest().getTotalPoints() == 0) {
             return 1.0;
         }
 
+        // total points per question type
+        int totalOpenPoints = this.exam.getTest().getTotalOpenQuestionPoints();
+        int totalMultipleChoicePoints = this.exam.getTest().getTotalMultipleChoiceQuestionPoints();
+
+        // weight per question type
         GradingCriteria criteria = exam.getTest().getGradingCriteria();
         double openQuestionWeight = criteria.getOpenQuestionWeight();
-        double closedQuestionWeight = criteria.getClosedQuestionWeight();
+        double multipleChoiceWeight = criteria.getClosedQuestionWeight();
 
+        // calculate the total points given for each question type
+        int totalOpenGivenPoints = calculateTotalOpenGivenPoints();
+        int totalMultipleChoiceGivenPoints = calculateTotalMultipleChoiceGivenPoints();
+
+        // calculate the weighted points for each question type
+        double weightedOpenPoints = calculateWeightedPoints(totalOpenGivenPoints, openQuestionWeight);
+        double weightedMultipleChoicePoints = calculateWeightedPoints(totalMultipleChoiceGivenPoints, multipleChoiceWeight);  // Gewijzigd
+
+        // calculate the final grade
+        double grade = (weightedOpenPoints + weightedMultipleChoicePoints) / (totalOpenPoints + totalMultipleChoicePoints) * 10 * 2;
+        return Math.round(grade * 10.0) / 10.0;
+    }
+
+
+    public int calculateTotalOpenGivenPoints() {
         int totalOpenGivenPoints = 0;
-        int totalClosedGivenPoints = 0;
-        int totalOpenPoints = 0;
-        int totalClosedPoints = 0;
-
         for (Question question : exam.getTest().getQuestions()) {
-            if (question instanceof MultipleChoiceQuestion) {
-                MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion) question;
-                totalClosedPoints += mcQuestion.getPoints();
-                if (mcQuestion.getCorrectAnswerIndex() == mcQuestion.getAnswer()) {
-                    totalClosedGivenPoints += mcQuestion.getPoints();
-                }
-            } else {
-                totalOpenPoints += question.getPoints();
+            if (question instanceof OpenQuestion) {
                 totalOpenGivenPoints += question.getGivenPoints();
             }
         }
-
-        double weightedOpenPoints = (double) totalOpenGivenPoints / totalOpenPoints * openQuestionWeight;
-        double weightedClosedPoints = (double) totalClosedGivenPoints / totalClosedPoints * closedQuestionWeight;
-
-        double grade = (weightedOpenPoints + weightedClosedPoints) * 9 + 1;
-        return Math.round(grade * 10.0) / 10.0;
+        return totalOpenGivenPoints;
     }
+
+    public int calculateTotalMultipleChoiceGivenPoints() {
+        int totalMultipleChoiceGivenPoints = 0;
+        for (Question question : exam.getTest().getQuestions()) {
+            if (question instanceof MultipleChoiceQuestion) {
+                MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion) question;
+                if (mcQuestion.getCorrectAnswerIndex() == mcQuestion.getAnswer()) {
+                    totalMultipleChoiceGivenPoints += mcQuestion.getPoints();
+                }
+            }
+        }
+        return totalMultipleChoiceGivenPoints;
+    }
+
+    public double calculateWeightedPoints(int totalGivenPoints, double weight) {
+        return totalGivenPoints * weight;
+    }
+
+
 
     public Student getStudentFromExamSubmission() {
         return exam.getStudent();

@@ -5,10 +5,12 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Grading;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
+import nl.hu.inno.hulp.monoliet.testvision.domain.test.GradingCriteria;
 import nl.hu.inno.hulp.monoliet.testvision.domain.test.Statistics;
 import nl.hu.inno.hulp.monoliet.testvision.domain.test.Test;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
+import org.springframework.boot.test.json.GsonTester;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -24,6 +26,8 @@ public class TeacherGradesStudentExam {
         // Een docent maakt een vraag aan die hij kan toevoegen aan de aangemaakte toets. Ook voegt de docent toetsstatistieken toe
         OpenQuestion question = new OpenQuestion(10, "What does the atomic symbol K name", "Potassium");
         Test test = new Test(maker.getFirstName(), maker.getLastName(), question);
+        GradingCriteria gradingCriteria = new GradingCriteria(0.5, 0.5);
+        test.addGradingCriteria(gradingCriteria);
         test.addStatistics(new Statistics());
 
         // een student besluit de toets te maken. Hij beantwoordt de vragen en levert de toets in.
