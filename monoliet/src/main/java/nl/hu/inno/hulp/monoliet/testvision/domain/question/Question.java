@@ -23,7 +23,6 @@ public class Question {
     private int points;
     private String question;
     private int givenPoints;
-    private String teacher_feedback = "";
 
     protected Question() {
     }
@@ -57,16 +56,13 @@ public class Question {
         return givenPoints;
     }
 
-    public String getTeacherFeedback() {
-        return teacher_feedback;
-    }
-
     public void addGivenPoints(int points) {
         if(this instanceof MultipleChoiceQuestion) {
             throw new IllegalArgumentException("Points for multiple choice questions are automatically calculated and cannot be manually assigned.");
         }
         this.givenPoints += points;
     }
+
 
     public void addTeacherFeedback(String feedback) {
 
@@ -75,6 +71,7 @@ public class Question {
         }
         this.teacher_feedback += feedback;
     }
+
 
 
 }

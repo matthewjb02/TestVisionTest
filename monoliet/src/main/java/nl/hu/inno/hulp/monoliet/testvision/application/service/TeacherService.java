@@ -157,6 +157,7 @@ public class TeacherService {
                         mcQuestion.getId(),
                         mcQuestion.getPoints(),
                         mcQuestion.getQuestion(),
+                        mcQuestion.getGivenPoints(),
                         mcQuestion.getAnswers(),
                         mcQuestion.getCorrectAnswerIndex(),
                         mcQuestion.getAnswer()));
@@ -167,6 +168,8 @@ public class TeacherService {
                         openQuestion.getId(),
                         openQuestion.getPoints(),
                         openQuestion.getQuestion(),
+                        openQuestion.getGivenPoints(),
+                        openQuestion.getTeacherFeedback(),
                         openQuestion.getCorrectAnswer(),
                         openQuestion.getAnswer()));
             }

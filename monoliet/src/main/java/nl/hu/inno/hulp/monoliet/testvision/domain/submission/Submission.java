@@ -2,7 +2,11 @@ package nl.hu.inno.hulp.monoliet.testvision.domain.submission;
 
 import jakarta.persistence.*;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
+
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
+
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
+
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.test.GradingCriteria;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
@@ -59,7 +63,11 @@ public class Submission {
                 throw new IllegalArgumentException("Given points must be between 0 and the maximum points of the question");
             }
             question.addGivenPoints(givenPoints);
-            question.addTeacherFeedback(feedback);
+
+            if (question.getClass().equals(OpenQuestion.class)){
+                OpenQuestion openQuestion = (OpenQuestion)question;
+                openQuestion.setTeacherFeedback(feedback);
+            }
         }
 
 
