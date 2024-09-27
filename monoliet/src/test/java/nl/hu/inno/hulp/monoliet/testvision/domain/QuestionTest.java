@@ -1,5 +1,6 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain;
 
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,7 +12,7 @@ class QuestionTest {
     @Test
     @DisplayName("Question is generated correctly")
     void testCreateQuestion(){
-        Question question = new Question(10, "Question1");
+        OpenQuestion question = new OpenQuestion(10, "Question1", "answer1");
 
         assertEquals(10, question.getPoints());
         assertEquals("Question1", question.getQuestion());
@@ -21,7 +22,7 @@ class QuestionTest {
     @Test
     @DisplayName("Answer is set correctly")
     void testSetAnswer(){
-        Question question = new Question(10, "Question1");
+        OpenQuestion question = new OpenQuestion(10, "Question1", "answer1");
         question.setAnswer("Answer");
 
         assertEquals("Answer", question.getAnswer());

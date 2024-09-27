@@ -1,6 +1,8 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain.test;
 
 import jakarta.persistence.*;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
 
@@ -115,6 +117,22 @@ public class Test {
 
         statistics = new Statistics(submissionCount, passCount, failCount, averageScore);
     }
+
+    public int getTotalOpenQuestionPoints(){
+        return questions.stream()
+                .filter(question -> question instanceof OpenQuestion)
+                .mapToInt(Question::getPoints)
+                .sum();
+    }
+
+    public int getTotalMultipleChoiceQuestionPoints(){
+       return questions.stream()
+                .filter(question -> question instanceof MultipleChoiceQuestion)
+                .mapToInt(Question::getPoints)
+                .sum();
+    }
+
+
 
     public void addGradingCriteria(GradingCriteria gradingCriteria) {
         this.gradingCriteria = gradingCriteria;

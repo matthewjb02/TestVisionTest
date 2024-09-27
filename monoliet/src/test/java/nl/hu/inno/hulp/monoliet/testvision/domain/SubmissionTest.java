@@ -1,12 +1,16 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain;
 
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Grading;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.SubmissionStatus;
+import nl.hu.inno.hulp.monoliet.testvision.domain.test.GradingCriteria;
 import nl.hu.inno.hulp.monoliet.testvision.domain.test.Test;
 
+import org.h2.command.dml.MergeUsing;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -24,28 +28,30 @@ import static org.mockito.Mockito.when;
 
 class SubmissionTest {
 
-    @ParameterizedTest(name = "{index} => totalPoints={0}, givenPoints={1}, expectedGrade={2}")
+    @ParameterizedTest(name = "{index} => totalPoints={0}, givenPointsOpen={1}, givenPointsMC={2}, expectedGrade={3}")
     @MethodSource("provideTestData")
     @DisplayName("Parameterized test for calculateGrade")
-    void testCalculateGrade(int totalPoints, int givenPoints, double expectedGrade) {
+    void testCalculateGrade(int totalExamPoints, int totalOpenPoints, int totalMcPoints, int givenPointsOpen, int givenPointsMC, double expectedGrade) {
 
         Exam exam = mock(Exam.class);
         Test test = mock(Test.class);
-        Question question = mock(Question.class);
+        OpenQuestion openQuestion = mock(OpenQuestion.class);
+        MultipleChoiceQuestion mcQuestion = mock(MultipleChoiceQuestion.class);
+        GradingCriteria gradingCriteria = new GradingCriteria(0.5, 0.5);
 
-
+        when(test.getGradingCriteria()).thenReturn(gradingCriteria);
+        when(test.getQuestions()).thenReturn(List.of(openQuestion, mcQuestion));
+        when(test.getTotalPoints()).thenReturn(totalExamPoints);
+        when(test.getTotalMultipleChoiceQuestionPoints()).thenReturn(totalMcPoints);
+        when(test.getTotalOpenQuestionPoints()).thenReturn(totalOpenPoints);
         when(exam.getTest()).thenReturn(test);
-        when(test.getTotalPoints()).thenReturn(totalPoints);
-
-        if (givenPoints > 0) {
-            when(test.getQuestions()).thenReturn(List.of(question));
-            when(question.getGivenPoints()).thenReturn(givenPoints);
-        } else {
-            when(test.getQuestions()).thenReturn(Collections.emptyList());
-        }
-
 
         Submission submission = new Submission(exam);
+
+        when(submission.calculateTotalOpenGivenPoints()).thenReturn(givenPointsOpen);
+        when(submission.calculateTotalMultipleChoiceGivenPoints()).thenReturn(givenPointsMC);
+
+
         double grade = submission.calculateGrade();
 
         assertEquals(expectedGrade, grade);
@@ -53,10 +59,13 @@ class SubmissionTest {
 
     private static Stream<Arguments> provideTestData() {
         return Stream.of(
+                // totalPoints, totalOpenPoints, totalMcPoints, givenPointsOpen, givenPointsMC, expectedGrade
+                Arguments.of(10, 5, 5, 5, 5, 10.0),
+                Arguments.of(20, 10, 10, 5, 5, 5.0),
+                Arguments.of(20, 10, 10, 6, 5, 5.5),
+                Arguments.of(0, 0, 0, 0, 0, 1.0)
 
-                Arguments.of(100, 0, 1.0),
-                Arguments.of(100, 100, 10.0),
-                Arguments.of(100, 50, 5.5)
+
         );
     }
 

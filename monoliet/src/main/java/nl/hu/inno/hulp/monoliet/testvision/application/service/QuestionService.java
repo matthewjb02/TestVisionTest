@@ -1,6 +1,10 @@
 package nl.hu.inno.hulp.monoliet.testvision.application.service;
 
+import nl.hu.inno.hulp.monoliet.testvision.application.dto.MultipleChoiceQuestionDTO;
+import nl.hu.inno.hulp.monoliet.testvision.application.dto.OpenQuestionDTO;
 import nl.hu.inno.hulp.monoliet.testvision.application.dto.QuestionDTO;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.data.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,10 +55,28 @@ public class QuestionService {
     }
 
     private QuestionDTO toDTO(Question question) {
-        return new QuestionDTO(
-                question.getId(),
-                question.getPoints(),
-                question.getQuestion()
-        );
+        if (question.getClass().equals(MultipleChoiceQuestion.class)){
+            MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion)question;
+
+            return new MultipleChoiceQuestionDTO(
+                    mcQuestion.getId(),
+                    mcQuestion.getPoints(),
+                    mcQuestion.getQuestion(),
+                    mcQuestion.getGivenPoints(),
+                    mcQuestion.getAnswers(),
+                    mcQuestion.getCorrectAnswerIndex(),
+                    mcQuestion.getAnswer());
+        } else {
+            OpenQuestion openQuestion = (OpenQuestion)question;
+
+            return new OpenQuestionDTO(
+                    openQuestion.getId(),
+                    openQuestion.getPoints(),
+                    openQuestion.getQuestion(),
+                    openQuestion.getGivenPoints(),
+                    openQuestion.getTeacherFeedback(),
+                    openQuestion.getCorrectAnswer(),
+                    openQuestion.getAnswer());
+        }
     }
 }

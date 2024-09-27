@@ -5,10 +5,12 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Grading;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
+import nl.hu.inno.hulp.monoliet.testvision.domain.test.GradingCriteria;
 import nl.hu.inno.hulp.monoliet.testvision.domain.test.Statistics;
 import nl.hu.inno.hulp.monoliet.testvision.domain.test.Test;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
+import org.springframework.boot.test.json.GsonTester;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -22,8 +24,10 @@ public class TeacherGradesStudentExam {
         Student student = new Student("Elon", "Musk");
 
         // Een docent maakt een vraag aan die hij kan toevoegen aan de aangemaakte toets. Ook voegt de docent toetsstatistieken toe
-        Question question = new OpenQuestion(10, "What does the atomic symbol K name", "Potassium");
+        OpenQuestion question = new OpenQuestion(10, "What does the atomic symbol K name", "Potassium");
         Test test = new Test(maker.getFirstName(), maker.getLastName(), question);
+        GradingCriteria gradingCriteria = new GradingCriteria(0.5, 0.5);
+        test.addGradingCriteria(gradingCriteria);
         test.addStatistics(new Statistics());
 
         // een student besluit de toets te maken. Hij beantwoordt de vragen en levert de toets in.
@@ -43,10 +47,12 @@ public class TeacherGradesStudentExam {
 
         Statistics statistics = test.getStatistics();
 
+        OpenQuestion examQuestion = (OpenQuestion)submission.getExam().seeQuestion(1);
+
         assertEquals(1, test.getSubmissions().size());
-        assertEquals("Potassium", submission.getExam().seeQuestion(1).getAnswer());
+        assertEquals("Potassium", examQuestion.getAnswer());
         assertEquals(10, submission.getExam().seeQuestion(1).getGivenPoints());
-        assertEquals("Well Done!", submission.getExam().seeQuestion(1).getTeacherFeedback());
+        assertEquals("Well Done!", examQuestion.getTeacherFeedback());
         assertEquals(10, submission.getGrading().getGrade());
         assertEquals("Well Done!", submission.getGrading().getComments());
         assertEquals(1, statistics.getPassCount());

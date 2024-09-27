@@ -7,12 +7,15 @@ import nl.hu.inno.hulp.monoliet.testvision.data.QuestionRepository;
 import nl.hu.inno.hulp.monoliet.testvision.data.TeacherRepository;
 import nl.hu.inno.hulp.monoliet.testvision.data.TestRepository;
 import nl.hu.inno.hulp.monoliet.testvision.domain.Course;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.test.Test;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -131,7 +134,7 @@ public class TeacherService {
 
         return new TestDTO(
                 test.getId(),
-                test.getQuestions(),
+                getQuestionDTOs(test.getQuestions()),
                 test.getTotalPoints(),
                 test.getMakerMail(),
                 test.getTestValidatorMail(),
@@ -142,5 +145,37 @@ public class TeacherService {
                 statisticsDTO
         );
     }
+
+    private List<QuestionDTO> getQuestionDTOs(List<Question> questions) {
+        List<QuestionDTO> dtos = new ArrayList<>();
+
+        for (Question question : questions){
+            if (question.getClass().equals(MultipleChoiceQuestion.class)){
+                MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion)question;
+
+                dtos.add(new MultipleChoiceQuestionDTO(
+                        mcQuestion.getId(),
+                        mcQuestion.getPoints(),
+                        mcQuestion.getQuestion(),
+                        mcQuestion.getGivenPoints(),
+                        mcQuestion.getAnswers(),
+                        mcQuestion.getCorrectAnswerIndex(),
+                        mcQuestion.getAnswer()));
+            } else {
+                OpenQuestion openQuestion = (OpenQuestion)question;
+
+                dtos.add(new OpenQuestionDTO(
+                        openQuestion.getId(),
+                        openQuestion.getPoints(),
+                        openQuestion.getQuestion(),
+                        openQuestion.getGivenPoints(),
+                        openQuestion.getTeacherFeedback(),
+                        openQuestion.getCorrectAnswer(),
+                        openQuestion.getAnswer()));
+            }
+        }
+        return dtos;
+    }
+
 
 }
