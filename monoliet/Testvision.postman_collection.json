@@ -692,10 +692,10 @@
 			]
 		},
 		{
-			"name": "Exam",
+			"name": "Examination",
 			"item": [
 				{
-					"name": "Start Exam",
+					"name": "Start Examination",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -709,14 +709,14 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/exam/start",
+							"raw": "http://localhost:8080/examination/start",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"exam",
+								"examination",
 								"start"
 							]
 						}
@@ -738,14 +738,14 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/exam/answer",
+							"raw": "http://localhost:8080/examination/answer",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"exam",
+								"examination",
 								"answer"
 							]
 						}
@@ -767,14 +767,14 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/exam/end",
+							"raw": "http://localhost:8080/examination/end",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"exam",
+								"examination",
 								"end"
 							]
 						}
@@ -799,14 +799,14 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/exam/seeQuestion ",
+							"raw": "http://localhost:8080/examination/seeQuestion ",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"exam",
+								"examination",
 								"seeQuestion "
 							]
 						}

@@ -2,7 +2,7 @@ package nl.hu.inno.hulp.monoliet.testvision.application.service;
 
 import jakarta.transaction.Transactional;
 import nl.hu.inno.hulp.monoliet.testvision.data.SubmissionRepository;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
+import nl.hu.inno.hulp.monoliet.testvision.domain.examination.Examination;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Grading;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
 import nl.hu.inno.hulp.monoliet.testvision.domain.test.Test;
@@ -39,7 +39,7 @@ public class SubmissionService {
 
     private Submission findSubmissionByTestAndStudentId(Test test, Long studentId) {
         return test.getSubmissions().stream()
-                .filter(submission -> submission.getExam().getStudent().getId().equals(studentId))
+                .filter(submission -> submission.getExamination().getStudent().getId().equals(studentId))
                 .findFirst()
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Submission not found for the given student and test"));
     }
@@ -48,7 +48,7 @@ public class SubmissionService {
         Test test = findTestById(testId);
         return test.getSubmissions().stream()
                 .map(submission -> new SubmissionResponse(
-                        submission.getExam(),
+                        submission.getExamination(),
                         submission.getId(),
                         submission.getStatus(),
                         submission.getGrading()
@@ -61,7 +61,7 @@ public class SubmissionService {
         return test.getSubmissions().stream()
                 .filter(submission -> submission.getStudentIDtFromExamSubmission().equals(studentId))
                 .map(submission -> new SubmissionResponse(
-                        new Exam(submission.getStudentFromExamSubmission(), test),
+                        new Examination(submission.getStudentFromExamSubmission(), test),
                         submission.getId(),
                         submission.getStatus(),
                         submission.getGrading())).collect(Collectors.toList());

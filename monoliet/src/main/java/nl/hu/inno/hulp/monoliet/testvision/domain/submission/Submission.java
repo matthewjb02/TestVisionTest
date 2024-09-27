@@ -1,7 +1,7 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain.submission;
 
 import jakarta.persistence.*;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
+import nl.hu.inno.hulp.monoliet.testvision.domain.examination.Examination;
 
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
 
@@ -20,7 +20,7 @@ public class Submission {
     private Long id;
 
     @OneToOne
-    private Exam exam;
+    private Examination examination;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Grading grading;
@@ -28,16 +28,16 @@ public class Submission {
     @Enumerated(EnumType.STRING)
     private SubmissionStatus status;
 
-    public Submission(Exam exam) {
-        this.exam = exam;
+    public Submission(Examination examination) {
+        this.examination = examination;
         this.status = SubmissionStatus.SUBMITTED;
     }
 
     public Submission() {
     }
 
-    public static Submission createSubmission(Exam exam) {
-        return new Submission(exam);
+    public static Submission createSubmission(Examination examination) {
+        return new Submission(examination);
     }
 
     public Long getId() {
@@ -48,8 +48,8 @@ public class Submission {
         return status;
     }
 
-    public Exam getExam() {
-        return exam;
+    public Examination getExamination() {
+        return examination;
     }
 
     public Grading getGrading() {
@@ -57,7 +57,7 @@ public class Submission {
     }
 
     public void updateGradingForQuestion(int questionNr, int givenPoints, String feedback) {
-        Question question = exam.seeQuestion(questionNr);
+        Question question = examination.seeQuestion(questionNr);
         if (question != null) {
             if(givenPoints > question.getPoints() || givenPoints < 0) {
                 throw new IllegalArgumentException("Given points must be between 0 and the maximum points of the question");
@@ -74,16 +74,16 @@ public class Submission {
     }
 
     public double calculateGrade() {
-        if (exam.getTest().getQuestions().isEmpty() || exam.getTest().getTotalPoints() == 0) {
+        if (examination.getTest().getQuestions().isEmpty() || examination.getTest().getTotalPoints() == 0) {
             return 1.0;
         }
 
         // total points per question type
-        int totalOpenPoints = this.exam.getTest().getTotalOpenQuestionPoints();
-        int totalMultipleChoicePoints = this.exam.getTest().getTotalMultipleChoiceQuestionPoints();
+        int totalOpenPoints = this.examination.getTest().getTotalOpenQuestionPoints();
+        int totalMultipleChoicePoints = this.examination.getTest().getTotalMultipleChoiceQuestionPoints();
 
         // weight per question type
-        GradingCriteria criteria = exam.getTest().getGradingCriteria();
+        GradingCriteria criteria = examination.getTest().getGradingCriteria();
         double openQuestionWeight = criteria.getOpenQuestionWeight();
         double multipleChoiceWeight = criteria.getClosedQuestionWeight();
 
@@ -103,7 +103,7 @@ public class Submission {
 
     public int calculateTotalOpenGivenPoints() {
         int totalOpenGivenPoints = 0;
-        for (Question question : exam.getTest().getQuestions()) {
+        for (Question question : examination.getTest().getQuestions()) {
             if (question instanceof OpenQuestion) {
                 totalOpenGivenPoints += question.getGivenPoints();
             }
@@ -113,7 +113,7 @@ public class Submission {
 
     public int calculateTotalMultipleChoiceGivenPoints() {
         int totalMultipleChoiceGivenPoints = 0;
-        for (Question question : exam.getTest().getQuestions()) {
+        for (Question question : examination.getTest().getQuestions()) {
             if (question instanceof MultipleChoiceQuestion) {
                 MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion) question;
                 if (mcQuestion.getCorrectAnswerIndex() == mcQuestion.getAnswer()) {
@@ -131,12 +131,12 @@ public class Submission {
 
 
     public Student getStudentFromExamSubmission() {
-        return exam.getStudent();
+        return examination.getStudent();
 
     }
 
     public Long getStudentIDtFromExamSubmission() {
-        return exam.getStudentId();
+        return examination.getStudentId();
 
     }
 

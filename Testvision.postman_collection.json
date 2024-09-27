@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "71c979cd-1b9e-409e-b3a5-11a8b7b73e9d",
+		"_postman_id": "5be8fa01-3e18-44aa-b952-d8b880f04285",
 		"name": "Testvision",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "27440580"
+		"_exporter_id": "27440542"
 	},
 	"item": [
 		{
@@ -90,7 +90,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \r\n}",
+							"raw": "{\r\n    \"makerMail\" : \"henk.detank@hu.nl\",\r\n    \"testValidatorMail\" : \"henk.detank@hu.nl\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -200,13 +200,41 @@
 					"response": []
 				},
 				{
-					"name": "NewQuestion",
+					"name": "New (open) Question",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"points\" : 1,\r\n    \"question\" : \"Hi\"\r\n}",
+							"raw": "{\r\n    \"type\" : \"open\",\r\n    \"points\" : 1,\r\n    \"question\" : \"Wat is de hoofdstad van Nederland?\",\r\n    \"correctAnswer\" : \"Amsterdam\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/questions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"questions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New (Multiple choice) Question",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\" : \"multipleChoice\",\r\n    \"points\" : 1,\r\n    \"question\" : \"In welk gebouw hebben wij les?\",\r\n    \"answers\" : [\"PL97\", \"HL15\", \"HL7\"],\r\n    \"correctAnswerIndex\" : 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -664,10 +692,10 @@
 			]
 		},
 		{
-			"name": "Exam",
+			"name": "Examination",
 			"item": [
 				{
-					"name": "Start Exam",
+					"name": "Start Examination",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -681,14 +709,14 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/exam/start",
+							"raw": "http://localhost:8080/examination/start",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"exam",
+								"examination",
 								"start"
 							]
 						}
@@ -702,7 +730,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"examId\": 1,\n  \"questionNr\": 1,\n  \"answer\": \"string\"\n}",
+							"raw": "{\n  \"examId\": 1,\n  \"questionNr\": 1,\n  \"answer\": \"Utrecht\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -710,14 +738,14 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/exam/answer",
+							"raw": "http://localhost:8080/examination/answer",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"exam",
+								"examination",
 								"answer"
 							]
 						}
@@ -739,14 +767,14 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/exam/end",
+							"raw": "http://localhost:8080/examination/end",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"exam",
+								"examination",
 								"end"
 							]
 						}
@@ -771,14 +799,14 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/exam/seeQuestion ",
+							"raw": "http://localhost:8080/examination/seeQuestion ",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"exam",
+								"examination",
 								"seeQuestion "
 							]
 						}
@@ -797,7 +825,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"voornaam\": \"John\",\n  \"achternaam\": \"Doe\"\n}",
+							"raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"

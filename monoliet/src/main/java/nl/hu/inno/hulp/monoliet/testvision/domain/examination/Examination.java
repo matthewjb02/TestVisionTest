@@ -1,4 +1,4 @@
-package nl.hu.inno.hulp.monoliet.testvision.domain.exam;
+package nl.hu.inno.hulp.monoliet.testvision.domain.examination;
 
 import jakarta.persistence.*;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
@@ -8,7 +8,7 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.test.Test;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
 
 @Entity
-public class Exam {
+public class Examination {
     @Id
     @GeneratedValue
     private Long id;
@@ -21,10 +21,10 @@ public class Exam {
 
     private State state;
 
-    protected Exam() {
+    protected Examination() {
     }
 
-    public Exam(Student student, Test test) {
+    public Examination(Student student, Test test) {
         this.student = student;
         this.test = test;
         this.state = State.Active;
@@ -48,7 +48,7 @@ public class Exam {
         }
     }
 
-    public Exam endExam() {
+    public Examination endExam() {
         this.state = State.Completed;
         return this;
     }

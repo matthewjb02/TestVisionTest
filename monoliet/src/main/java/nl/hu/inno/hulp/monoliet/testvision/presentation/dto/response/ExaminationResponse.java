@@ -1,8 +1,8 @@
 package nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response;
 
 import nl.hu.inno.hulp.monoliet.testvision.application.dto.*;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exam.State;
+import nl.hu.inno.hulp.monoliet.testvision.domain.examination.Examination;
+import nl.hu.inno.hulp.monoliet.testvision.domain.examination.State;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
@@ -12,16 +12,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ExamResponse {
+public class ExaminationResponse {
     private final StudentResponse student;
     private final TestDTO test;
     private final State state;
 
-    public ExamResponse(Exam exam) {
-        this.student = new StudentResponse(exam.getStudent());
+    public ExaminationResponse(Examination examination) {
+        this.student = new StudentResponse(examination.getStudent());
 
         GradingCriteriaDTO gradingCriteriaDTO = null;
-        Test test = exam.getTest();
+        Test test = examination.getTest();
         if (test.getGradingCriteria() != null) {
             gradingCriteriaDTO = new GradingCriteriaDTO(
                     test.getGradingCriteria().getOpenQuestionWeight(),
@@ -43,18 +43,18 @@ public class ExamResponse {
             );
         }
 
-        this.test = new TestDTO(exam.getTest().getId(),
-                                getQuestionDTOs(exam.getTest().getQuestions()),
-                                exam.getTest().getTotalPoints(),
-                                exam.getTest().getMakerMail(),
-                                exam.getTest().getTestValidatorMail(),
-                                exam.getTest().getValidationStatus(),
-                                exam.getTest().getReason(),
+        this.test = new TestDTO(examination.getTest().getId(),
+                                getQuestionDTOs(examination.getTest().getQuestions()),
+                                examination.getTest().getTotalPoints(),
+                                examination.getTest().getMakerMail(),
+                                examination.getTest().getTestValidatorMail(),
+                                examination.getTest().getValidationStatus(),
+                                examination.getTest().getReason(),
                                 gradingCriteriaDTO,
                                 submissionDTOs,
                                 statisticsDTO
                 );
-        this.state = exam.getState();
+        this.state = examination.getState();
     }
 
     private List<QuestionDTO> getQuestionDTOs(List<Question> questions) {
