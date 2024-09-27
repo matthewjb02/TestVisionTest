@@ -1,66 +1,52 @@
 package nl.hu.inno.hulp.monoliet.testvision.presentation.controller;
 
+import nl.hu.inno.hulp.monoliet.testvision.application.dto.ExamDTO;
 import nl.hu.inno.hulp.monoliet.testvision.application.service.ExamService;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exception.ExamInactiveException;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exception.NoExamFoundException;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.AnswerRequest;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.ExamRequest;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.SeeQuestion;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.StartExamRequest;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.ExamResponse;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.QuestionResponse;
-import org.springframework.http.HttpStatus;
+import nl.hu.inno.hulp.monoliet.testvision.application.dto.GradingCriteriaDTO;
+import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("/exam")
+@RequestMapping("/exams")
 public class ExamController {
+
     private final ExamService examService;
 
+    @Autowired
     public ExamController(ExamService examService) {
         this.examService = examService;
     }
 
-    @PostMapping("/start")
-    public ExamResponse startExam(@RequestBody StartExamRequest examRequest) {
-        try {
-            return new ExamResponse(examService.startExam(examRequest));
-        } catch(NoExamFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+    @GetMapping
+    public List<ExamDTO> getAllExams() {
+        return examService.getAllExams();
     }
 
-    @GetMapping("/seeQuestion")
-    public QuestionResponse seeQuestion(@RequestBody SeeQuestion examRequest) {
-        try {
-            return new QuestionResponse(examService.seeQuestion(examRequest));
-        } catch(ExamInactiveException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        } catch (NoExamFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+    @GetMapping("/{id}")
+    public ExamDTO getExamById(@PathVariable Long id) {
+        return examService.getExamById(id);
     }
 
-    @PatchMapping("/answer")
-    public ExamResponse enterAnswer(@RequestBody AnswerRequest answerRequest) {
-        try {
-            return new ExamResponse(examService.enterAnswer(answerRequest));
-        } catch(ExamInactiveException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        } catch (NoExamFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+    @PostMapping("examMaker/{makerId}/examValidator/{examValidatorId}")
+    public ExamDTO addExam(@RequestBody Exam exam, @PathVariable Long makerId, @PathVariable Long examValidatorId) {
+        return examService.addExam(exam, makerId, examValidatorId);
     }
 
-    @PostMapping("/end")
-    public ExamResponse endExam(@RequestBody ExamRequest examRequest) {
-        try {
-            return new ExamResponse(examService.endExam(examRequest));
-        } catch(ExamInactiveException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        } catch (NoExamFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+    @DeleteMapping("/{id}")
+    public ExamDTO deleteExam(@PathVariable Long id) {
+        return examService.deleteExam(id);
+    }
+
+    @PostMapping("/{examId}/questions")
+    public ExamDTO addQuestionsByIdsToExam(@PathVariable Long examId, @RequestBody List<Long> questionIds) {
+        return examService.addQuestionsByIdsToExam(examId, questionIds);
+    }
+
+    @PostMapping("/{examId}/grading-criteria")
+    public ExamDTO addGradingCriteriaToExam(@PathVariable Long examId, @RequestBody GradingCriteriaDTO gradingCriteriaDTO) {
+        return examService.addGradingCriteriaToExam(examId, gradingCriteriaDTO);
     }
 }

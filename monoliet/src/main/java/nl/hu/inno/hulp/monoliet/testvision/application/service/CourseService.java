@@ -1,13 +1,13 @@
 package nl.hu.inno.hulp.monoliet.testvision.application.service;
 
 import nl.hu.inno.hulp.monoliet.testvision.application.dto.*;
-import nl.hu.inno.hulp.monoliet.testvision.data.TestRepository;
+import nl.hu.inno.hulp.monoliet.testvision.data.ExamRepository;
 import nl.hu.inno.hulp.monoliet.testvision.domain.Course;
 import nl.hu.inno.hulp.monoliet.testvision.data.CourseRepository;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
-import nl.hu.inno.hulp.monoliet.testvision.domain.test.Test;
+import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -21,12 +21,12 @@ import java.util.stream.Collectors;
 public class CourseService {
 
     private final CourseRepository courseRepository;
-    private final TestRepository testRepository;
+    private final ExamRepository examRepository;
 
     @Autowired
-    public CourseService(CourseRepository courseRepository, TestRepository testRepository) {
+    public CourseService(CourseRepository courseRepository, ExamRepository examRepository) {
         this.courseRepository = courseRepository;
-        this.testRepository = testRepository;
+        this.examRepository = examRepository;
     }
 
     public List<CourseDTO> getAllCourses() {
@@ -61,84 +61,84 @@ public class CourseService {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found"));
 
-        Test test = testRepository.findById(testId)
+        Exam exam = examRepository.findById(testId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Test not found"));
 
-        course.addTest(test);
+        course.addExam(exam);
         courseRepository.save(course);
 
         return getDTO(course);
     }
 
-    public List<TestDTO> getAllTestsByCourseId(Long courseId) {
+    public List<ExamDTO> getAllTestsByCourseId(Long courseId) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No course with id: " + courseId + " found!"));
 
-        List<TestDTO> testDTOs = new ArrayList<>();
-        for (Test test : course.getApprovedTests()) {
-            testDTOs.add(getTestDTO(test));
+        List<ExamDTO> examDTOS = new ArrayList<>();
+        for (Exam exam : course.getApprovedExams()) {
+            examDTOS.add(getTestDTO(exam));
         }
 
-        return testDTOs;
+        return examDTOS;
     }
 
     private CourseDTO getDTO(Course course){
-        List<TestDTO> approvedTestDTOs = new ArrayList<>();
-        for (Test test : course.getApprovedTests()){
-            approvedTestDTOs.add(getTestDTO(test));
+        List<ExamDTO> approvedExamDTOS = new ArrayList<>();
+        for (Exam exam : course.getApprovedExams()){
+            approvedExamDTOS.add(getTestDTO(exam));
         }
-        List<TestDTO>rejectedTestDTOs = new ArrayList<>();
-        for (Test test : course.getRejectedTests()){
-            rejectedTestDTOs.add(getTestDTO(test));
+        List<ExamDTO> rejectedExamDTOS = new ArrayList<>();
+        for (Exam exam : course.getRejectedExams()){
+            rejectedExamDTOS.add(getTestDTO(exam));
         }
-        List<TestDTO> validatingTestDTOs = new ArrayList<>();
-        for (Test test : course.getValidatingTests()){
-            validatingTestDTOs.add(getTestDTO(test));
+        List<ExamDTO> validatingExamDTOS = new ArrayList<>();
+        for (Exam exam : course.getValidatingExams()){
+            validatingExamDTOS.add(getTestDTO(exam));
         }
 
 
         return new CourseDTO(
                 course.getId(),
                 course.getName(),
-                approvedTestDTOs,
-                rejectedTestDTOs,
-                validatingTestDTOs
+                approvedExamDTOS,
+                rejectedExamDTOS,
+                validatingExamDTOS
 
         );
     }
 
 
-    private TestDTO getTestDTO(Test test) {
+    private ExamDTO getTestDTO(Exam exam) {
         GradingCriteriaDTO gradingCriteriaDTO = new GradingCriteriaDTO(0, 0);
-        if (test.getGradingCriteria() != null) {
+        if (exam.getGradingCriteria() != null) {
             gradingCriteriaDTO = new GradingCriteriaDTO(
-                    test.getGradingCriteria().getOpenQuestionWeight(),
-                    test.getGradingCriteria().getClosedQuestionWeight()
+                    exam.getGradingCriteria().getOpenQuestionWeight(),
+                    exam.getGradingCriteria().getClosedQuestionWeight()
             );
         }
 
-        List<SubmissionDTO> submissionDTOs = test.getSubmissions().stream()
+        List<SubmissionDTO> submissionDTOs = exam.getSubmissions().stream()
                 .map(submission -> new SubmissionDTO(submission.getId(), submission.getStatus()))
                 .collect(Collectors.toList());
 
         StatisticsDTO statisticsDTO = new StatisticsDTO(0, 0, 0, 0);
-        if (test.getStatistics() != null) {
+        if (exam.getStatistics() != null) {
             statisticsDTO = new StatisticsDTO(
-                    test.getStatistics().getSubmissionCount(),
-                    test.getStatistics().getPassCount(),
-                    test.getStatistics().getFailCount(),
-                    test.getStatistics().getAverageScore()
+                    exam.getStatistics().getSubmissionCount(),
+                    exam.getStatistics().getPassCount(),
+                    exam.getStatistics().getFailCount(),
+                    exam.getStatistics().getAverageScore()
             );
         }
 
-      return new TestDTO(
-                test.getId(),
-                getQuestionDTOs(test.getQuestions()),
-                test.getTotalPoints(),
-                test.getMakerMail(),
-                test.getTestValidatorMail(),
-                test.getValidationStatus(),
-                test.getReason(),
+      return new ExamDTO(
+                exam.getId(),
+                getQuestionDTOs(exam.getQuestions()),
+                exam.getTotalPoints(),
+                exam.getMakerMail(),
+                exam.getExamValidatorMail(),
+                exam.getValidationStatus(),
+                exam.getReason(),
                 gradingCriteriaDTO,
                 submissionDTOs,
                 statisticsDTO

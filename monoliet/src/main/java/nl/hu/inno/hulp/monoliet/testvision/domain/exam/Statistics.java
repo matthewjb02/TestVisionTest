@@ -1,4 +1,4 @@
-package nl.hu.inno.hulp.monoliet.testvision.domain.test;
+package nl.hu.inno.hulp.monoliet.testvision.domain.exam;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

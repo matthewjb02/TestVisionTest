@@ -23,12 +23,12 @@ public class SubmissionController {
 
     @GetMapping("/{testId}")
     public List<SubmissionResponse> getSubmissionsByTestId(@PathVariable Long testId) {
-        return submissionService.getSubmissionsByTestId(testId);
+        return submissionService.getSubmissionsByExamId(testId);
     }
 
     @GetMapping("/{testId}/{studentId}")
     public List<SubmissionResponse> getSubmissionsByTestAndStudentIdFromExam(@PathVariable Long testId, @PathVariable Long studentId) {
-        return submissionService.getSubmissionsByTestAndStudentIdFromExam(testId, studentId);
+        return submissionService.getSubmissionsByExamAndStudentIdFromExam(testId, studentId);
     }
 
     @PutMapping("/{testId}/{studentId}/question/{questionNr}")

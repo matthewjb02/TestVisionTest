@@ -1,7 +1,7 @@
 package nl.hu.inno.hulp.monoliet.testvision.presentation.controller;
 
 import nl.hu.inno.hulp.monoliet.testvision.application.dto.CourseDTO;
-import nl.hu.inno.hulp.monoliet.testvision.application.dto.TestDTO;
+import nl.hu.inno.hulp.monoliet.testvision.application.dto.ExamDTO;
 import nl.hu.inno.hulp.monoliet.testvision.domain.Course;
 import nl.hu.inno.hulp.monoliet.testvision.application.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,7 @@ public class CourseController {
     }
 
     @GetMapping("/{courseId}/tests")
-    public List<TestDTO> getAllTestsByCourseId(@PathVariable Long courseId) {
+    public List<ExamDTO> getAllTestsByCourseId(@PathVariable Long courseId) {
         return courseService.getAllTestsByCourseId(courseId);
     }
 }

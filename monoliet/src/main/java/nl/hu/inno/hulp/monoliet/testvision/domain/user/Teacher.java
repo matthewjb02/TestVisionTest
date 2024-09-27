@@ -2,9 +2,9 @@ package nl.hu.inno.hulp.monoliet.testvision.domain.user;
 
 import jakarta.persistence.*;
 import nl.hu.inno.hulp.monoliet.testvision.domain.*;
+import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
-import nl.hu.inno.hulp.monoliet.testvision.domain.test.Test;
-import nl.hu.inno.hulp.monoliet.testvision.domain.test.Validation;
+import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Validation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,52 +58,52 @@ public class Teacher extends User {
         }
         else throw new Exception("The Teacher does not teach this course");
     }
-    private boolean canIApproveThisTest(Teacher testValidator, Course course, Test test) throws Exception {
-        if (course.getValidatingTests().contains(test)&&this==testValidator){
+    private boolean canIApproveThisExam(Teacher examValidator, Course course, Exam exam) throws Exception {
+        if (course.getValidatingExams().contains(exam)&&this==examValidator){
             return true;
         }
-        else if(this!=testValidator&&course.getValidatingTests().contains(test)){
-            throw new Exception("The Teacher is not assigned as validator, but the test needs to be Validated");
+        else if(this!=examValidator&&course.getValidatingExams().contains(exam)){
+            throw new Exception("The Teacher is not assigned as validator, but the exam needs to be Validated");
         }
-        else throw new Exception("The test cannot be validated");
+        else throw new Exception("The exam cannot be validated");
     }
 
-    public void validateOtherTests(Course course, Test test) throws Exception {
-        if (doesTeacherTeachCourse(course)&&course.getValidatingTests().contains(test)) {
-            System.out.println(test.getQuestions());
+    public void validateOtherExams(Course course, Exam exam) throws Exception {
+        if (doesTeacherTeachCourse(course)&&course.getValidatingExams().contains(exam)) {
+            System.out.println(exam.getQuestions());
         }
     }
-    public void approveTest(Course course,Test test) throws Exception {
-        if (doesTeacherTeachCourse(course)&&canIApproveThisTest(this,course,test)){
-            test.setValidationStatus(Validation.APPROVED);
-            course.getValidatingTests().remove(test);
-            course.getApprovedTests().add(test);
+    public void approveExam(Course course, Exam exam) throws Exception {
+        if (doesTeacherTeachCourse(course)&& canIApproveThisExam(this,course, exam)){
+            exam.setValidationStatus(Validation.APPROVED);
+            course.getValidatingExams().remove(exam);
+            course.getApprovedExams().add(exam);
         }
     }
-    public void rejectTest(Course course,Test test, String reason) throws Exception {
-        if (doesTeacherTeachCourse(course)&&canIApproveThisTest(this,course,test)) {
-            test.setValidationStatus(Validation.DENIED);
-            course.getValidatingTests().remove(test);
-            course.getRejectedTests().add(test);
-            test.setReason(reason);
+    public void rejectExam(Course course, Exam exam, String reason) throws Exception {
+        if (doesTeacherTeachCourse(course)&& canIApproveThisExam(this,course, exam)) {
+            exam.setValidationStatus(Validation.DENIED);
+            course.getValidatingExams().remove(exam);
+            course.getRejectedExams().add(exam);
+            exam.setReason(reason);
         }
     }
-    public void viewWrongTest(Course course,Test test) throws Exception {
-        if (Objects.equals(test.getMakerMail(), this.email.getEmail()) &&course.getRejectedTests().contains(test)){
-            System.out.println(test.getReason());
+    public void viewWrongExam(Course course, Exam exam) throws Exception {
+        if (Objects.equals(exam.getMakerMail(), this.email.getEmail()) &&course.getRejectedExams().contains(exam)){
+            System.out.println(exam.getReason());
         }
-        else throw new Exception("This test was not rejected");
+        else throw new Exception("This exam was not rejected");
     }
-    public void modifyQuestions(Course course, Test test, List<Question> oldQuestions, List<Question> newQuestion) throws Exception {
-        if (Objects.equals(test.getMakerMail(), this.email.getEmail()) &&course.getRejectedTests().contains(test)){
-            System.out.println(test.getReason());
-            test.removeQuestions(oldQuestions);
-            test.addQuestions(newQuestion);
-            System.out.println(test.getQuestions());
-            course.getValidatingTests().add(test);
-            course.getRejectedTests().remove(test);
-            test.setValidationStatus(Validation.WAITING);
-            test.setReason("");
+    public void modifyQuestions(Course course, Exam exam, List<Question> oldQuestions, List<Question> newQuestion) throws Exception {
+        if (Objects.equals(exam.getMakerMail(), this.email.getEmail()) &&course.getRejectedExams().contains(exam)){
+            System.out.println(exam.getReason());
+            exam.removeQuestions(oldQuestions);
+            exam.addQuestions(newQuestion);
+            System.out.println(exam.getQuestions());
+            course.getValidatingExams().add(exam);
+            course.getRejectedExams().remove(exam);
+            exam.setValidationStatus(Validation.WAITING);
+            exam.setReason("");
         }
     }
 }

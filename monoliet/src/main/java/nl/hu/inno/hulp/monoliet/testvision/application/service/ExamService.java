@@ -1,90 +1,185 @@
 package nl.hu.inno.hulp.monoliet.testvision.application.service;
 
+import nl.hu.inno.hulp.monoliet.testvision.application.dto.*;
+import nl.hu.inno.hulp.monoliet.testvision.data.QuestionRepository;
+import nl.hu.inno.hulp.monoliet.testvision.data.TeacherRepository;
 import nl.hu.inno.hulp.monoliet.testvision.data.ExamRepository;
-import nl.hu.inno.hulp.monoliet.testvision.data.SubmissionRepository;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exam.State;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exception.ExamInactiveException;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exception.NoExamFoundException;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
-import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
-import nl.hu.inno.hulp.monoliet.testvision.domain.test.Test;
-import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.AnswerRequest;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.ExamRequest;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.SeeQuestion;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.StartExamRequest;
+import nl.hu.inno.hulp.monoliet.testvision.domain.exam.GradingCriteria;
+import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Statistics;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
-@Transactional
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class ExamService {
+//todo fix maker/validator assigning
     private final ExamRepository examRepository;
-    private final StudentService studentService;
-    private final TestService testService;
-    private final SubmissionRepository submissionRepository;
-
+    private final QuestionRepository questionRepository;
+    private final TeacherRepository teacherRepository;
 
     @Autowired
-    public ExamService(ExamRepository examRepository, StudentService studentService, TestService testService, SubmissionRepository submissionRepository) {
+    public ExamService(ExamRepository examRepository, QuestionRepository questionRepository, TeacherRepository teacherRepository) {
         this.examRepository = examRepository;
-        this.studentService = studentService;
-        this.testService = testService;
-        this.submissionRepository = submissionRepository;
+        this.questionRepository = questionRepository;
+        this.teacherRepository = teacherRepository;
     }
 
-    public Exam startExam(StartExamRequest examRequest) {
-        Student student = studentService.getStudent(examRequest.studentId());
-        Test test = testService.getTest(examRequest.testId());
-        Exam exam = new Exam(student, test);
-        examRepository.save(exam);
+    public List<ExamDTO> getAllExams() {
+        List<Exam> allExams = examRepository.findAll();
+        List<ExamDTO> examDTOS = new ArrayList<>();
+        for (Exam exam : allExams) {
+            examDTOS.add(toDTO(exam));
+        }
 
+        return examDTOS;
+    }
+
+    public ExamDTO getExamById(Long id) {
+        Exam exam = examRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No exam with id: " + id + " found!"));
+
+        return toDTO(exam);
+    }
+
+    public Exam getExam(Long id) {
+        Exam exam = examRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No exam with id: " + id + " found!"));
         return exam;
     }
 
-    public Question seeQuestion(SeeQuestion examRequest)  {
-        Exam exam = getExamById(examRequest.examId());
+    public ExamDTO addExam(Exam exam, long examMakerId, long examValidatorId) {
+        String  maker=teacherRepository.findById(examMakerId).orElseThrow().getEmail().getEmail();
+        String examValidator=teacherRepository.findById(examValidatorId).orElseThrow().getEmail().getEmail();
+        exam.setExamValidatorMail(examValidator);
+        exam.setMakerMail(maker);
 
-        if (exam.getState() == State.Active) {
-            return exam.seeQuestion(examRequest.questionNr());
-        } else {
-            throw new ExamInactiveException("This exam is inactive");
+        Statistics statistics = Statistics.createStatistics(0, 0, 0, 0);
+        exam.addStatistics(statistics);
+        Exam savedExam = examRepository.save(exam);
+
+        return toDTO(savedExam);
+    }
+
+    public ExamDTO deleteExam(Long id) {
+        ExamDTO oldExamDTO = getExamById(id);
+        examRepository.deleteById(id);
+        return oldExamDTO;
+    }
+
+    public ExamDTO addQuestionsByIdsToExam(Long examId, List<Long> questionIds) {
+        Exam exam = examRepository.findById(examId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Exam not found"));
+        List<Question> newQuestions = questionRepository.findAllById(questionIds);
+        exam.getQuestions().addAll(newQuestions);
+        exam.calculateTotalPoints();
+        examRepository.save(exam);
+        return toDTO(exam);
+    }
+
+    public ExamDTO addGradingCriteriaToExam(Long examId, GradingCriteriaDTO gradingCriteriaDTO) {
+        Exam exam = examRepository.findById(examId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Exam not found"));
+
+        GradingCriteria gradingCriteria = new GradingCriteria(
+                gradingCriteriaDTO.openQuestionWeight(),
+                gradingCriteriaDTO.closedQuestionWeight()
+        );
+
+        exam.addGradingCriteria(gradingCriteria);
+        examRepository.save(exam);
+
+        return toDTO(exam);
+    }
+
+    private ExamDTO toDTO(Exam exam) {
+
+        GradingCriteriaDTO gradingCriteriaDTO = new  GradingCriteriaDTO(0,0);
+        if (exam.getGradingCriteria() != null) {
+            gradingCriteriaDTO = new GradingCriteriaDTO(
+                    exam.getGradingCriteria().getOpenQuestionWeight(),
+                    exam.getGradingCriteria().getClosedQuestionWeight()
+            );
         }
-    }
 
-    public Exam enterAnswer(AnswerRequest answerRequest) {
-        Exam exam = getExamById(answerRequest.examId());
+        List<SubmissionDTO> submissionDTOs = exam.getSubmissions().stream()
+                .map(submission -> new SubmissionDTO(submission.getId(), submission.getStatus()))
+                .collect(Collectors.toList());
 
-        if (exam.getState() == State.Active) {
-            exam.answerQuestion(answerRequest.questionNr(), answerRequest.answer());
-            examRepository.save(exam);
-            return exam;
-        } else {
-            throw new ExamInactiveException("This exam is inactive");
+
+        StatisticsDTO statisticsDTO = new StatisticsDTO(0, 0, 0, 0);
+        if (exam.getStatistics() != null) {
+            statisticsDTO = new StatisticsDTO(
+                    exam.getStatistics().getSubmissionCount(),
+                    exam.getStatistics().getPassCount(),
+                    exam.getStatistics().getFailCount(),
+                    exam.getStatistics().getAverageScore()
+            );
         }
+
+       
+      return new ExamDTO(
+                exam.getId(),
+                getQuestionDTOs(exam.getQuestions()),
+                exam.getTotalPoints(),
+                exam.getMakerMail(),
+                exam.getExamValidatorMail(),
+                exam.getValidationStatus(),
+                exam.getReason(),
+                gradingCriteriaDTO,
+                submissionDTOs,
+                statisticsDTO
+        );
     }
 
-    public Exam endExam(ExamRequest examRequest) {
-        Exam exam = getExamById(examRequest.examId());
+    private List<QuestionDTO> getQuestionDTOs(List<Question> questions) {
 
-        if (exam.getState() == State.Active) {
-            exam.endExam();
-
-            Submission submission = Submission.createSubmission(exam);
-            exam.getTest().addSubmission(submission);
-            submissionRepository.save(submission);
-
-            return exam;
-
-        } else {
-            throw new ExamInactiveException("This exam is already completed");
+        if (questions == null){
+            return null;
         }
+
+        List<QuestionDTO> dtos = new ArrayList<>();
+
+        for (Question question : questions){
+            if (question.getClass().equals(MultipleChoiceQuestion.class)){
+                MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion)question;
+
+                dtos.add(new MultipleChoiceQuestionDTO(
+                        mcQuestion.getId(),
+                        mcQuestion.getPoints(),
+                        mcQuestion.getQuestion(),
+                        mcQuestion.getGivenPoints(),
+                        mcQuestion.getAnswers(),
+                        mcQuestion.getCorrectAnswerIndex(),
+                        mcQuestion.getAnswer()));
+            } else {
+                OpenQuestion openQuestion = (OpenQuestion)question;
+
+                dtos.add(new OpenQuestionDTO(
+                        openQuestion.getId(),
+                        openQuestion.getPoints(),
+                        openQuestion.getQuestion(),
+                        openQuestion.getGivenPoints(),
+                        openQuestion.getTeacherFeedback(),
+                        openQuestion.getCorrectAnswer(),
+                        openQuestion.getAnswer()));
+            }
+        }
+        return dtos;
     }
 
-    public Exam getExamById(Long id) {
-        return examRepository.findById(id)
-                .orElseThrow(() -> new NoExamFoundException("No exam with id: " + id + " found!"));
+
+
+    public void saveExam(Exam exam) {
+        examRepository.save(exam);
     }
+
 }
