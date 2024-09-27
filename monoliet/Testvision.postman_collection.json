@@ -49,7 +49,7 @@
 					"response": []
 				},
 				{
-					"name": "AddTestToCourse",
+					"name": "AddExamToCourse",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -62,7 +62,7 @@
 			]
 		},
 		{
-			"name": "Tests",
+			"name": "Exams",
 			"item": [
 				{
 					"name": "GetAll",
@@ -70,27 +70,27 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/tests",
+							"raw": "http://localhost:8080/exams",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"tests"
+								"exams"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "NewTest",
+					"name": "NewExam",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"makerMail\" : \"henk.detank@hu.nl\",\r\n    \"testValidatorMail\" : \"henk.detank@hu.nl\"\r\n}",
+							"raw": "{\r\n    \"makerMail\" : \"henk.detank@hu.nl\",\r\n    \"examValidatorMail\" : \"henk.detank@hu.nl\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -98,17 +98,17 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/tests/testMaker/1/testValidator/1",
+							"raw": "http://localhost:8080/exams/examMaker/1/examValidator/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"tests",
-								"testMaker",
+								"exams",
+								"examMaker",
 								"1",
-								"testValidator",
+								"examValidator",
 								"1"
 							]
 						}
@@ -116,7 +116,7 @@
 					"response": []
 				},
 				{
-					"name": "AddQuestionsToTest",
+					"name": "AddQuestionsToExam",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -130,14 +130,14 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/tests/1/questions",
+							"raw": "http://localhost:8080/exams/1/questions",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"tests",
+								"exams",
 								"1",
 								"questions"
 							]
@@ -160,14 +160,14 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/tests/1/statistics",
+							"raw": "http://localhost:8080/exams/1/statistics",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"tests",
+								"exams",
 								"1",
 								"statistics"
 							]
@@ -361,12 +361,12 @@
 					"response": []
 				},
 				{
-					"name": "ValidateTests",
+					"name": "ValidateExams",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/teacher/1/courses/1/tests/1",
+							"raw": "http://localhost:8080/teacher/1/courses/1/exams/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -377,7 +377,7 @@
 								"1",
 								"courses",
 								"1",
-								"tests",
+								"exams",
 								"1"
 							]
 						}
@@ -385,12 +385,12 @@
 					"response": []
 				},
 				{
-					"name": "acceptTest",
+					"name": "acceptExam",
 					"request": {
 						"method": "PATCH",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/teacher/1/courses/1/tests/1/accept",
+							"raw": "http://localhost:8080/teacher/1/courses/1/exams/1/accept",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -401,7 +401,7 @@
 								"1",
 								"courses",
 								"1",
-								"tests",
+								"exams",
 								"1",
 								"accept"
 							]
@@ -410,12 +410,12 @@
 					"response": []
 				},
 				{
-					"name": "refuseTest",
+					"name": "refuseExam",
 					"request": {
 						"method": "PATCH",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/teacher/1/courses/1/tests/1/refuse",
+							"raw": "http://localhost:8080/teacher/1/courses/1/exams/1/refuse",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -426,7 +426,7 @@
 								"1",
 								"courses",
 								"1",
-								"tests",
+								"exams",
 								"1",
 								"refuse"
 							]
@@ -451,7 +451,7 @@
 						"method": "PATCH",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/teacher/1/courses/1/tests/1/refuse/modify",
+							"raw": "http://localhost:8080/teacher/1/courses/1/exams/1/refuse/modify",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -462,7 +462,7 @@
 								"1",
 								"courses",
 								"1",
-								"tests",
+								"exams",
 								"1",
 								"refuse",
 								"modify"
@@ -701,7 +701,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"studentId\": 1,\n  \"testId\": 1\n}",
+							"raw": "{\n  \"studentId\": 1,\n  \"examId\": 1\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -753,7 +753,7 @@
 					"response": []
 				},
 				{
-					"name": "end test",
+					"name": "end exam",
 					"request": {
 						"method": "POST",
 						"header": [],

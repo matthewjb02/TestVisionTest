@@ -8,7 +8,7 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestio
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
-import nl.hu.inno.hulp.monoliet.testvision.domain.test.GradingCriteria;
+import nl.hu.inno.hulp.monoliet.testvision.domain.exam.GradingCriteria;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
 
 
@@ -74,16 +74,16 @@ public class Submission {
     }
 
     public double calculateGrade() {
-        if (examination.getTest().getQuestions().isEmpty() || examination.getTest().getTotalPoints() == 0) {
+        if (examination.getExam().getQuestions().isEmpty() || examination.getExam().getTotalPoints() == 0) {
             return 1.0;
         }
 
         // total points per question type
-        int totalOpenPoints = this.examination.getTest().getTotalOpenQuestionPoints();
-        int totalMultipleChoicePoints = this.examination.getTest().getTotalMultipleChoiceQuestionPoints();
+        int totalOpenPoints = this.examination.getExam().getTotalOpenQuestionPoints();
+        int totalMultipleChoicePoints = this.examination.getExam().getTotalMultipleChoiceQuestionPoints();
 
         // weight per question type
-        GradingCriteria criteria = examination.getTest().getGradingCriteria();
+        GradingCriteria criteria = examination.getExam().getGradingCriteria();
         double openQuestionWeight = criteria.getOpenQuestionWeight();
         double multipleChoiceWeight = criteria.getClosedQuestionWeight();
 
@@ -103,7 +103,7 @@ public class Submission {
 
     public int calculateTotalOpenGivenPoints() {
         int totalOpenGivenPoints = 0;
-        for (Question question : examination.getTest().getQuestions()) {
+        for (Question question : examination.getExam().getQuestions()) {
             if (question instanceof OpenQuestion) {
                 totalOpenGivenPoints += question.getGivenPoints();
             }
@@ -113,7 +113,7 @@ public class Submission {
 
     public int calculateTotalMultipleChoiceGivenPoints() {
         int totalMultipleChoiceGivenPoints = 0;
-        for (Question question : examination.getTest().getQuestions()) {
+        for (Question question : examination.getExam().getQuestions()) {
             if (question instanceof MultipleChoiceQuestion) {
                 MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion) question;
                 if (mcQuestion.getCorrectAnswerIndex() == mcQuestion.getAnswer()) {

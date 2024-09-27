@@ -2,7 +2,7 @@ package nl.hu.inno.hulp.monoliet.testvision.presentation.controller;
 
 import nl.hu.inno.hulp.monoliet.testvision.application.dto.TeacherDTO;
 import nl.hu.inno.hulp.monoliet.testvision.application.service.TeacherService;
-import nl.hu.inno.hulp.monoliet.testvision.application.dto.TestDTO;
+import nl.hu.inno.hulp.monoliet.testvision.application.dto.ExamDTO;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,30 +47,30 @@ public class TeacherController {
     public TeacherDTO addCourseToTeacher(@PathVariable long teacherId, @PathVariable long courseId) {
         return this.teacherService.addCourseToTeacher(teacherId, courseId);
     }
-    @GetMapping("/{teacherId}/courses/{courseId}/tests/{testId}")
+    @GetMapping("/{teacherId}/courses/{courseId}/exams/{examId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public TestDTO validateTest(@PathVariable long teacherId, @PathVariable long courseId, @PathVariable long testId) throws Exception {
-        return this.teacherService.validateTests(teacherId,courseId,testId);
+    public ExamDTO validateExam(@PathVariable long teacherId, @PathVariable long courseId, @PathVariable long examId) throws Exception {
+        return this.teacherService.validateExams(teacherId,courseId,examId);
     }
-    @PatchMapping("/{teacherId}/courses/{courseId}/tests/{testId}/accept")
+    @PatchMapping("/{teacherId}/courses/{courseId}/exams/{examId}/accept")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public TestDTO acceptTest(@PathVariable long teacherId, @PathVariable long courseId, @PathVariable long testId) throws Exception {
-        return this.teacherService.acceptTest(testId,teacherId,courseId);
+    public ExamDTO acceptExam(@PathVariable long teacherId, @PathVariable long courseId, @PathVariable long examId) throws Exception {
+        return this.teacherService.acceptExam(examId,teacherId,courseId);
     }
-    @PatchMapping("/{teacherId}/courses/{courseId}/tests/{testId}/refuse")
+    @PatchMapping("/{teacherId}/courses/{courseId}/exams/{examId}/refuse")
     @ResponseStatus(HttpStatus.OK)
-    public TestDTO refuseTest(@PathVariable long teacherId, @PathVariable long courseId, @PathVariable long testId, @RequestBody String reason) throws Exception {
-        return  this.teacherService.refuseTest(testId,teacherId,courseId,reason);
+    public ExamDTO refuseExam(@PathVariable long teacherId, @PathVariable long courseId, @PathVariable long examId, @RequestBody String reason) throws Exception {
+        return  this.teacherService.refuseExam(examId,teacherId,courseId,reason);
     }
-    @GetMapping("/{teacherId}/courses/{courseId}/tests/{testId}/refuse/modify")
+    @GetMapping("/{teacherId}/courses/{courseId}/exams/{examId}/refuse/modify")
     @ResponseStatus(HttpStatus.OK)
-    public TestDTO viewWrongTests(@PathVariable long testId,@PathVariable long teacherId,@PathVariable long courseId) throws Exception {
-        return  this.teacherService.viewWrongTest(testId,teacherId,courseId);
+    public ExamDTO viewWrongExam(@PathVariable long examId, @PathVariable long teacherId, @PathVariable long courseId) throws Exception {
+        return  this.teacherService.viewWrongExam(examId,teacherId,courseId);
     }
-    @PutMapping("/{teacherId}/courses/{courseId}/tests/{testId}/refuse/modify")
+    @PutMapping("/{teacherId}/courses/{courseId}/exams/{examId}/refuse/modify")
     @ResponseStatus(HttpStatus.OK)
-    public TestDTO modifyWrongTest(@PathVariable long testId,@PathVariable long teacherId, @PathVariable long courseId, @RequestBody List<Question>newQuestions) throws Exception {
-        return this.teacherService.modifyWrongTest(testId,teacherId,courseId, newQuestions);
+    public ExamDTO modifyWrongExam(@PathVariable long examId, @PathVariable long teacherId, @PathVariable long courseId, @RequestBody List<Question>newQuestions) throws Exception {
+        return this.teacherService.modifyWrongExam(examId,teacherId,courseId, newQuestions);
     }
 }
 

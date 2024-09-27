@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
-import nl.hu.inno.hulp.monoliet.testvision.domain.test.Test;
+import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
 
 @Entity
@@ -17,21 +17,21 @@ public class Examination {
     private Student student;
 
     @OneToOne(cascade = CascadeType.ALL)
-    private Test test;
+    private Exam exam;
 
     private State state;
 
     protected Examination() {
     }
 
-    public Examination(Student student, Test test) {
+    public Examination(Student student, Exam exam) {
         this.student = student;
-        this.test = test;
+        this.exam = exam;
         this.state = State.Active;
     }
 
     public Question seeQuestion(int nr) {
-        return test.getQuestions().get(nr - 1);
+        return exam.getQuestions().get(nr - 1);
     }
 
     public void answerQuestion(int questionNr, Object answer) {
@@ -57,8 +57,8 @@ public class Examination {
         return student;
     }
 
-    public Test getTest() {
-        return test;
+    public Exam getExam() {
+        return exam;
     }
 
     public State getState() {

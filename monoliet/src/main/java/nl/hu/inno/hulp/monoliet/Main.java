@@ -21,7 +21,7 @@ public class Main {
         teacher1.addCourse(course1);
         teacher2.addCourse(course1);
 
-        System.out.println(course1.getApprovedTests().get(0).getTotalPoints());
-        System.out.println(course1.getApprovedTests().get(1).getTotalPoints());
+        System.out.println(course1.getApprovedExams().get(0).getTotalPoints());
+        System.out.println(course1.getApprovedExams().get(1).getTotalPoints());
     }
 }

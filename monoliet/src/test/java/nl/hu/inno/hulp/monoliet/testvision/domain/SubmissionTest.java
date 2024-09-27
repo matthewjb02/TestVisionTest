@@ -1,13 +1,13 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain;
 
+import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
 import nl.hu.inno.hulp.monoliet.testvision.domain.examination.Examination;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Grading;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.SubmissionStatus;
-import nl.hu.inno.hulp.monoliet.testvision.domain.test.GradingCriteria;
-import nl.hu.inno.hulp.monoliet.testvision.domain.test.Test;
+import nl.hu.inno.hulp.monoliet.testvision.domain.exam.GradingCriteria;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -30,17 +30,17 @@ class SubmissionTest {
     void testCalculateGrade(int totalExamPoints, int totalOpenPoints, int totalMcPoints, int givenPointsOpen, int givenPointsMC, double expectedGrade) {
 
         Examination examination = mock(Examination.class);
-        Test test = mock(Test.class);
+        Exam exam = mock(Exam.class);
         OpenQuestion openQuestion = mock(OpenQuestion.class);
         MultipleChoiceQuestion mcQuestion = mock(MultipleChoiceQuestion.class);
         GradingCriteria gradingCriteria = new GradingCriteria(0.5, 0.5);
 
-        when(test.getGradingCriteria()).thenReturn(gradingCriteria);
-        when(test.getQuestions()).thenReturn(List.of(openQuestion, mcQuestion));
-        when(test.getTotalPoints()).thenReturn(totalExamPoints);
-        when(test.getTotalMultipleChoiceQuestionPoints()).thenReturn(totalMcPoints);
-        when(test.getTotalOpenQuestionPoints()).thenReturn(totalOpenPoints);
-        when(examination.getTest()).thenReturn(test);
+        when(exam.getGradingCriteria()).thenReturn(gradingCriteria);
+        when(exam.getQuestions()).thenReturn(List.of(openQuestion, mcQuestion));
+        when(exam.getTotalPoints()).thenReturn(totalExamPoints);
+        when(exam.getTotalMultipleChoiceQuestionPoints()).thenReturn(totalMcPoints);
+        when(exam.getTotalOpenQuestionPoints()).thenReturn(totalOpenPoints);
+        when(examination.getExam()).thenReturn(exam);
 
         Submission submission = new Submission(examination);
 

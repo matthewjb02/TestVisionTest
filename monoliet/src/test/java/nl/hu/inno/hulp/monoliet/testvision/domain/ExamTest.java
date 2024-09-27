@@ -2,9 +2,10 @@ package nl.hu.inno.hulp.monoliet.testvision.domain;
 
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
-import nl.hu.inno.hulp.monoliet.testvision.domain.test.*;
+import nl.hu.inno.hulp.monoliet.testvision.domain.exam.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -17,9 +18,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class TestTest {
+class ExamTest {
 
-    private Test test;
+    private Exam exam;
     private Question question1;
     private Question question2;
 
@@ -27,58 +28,58 @@ class TestTest {
     void createTest() {
         question1 = new Question(5, "Question 1");
         question2 = new Question(10, "Question 2");
-        test = new Test("maker@example.com", "validator@example.com", question1, question2);
+        exam = new Exam("maker@example.com", "validator@example.com", question1, question2);
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     @DisplayName("Correctly calculated total points")
     void testCalculateTotalPoints() {
-        assertEquals(15, test.getTotalPoints());
+        assertEquals(15, exam.getTotalPoints());
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     @DisplayName("Questions can be added and removed")
     void testAddAndRemoveQuestions() {
         Question question3 = new Question(20, "Question 3");
 
-        test.addQuestions(List.of(question3));
-        assertEquals(3, test.getQuestions().size());
+        exam.addQuestions(List.of(question3));
+        assertEquals(3, exam.getQuestions().size());
 
-        test.removeQuestions(List.of(question3));
-        assertEquals(2, test.getQuestions().size());
+        exam.removeQuestions(List.of(question3));
+        assertEquals(2, exam.getQuestions().size());
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     @DisplayName("Validations are set correctly")
     void testSetAndGetValidationStatus() {
-        assertEquals(Validation.WAITING, test.getValidationStatus());
+        assertEquals(Validation.WAITING, exam.getValidationStatus());
 
-        test.setValidationStatus(Validation.APPROVED);
-        assertEquals(Validation.APPROVED, test.getValidationStatus());
+        exam.setValidationStatus(Validation.APPROVED);
+        assertEquals(Validation.APPROVED, exam.getValidationStatus());
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     @DisplayName("You can add grading criteria")
     void testAddGradingCriteria() {
         GradingCriteria criteria = new GradingCriteria();
-        test.addGradingCriteria(criteria);
-        assertEquals(criteria, test.getGradingCriteria());
+        exam.addGradingCriteria(criteria);
+        assertEquals(criteria, exam.getGradingCriteria());
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     @DisplayName("You can add submissions")
     void testAddSubmission() {
         Submission submission = new Submission();
-        test.addSubmission(submission);
-        assertEquals(1, test.getSubmissions().size());
+        exam.addSubmission(submission);
+        assertEquals(1, exam.getSubmissions().size());
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     @DisplayName("You can add statistics")
     void testAddStatistics() {
         Statistics stats = new Statistics(1, 1, 0, 1);
-        test.addStatistics(stats);
-        assertEquals(stats, test.getStatistics());
+        exam.addStatistics(stats);
+        assertEquals(stats, exam.getStatistics());
     }
 
     // Added tests by Matthew
@@ -87,20 +88,20 @@ class TestTest {
     @DisplayName("Parameterized test for updateStatistics")
     void testUpdateStatistics(List<Double> grades, int expectedPassCount, int expectedFailCount, double expectedAverage) {
 
-        Test test = new Test();
+        Exam exam = new Exam();
         Submission submission = mock(Submission.class);
 
 
         for (double grade : grades) {
             Submission mockSubmission = mock(Submission.class);
             when(mockSubmission.calculateGrade()).thenReturn(grade);
-            test.addSubmission(mockSubmission);
+            exam.addSubmission(mockSubmission);
         }
 
 
-        test.updateStatistics();
+        exam.updateStatistics();
 
-        Statistics statistics = test.getStatistics();
+        Statistics statistics = exam.getStatistics();
 
         assertEquals(grades.size(), statistics.getSubmissionCount());
         assertEquals(expectedPassCount, statistics.getPassCount());

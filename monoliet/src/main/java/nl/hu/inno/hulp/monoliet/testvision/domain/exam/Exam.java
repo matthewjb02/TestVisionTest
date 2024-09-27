@@ -1,4 +1,4 @@
-package nl.hu.inno.hulp.monoliet.testvision.domain.test;
+package nl.hu.inno.hulp.monoliet.testvision.domain.exam;
 
 import jakarta.persistence.*;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
-public class Test {
+public class Exam {
     @Id
     @GeneratedValue
     private Long id;
@@ -27,7 +27,7 @@ public class Test {
   
     @OneToMany
     private List<Question> questions;
-    private String testValidatorMail;
+    private String examValidatorMail;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Statistics statistics;
@@ -35,15 +35,15 @@ public class Test {
     private String makerMail;
     private int totalPoints;
 
-    public Test(){
+    public Exam(){
 
     }
 
-    public Test(String makerMail, String testValidatorMail, Question... questions){
+    public Exam(String makerMail, String examValidatorMail, Question... questions){
         if (questions.length > 0){
             this.questions = new ArrayList<>(Arrays.asList(questions));
             this.makerMail = makerMail;
-            this.testValidatorMail = testValidatorMail;
+            this.examValidatorMail = examValidatorMail;
             calculateTotalPoints();
         }
     }
@@ -76,8 +76,8 @@ public class Test {
         this.questions.addAll(questions);
     }
 
-    public String getTestValidatorMail() {
-        return testValidatorMail;
+    public String getExamValidatorMail() {
+        return examValidatorMail;
     }
 
     public String getMakerMail() {
@@ -158,8 +158,8 @@ public class Test {
         this.statistics = statistics;
     }
 
-    public void setTestValidatorMail(String testValidator) {
-        this.testValidatorMail = testValidator;
+    public void setExamValidatorMail(String examValidator) {
+        this.examValidatorMail = examValidator;
     }
 
     public void setMakerMail(String maker) {

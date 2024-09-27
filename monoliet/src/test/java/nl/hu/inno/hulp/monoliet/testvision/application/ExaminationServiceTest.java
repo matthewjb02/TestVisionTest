@@ -2,9 +2,10 @@ package nl.hu.inno.hulp.monoliet.testvision.application;
 
 import nl.hu.inno.hulp.monoliet.testvision.application.service.ExaminationService;
 import nl.hu.inno.hulp.monoliet.testvision.application.service.StudentService;
-import nl.hu.inno.hulp.monoliet.testvision.application.service.TestService;
+import nl.hu.inno.hulp.monoliet.testvision.application.service.ExamService;
 import nl.hu.inno.hulp.monoliet.testvision.data.ExaminationRepository;
 import nl.hu.inno.hulp.monoliet.testvision.data.SubmissionRepository;
+import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
 import nl.hu.inno.hulp.monoliet.testvision.domain.examination.Examination;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
@@ -33,7 +34,7 @@ import static org.mockito.Mockito.when;
 
 public class ExaminationServiceTest {
     private StudentService studentService;
-    private TestService testService;
+    private ExamService examService;
     private ExaminationRepository repository;
     private ExaminationService examinationService;
     private Examination examination;
@@ -45,16 +46,16 @@ public class ExaminationServiceTest {
         studentService = mock(StudentService.class);
         when(studentService.getStudent(1L)).thenReturn(new Student("Jan", "Steen"));
 
-        testService = mock(TestService.class);
+        examService = mock(ExamService.class);
         Question question1 = new OpenQuestion(1, "Wat is de hoofdstad van parijs.", "is er niet");
         Question question2 = new OpenQuestion(1, "Hoe zeg je hallo in het engels.", "Hello");
-        nl.hu.inno.hulp.monoliet.testvision.domain.test.Test test =
-                new nl.hu.inno.hulp.monoliet.testvision.domain.test.Test("", "", question1, question2);
-        when(testService.getTest(1L)).thenReturn(test);
+        Exam exam =
+                new Exam("", "", question1, question2);
+        when(examService.getExam(1L)).thenReturn(exam);
 
         repository = mock(ExaminationRepository.class);
         submissionRepository = mock(SubmissionRepository.class);
-        examinationService = new ExaminationService(repository, studentService, testService, submissionRepository);
+        examinationService = new ExaminationService(repository, studentService, examService, submissionRepository);
 
         StartExaminationRequest startExaminationRequest = new StartExaminationRequest(1L, 1L);
         examination = examinationService.startExamination(startExaminationRequest);
@@ -69,7 +70,7 @@ public class ExaminationServiceTest {
         assertEquals(State.Active, examination.getState());
         assertEquals("Jan", examination.getStudent().getFirstName());
         assertEquals("Steen", examination.getStudent().getLastName());
-        assertEquals(examination.getTest().getId(), examination.getTest().getId());
+        assertEquals(examination.getExam().getId(), examination.getExam().getId());
     }
 
     @ParameterizedTest

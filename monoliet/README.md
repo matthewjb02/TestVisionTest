@@ -1,12 +1,12 @@
 # Module uitleg
 
-## Teacher test validation. (Pasquinel Bhikhoe)
+## Teacher exam validation. (Pasquinel Bhikhoe)
 
-valt onder: Teacher,TeacherMail en validation en gedeeltes van test,course.
-Teacher test validation is een functie wat een bestaande toets uit de wachtlijst pakt.
+valt onder: Teacher,TeacherMail en validation en gedeeltes van exam,course.
+Teacher exam validation is een functie wat een bestaande toets uit de wachtlijst pakt.
 Aan deze toets zijn twee leraren 
 Deze toets wordt dan volledig getoond en dan kan de leraar,de validator, de toets accepteren of afwijzen.
-Bij het accepteren wordt de toets op de goede lijst gezet en kan de test gemaakt worden door de student.
+Bij het accepteren wordt de toets op de goede lijst gezet en kan de exam gemaakt worden door de student.
 Bij het afwijzen moet de validator een reden toevoegen en wordt de toets op een afwijslijst gezet.
 De maker moet nu de toets veranderen en opnieuw inleveren, waarna de validator het weer kan beoordelen, etc.
 

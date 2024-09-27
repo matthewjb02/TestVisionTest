@@ -2,13 +2,13 @@ package nl.hu.inno.hulp.monoliet.testvision.application.service;
 
 import nl.hu.inno.hulp.monoliet.testvision.data.ExaminationRepository;
 import nl.hu.inno.hulp.monoliet.testvision.data.SubmissionRepository;
+import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
 import nl.hu.inno.hulp.monoliet.testvision.domain.examination.Examination;
 import nl.hu.inno.hulp.monoliet.testvision.domain.examination.State;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exception.ExaminationInactiveException;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exception.NoExaminationFoundException;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
-import nl.hu.inno.hulp.monoliet.testvision.domain.test.Test;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.AnswerRequest;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.ExaminationRequest;
@@ -23,22 +23,22 @@ import org.springframework.transaction.annotation.Transactional;
 public class ExaminationService {
     private final ExaminationRepository examinationRepository;
     private final StudentService studentService;
-    private final TestService testService;
+    private final ExamService examService;
     private final SubmissionRepository submissionRepository;
 
 
     @Autowired
-    public ExaminationService(ExaminationRepository examinationRepository, StudentService studentService, TestService testService, SubmissionRepository submissionRepository) {
+    public ExaminationService(ExaminationRepository examinationRepository, StudentService studentService, ExamService examService, SubmissionRepository submissionRepository) {
         this.examinationRepository = examinationRepository;
         this.studentService = studentService;
-        this.testService = testService;
+        this.examService = examService;
         this.submissionRepository = submissionRepository;
     }
 
     public Examination startExamination(StartExaminationRequest examinationRequest) {
         Student student = studentService.getStudent(examinationRequest.studentId());
-        Test test = testService.getTest(examinationRequest.testId());
-        Examination examination = new Examination(student, test);
+        Exam exam = examService.getExam(examinationRequest.examId());
+        Examination examination = new Examination(student, exam);
         examinationRepository.save(examination);
 
         return examination;
@@ -73,7 +73,7 @@ public class ExaminationService {
             examination.endExam();
 
             Submission submission = Submission.createSubmission(examination);
-            examination.getTest().addSubmission(submission);
+            examination.getExam().addSubmission(submission);
             submissionRepository.save(submission);
 
             return examination;
