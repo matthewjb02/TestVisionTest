@@ -67,39 +67,62 @@ public class Teacher extends User {
         }
         else throw new Exception("The exam cannot be validated");
     }
+    private Course findRightCourse(Exam exam) {
+        Course courseFound = null;
+            for (Course rightCourse : courses) {
+                 int courseIndex=0;
+                if (courses.get(courseIndex).getValidatingExams().contains(exam)) {
+                    courseFound = rightCourse;
+                }
+                else if (courses.get(courseIndex).getRejectedExams().contains(exam)) {
+                courseFound = rightCourse;
+           }
+                courseIndex+=1;
+            }
+        if (courseFound==null) {
+            throw new IllegalArgumentException("the teacher does not teach the course  where the exam belongs to");
+        }
+            return courseFound;
+    }
 
-    public void validateOtherExams(Course course, Exam exam) throws Exception {
-        if (doesTeacherTeachCourse(course)&&course.getValidatingExams().contains(exam)) {
+    private int indexOfCourseInList(Exam exam){
+
+        return courses.indexOf(findRightCourse(exam));
+    }
+
+    public void validateOtherExams( Exam exam) throws Exception {
+        if (doesTeacherTeachCourse(findRightCourse(exam))) {
             System.out.println(exam.getQuestions());
         }
     }
-    public void approveExam(Course course, Exam exam) throws Exception {
-        if (doesTeacherTeachCourse(course)&& canIApproveThisExam(this,course, exam)){
+    public void approveExam(Exam exam) throws Exception {
+        if (doesTeacherTeachCourse(findRightCourse(exam))&& canIApproveThisExam(this,findRightCourse(exam), exam)){
             exam.setValidationStatus(Validation.APPROVED);
+            Course course=courses.get(indexOfCourseInList(exam));
             course.getValidatingExams().remove(exam);
             course.getApprovedExams().add(exam);
         }
     }
-    public void rejectExam(Course course, Exam exam, String reason) throws Exception {
-        if (doesTeacherTeachCourse(course)&& canIApproveThisExam(this,course, exam)) {
+    public void rejectExam( Exam exam, String reason) throws Exception {
+        if (doesTeacherTeachCourse(findRightCourse(exam))&& canIApproveThisExam(this,findRightCourse(exam), exam)) {
             exam.setValidationStatus(Validation.DENIED);
+            Course course=courses.get(indexOfCourseInList(exam));
             course.getValidatingExams().remove(exam);
             course.getRejectedExams().add(exam);
             exam.setReason(reason);
         }
     }
-    public void viewWrongExam(Course course, Exam exam) throws Exception {
-        if (Objects.equals(exam.getMakerMail(), this.email.getEmail()) &&course.getRejectedExams().contains(exam)){
+    public void viewWrongExam( Exam exam) throws Exception {
+        if (Objects.equals(exam.getMakerMail(), this.email.getEmail()) &&findRightCourse(exam).getRejectedExams().contains(exam)){
             System.out.println(exam.getReason());
         }
         else throw new Exception("This exam was not rejected");
     }
-    public void modifyQuestions(Course course, Exam exam, List<Question> oldQuestions, List<Question> newQuestion) throws Exception {
-        if (Objects.equals(exam.getMakerMail(), this.email.getEmail()) &&course.getRejectedExams().contains(exam)){
-            System.out.println(exam.getReason());
+    public void modifyQuestions( Exam exam, List<Question> oldQuestions, List<Question> newQuestion) {
+        if (Objects.equals(exam.getMakerMail(), this.email.getEmail()) &&findRightCourse(exam).getRejectedExams().contains(exam)){
             exam.removeQuestions(oldQuestions);
             exam.addQuestions(newQuestion);
-            System.out.println(exam.getQuestions());
+            Course course=courses.get(indexOfCourseInList(exam));
             course.getValidatingExams().add(exam);
             course.getRejectedExams().remove(exam);
             exam.setValidationStatus(Validation.WAITING);
