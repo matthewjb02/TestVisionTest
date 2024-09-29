@@ -50,27 +50,27 @@ public class TeacherController {
     @GetMapping("/{teacherId}/courses/{courseId}/exams/{examId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ExamDTO validateExam(@PathVariable long teacherId, @PathVariable long courseId, @PathVariable long examId) throws Exception {
-        return this.teacherService.validateExams(teacherId,courseId,examId);
+        return this.teacherService.validateExams(teacherId,examId);
     }
     @PatchMapping("/{teacherId}/courses/{courseId}/exams/{examId}/accept")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ExamDTO acceptExam(@PathVariable long teacherId, @PathVariable long courseId, @PathVariable long examId) throws Exception {
-        return this.teacherService.acceptExam(examId,teacherId,courseId);
+        return this.teacherService.acceptExam(examId,teacherId);
     }
-    @PatchMapping("/{teacherId}/courses/{courseId}/exams/{examId}/refuse")
+    @PatchMapping("/{teacherId}/courses/{courseId}/exams/{examId}/reject")
     @ResponseStatus(HttpStatus.OK)
     public ExamDTO refuseExam(@PathVariable long teacherId, @PathVariable long courseId, @PathVariable long examId, @RequestBody String reason) throws Exception {
-        return  this.teacherService.refuseExam(examId,teacherId,courseId,reason);
+        return  this.teacherService.refuseExam(examId,teacherId,reason);
     }
-    @GetMapping("/{teacherId}/courses/{courseId}/exams/{examId}/refuse/modify")
+    @GetMapping("/{teacherId}/courses/{courseId}/exams/{examId}/reject/modify")
     @ResponseStatus(HttpStatus.OK)
     public ExamDTO viewWrongExam(@PathVariable long examId, @PathVariable long teacherId, @PathVariable long courseId) throws Exception {
-        return  this.teacherService.viewWrongExam(examId,teacherId,courseId);
+        return  this.teacherService.viewWrongExam(examId,teacherId);
     }
-    @PutMapping("/{teacherId}/courses/{courseId}/exams/{examId}/refuse/modify")
+    @PutMapping("/{teacherId}/courses/{courseId}/exams/{examId}/reject/modify")
     @ResponseStatus(HttpStatus.OK)
     public ExamDTO modifyWrongExam(@PathVariable long examId, @PathVariable long teacherId, @PathVariable long courseId, @RequestBody List<Question>newQuestions) throws Exception {
-        return this.teacherService.modifyWrongExam(examId,teacherId,courseId, newQuestions);
+        return this.teacherService.modifyWrongExam(examId,teacherId, newQuestions);
     }
 }
 
