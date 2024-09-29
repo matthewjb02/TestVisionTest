@@ -9,20 +9,22 @@ public class Student extends User {
     @Id
     @GeneratedValue
     private Long id;
-
-    public Student(String firstName, String lastName) {
-        super(firstName, lastName);
-    }
+    private boolean extraTimeRight = false;
 
     protected Student() {
         super();
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Student(String firstName, String lastName, boolean extraTimeRight) {
+        super(firstName, lastName);
+        this.extraTimeRight = extraTimeRight;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public boolean isExtraTimeRight() {
+        return extraTimeRight;
     }
 }
