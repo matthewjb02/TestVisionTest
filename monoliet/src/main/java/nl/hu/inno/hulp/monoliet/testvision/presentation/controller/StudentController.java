@@ -1,6 +1,7 @@
 package nl.hu.inno.hulp.monoliet.testvision.presentation.controller;
 
 import nl.hu.inno.hulp.monoliet.testvision.application.service.StudentService;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.ExtraTimeRequest;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.StudentRequest;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.StudentResponse;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,11 @@ public class StudentController {
     @PostMapping("/add")
     public StudentResponse addStudent(@RequestBody StudentRequest studentRequest) {
         return new StudentResponse(studentService.addStudent(studentRequest));
+    }
+
+    @PatchMapping("/extratime")
+    public StudentResponse changeExtraTimeRight(@RequestBody ExtraTimeRequest studentRequest) {
+        return new StudentResponse(studentService.changeExtraTimeRight(studentRequest));
     }
 
     @DeleteMapping("/delete/{id}")
