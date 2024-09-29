@@ -74,6 +74,9 @@ public class Teacher extends User {
                 if (courses.get(courseIndex).getValidatingExams().contains(exam)) {
                     courseFound = rightCourse;
                 }
+                else if (courses.get(courseIndex).getRejectedExams().contains(exam)) {
+                courseFound = rightCourse;
+           }
                 courseIndex+=1;
             }
         if (courseFound==null) {
@@ -81,29 +84,10 @@ public class Teacher extends User {
         }
             return courseFound;
     }
-    private Course findWrongCourse(Exam exam) {
-        Course courseFound = null;
-        for (Course wrongCourse : courses) {
-            int courseIndex=0;
-            if (courses.get(courseIndex).getRejectedExams().contains(exam)) {
-                courseFound = wrongCourse;
-            }
-            courseIndex+=1;
-        }
-        if (courseFound==null) {
-            throw new IllegalArgumentException("the teacher does not teach the course  where the exam belongs to");
-        }
-        return courseFound;
-    }
+
     private int indexOfCourseInList(Exam exam){
-        Course courseToReturn;
-        if(findWrongCourse(exam)!=null){
-            courseToReturn=findWrongCourse(exam);
-        } else if (findRightCourse(exam)!=null) {
-            courseToReturn=findRightCourse(exam);
-        }
-        else throw new IllegalArgumentException("no Course Found");
-        return courses.indexOf(courseToReturn);
+
+        return courses.indexOf(findRightCourse(exam));
     }
 
     public void validateOtherExams( Exam exam) throws Exception {
@@ -129,13 +113,13 @@ public class Teacher extends User {
         }
     }
     public void viewWrongExam( Exam exam) throws Exception {
-        if (Objects.equals(exam.getMakerMail(), this.email.getEmail()) &&findWrongCourse(exam).getRejectedExams().contains(exam)){
+        if (Objects.equals(exam.getMakerMail(), this.email.getEmail()) &&findRightCourse(exam).getRejectedExams().contains(exam)){
             System.out.println(exam.getReason());
         }
         else throw new Exception("This exam was not rejected");
     }
     public void modifyQuestions( Exam exam, List<Question> oldQuestions, List<Question> newQuestion) {
-        if (Objects.equals(exam.getMakerMail(), this.email.getEmail()) &&findWrongCourse(exam).getRejectedExams().contains(exam)){
+        if (Objects.equals(exam.getMakerMail(), this.email.getEmail()) &&findRightCourse(exam).getRejectedExams().contains(exam)){
             exam.removeQuestions(oldQuestions);
             exam.addQuestions(newQuestion);
             Course course=courses.get(indexOfCourseInList(exam));
