@@ -9,7 +9,7 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
 import nl.hu.inno.hulp.monoliet.testvision.domain.examination.Examination;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
-import nl.hu.inno.hulp.monoliet.testvision.domain.examination.State;
+import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamState;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exception.ExaminationInactiveException;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exception.NoExaminationFoundException;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
@@ -44,7 +44,7 @@ public class ExaminationServiceTest {
     @DisplayName("Get repositories and services")
     void getRepoAndService() {
         studentService = mock(StudentService.class);
-        when(studentService.getStudent(1L)).thenReturn(new Student("Jan", "Steen"));
+        when(studentService.getStudent(1L)).thenReturn(new Student("Jan", "Steen", false));
 
         examService = mock(ExamService.class);
         Question question1 = new OpenQuestion(1, "Wat is de hoofdstad van parijs.", "is er niet");
@@ -67,7 +67,7 @@ public class ExaminationServiceTest {
         StartExaminationRequest startExaminationRequest = new StartExaminationRequest(1L, 1L);
         Examination examination = examinationService.startExamination(startExaminationRequest);
 
-        assertEquals(State.Active, examination.getState());
+        assertEquals(ExamState.Active, examination.getState());
         assertEquals("Jan", examination.getStudent().getFirstName());
         assertEquals("Steen", examination.getStudent().getLastName());
         assertEquals(examination.getExam().getId(), examination.getExam().getId());
@@ -120,7 +120,7 @@ public class ExaminationServiceTest {
 
         ExaminationRequest examinationRequest = new ExaminationRequest(1L);
         examination = examinationService.endExam(examinationRequest);
-        assertEquals(State.Completed, examination.getState());
+        assertEquals(ExamState.Completed, examination.getState());
     }
 
     @Test

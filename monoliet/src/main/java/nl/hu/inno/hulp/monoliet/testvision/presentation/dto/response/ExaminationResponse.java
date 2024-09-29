@@ -3,7 +3,7 @@ package nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response;
 import nl.hu.inno.hulp.monoliet.testvision.application.dto.*;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
 import nl.hu.inno.hulp.monoliet.testvision.domain.examination.Examination;
-import nl.hu.inno.hulp.monoliet.testvision.domain.examination.State;
+import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamState;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class ExaminationResponse {
     private final StudentResponse student;
     private final ExamDTO exam;
-    private final State state;
+    private final ExamState state;
 
     public ExaminationResponse(Examination examination) {
         this.student = new StudentResponse(examination.getStudent());
@@ -97,7 +97,7 @@ public class ExaminationResponse {
         return exam;
     }
 
-    public State getState() {
+    public ExamState getState() {
         return state;
     }
 }
