@@ -24,6 +24,10 @@ public class Student extends User {
         return id;
     }
 
+    public void changeExtraTimeRight(boolean right) {
+        this.extraTimeRight = right;
+    }
+
     public boolean isExtraTimeRight() {
         return extraTimeRight;
     }

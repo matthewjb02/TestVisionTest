@@ -1,6 +1,7 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain.examination;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
@@ -11,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.List;
 
 @Entity
+@Getter
 public class Examination {
     @Id
     @GeneratedValue
@@ -21,6 +23,9 @@ public class Examination {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<Student> candidates;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<ExamSession> examSessions;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Exam exam;
@@ -42,6 +47,14 @@ public class Examination {
         this.student = student;
         this.exam = exam;
         this.state = ExamState.Active;
+    }
+
+    public Examination(Exam exam, String password, ExamDate examDate, int duration, int extraTime) {
+        this.exam = exam;
+        this.password = password;
+        this.examDate = examDate;
+        this.duration = duration;
+        this.extraTime = extraTime;
     }
 
     public Question seeQuestion(int nr) {
@@ -75,8 +88,17 @@ public class Examination {
         return duration;
     }
 
-    public boolean validateExtraTimeRight() {
-        return false;
+    public List<ExamSession> setupExamSessions() {
+        for (Student student : candidates) {
+            ExamSession examSession = new ExamSession(this, student);
+            storeExamSession(examSession);
+        }
+
+        return examSessions;
+    }
+
+    public void storeExamSession(ExamSession examSession) {
+        examSessions.add(examSession);
     }
 
     public String hashPassword(String password) {
@@ -85,27 +107,7 @@ public class Examination {
     }
 
     public void changePassword(String newPassword) {
-        this.password = hashPassword(newPassword);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Student getStudent() {
-        return student;
-    }
-
-    public Exam getExam() {
-        return exam;
-    }
-
-    public ExamState getState() {
-        return this.state;
-    }
-
-    public String getPassword() {
-        return this.password;
+        this.password = newPassword;
     }
 
     public Long getStudentId() {

@@ -2,6 +2,7 @@ package nl.hu.inno.hulp.monoliet.testvision.application.service;
 
 import nl.hu.inno.hulp.monoliet.testvision.data.StudentRepository;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.ExtraTimeRequest;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.StudentRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,14 @@ public class StudentService {
         Student student = new Student(studentRequest.firstName, studentRequest.lastName, studentRequest.extraTimeRight);
         studentRepository.save(student);
         return getStudent(student.getId());
+    }
+
+    public Student changeExtraTimeRight(ExtraTimeRequest studentRequest) {
+        Student student = getStudent(studentRequest.studentId);
+        student.changeExtraTimeRight(studentRequest.extraTime);
+        studentRepository.save(student);
+
+        return student;
     }
 
     public void deleteStudent(Long id) {
