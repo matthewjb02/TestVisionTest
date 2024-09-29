@@ -20,7 +20,7 @@ public class TeacherGradesStudentExamination {
 
         // Een student en docent registreren zich voor het systeem
         Teacher maker = new Teacher("Neal", "Tyson", "neal.tyson@hu.nl");
-        Student student = new Student("Elon", "Musk");
+        Student student = new Student("Elon", "Musk", false);
 
         // Een docent maakt een vraag aan die hij kan toevoegen aan de aangemaakte toets. Ook voegt de docent toetsstatistieken toe
         OpenQuestion question = new OpenQuestion(10, "What does the atomic symbol K name", "Potassium");

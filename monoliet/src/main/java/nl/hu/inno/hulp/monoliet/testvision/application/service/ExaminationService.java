@@ -4,7 +4,7 @@ import nl.hu.inno.hulp.monoliet.testvision.data.ExaminationRepository;
 import nl.hu.inno.hulp.monoliet.testvision.data.SubmissionRepository;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
 import nl.hu.inno.hulp.monoliet.testvision.domain.examination.Examination;
-import nl.hu.inno.hulp.monoliet.testvision.domain.examination.State;
+import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamState;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exception.ExaminationInactiveException;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exception.NoExaminationFoundException;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
@@ -47,7 +47,7 @@ public class ExaminationService {
     public Question seeQuestion(SeeQuestion examRequest)  {
         Examination examination = getExamById(examRequest.examId());
 
-        if (examination.getState() == State.Active) {
+        if (examination.getState() == ExamState.Active) {
             return examination.seeQuestion(examRequest.questionNr());
         } else {
             throw new ExaminationInactiveException("This exam is inactive");
@@ -57,7 +57,7 @@ public class ExaminationService {
     public Examination enterAnswer(AnswerRequest answerRequest) {
         Examination examination = getExamById(answerRequest.examId());
 
-        if (examination.getState() == State.Active) {
+        if (examination.getState() == ExamState.Active) {
             examination.answerQuestion(answerRequest.questionNr(), answerRequest.answer());
             examinationRepository.save(examination);
             return examination;
@@ -69,7 +69,7 @@ public class ExaminationService {
     public Examination endExam(ExaminationRequest examinationRequest) {
         Examination examination = getExamById(examinationRequest.examId());
 
-        if (examination.getState() == State.Active) {
+        if (examination.getState() == ExamState.Active) {
             examination.endExam();
 
             Submission submission = Submission.createSubmission(examination);
