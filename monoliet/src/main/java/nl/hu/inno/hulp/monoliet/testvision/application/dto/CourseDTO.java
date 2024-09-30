@@ -5,6 +5,7 @@ import java.util.List;
 public class CourseDTO {
     private Long id;
     private String name;
+    private List<TeacherDTO> teachers;
     private List<ExamDTO> approvedTests;
     private List<ExamDTO> rejectedTests;
     private List<ExamDTO> validatingTests;
@@ -12,9 +13,10 @@ public class CourseDTO {
     public CourseDTO() {
     }
 
-    public CourseDTO(Long id, String name, List<ExamDTO> approvedTests, List<ExamDTO> rejectedTests, List<ExamDTO> validatingTests) {
+    public CourseDTO(Long id, String name,List<TeacherDTO> teachers, List<ExamDTO> approvedTests, List<ExamDTO> rejectedTests, List<ExamDTO> validatingTests) {
         this.id = id;
         this.name = name;
+        this.teachers = teachers;
         this.approvedTests = approvedTests;
         this.rejectedTests = rejectedTests;
         this.validatingTests = validatingTests;
@@ -38,5 +40,8 @@ public class CourseDTO {
 
     public List<ExamDTO> getValidatingTests() {
         return validatingTests;
+    }
+    public List<TeacherDTO> getTeachers() {
+        return teachers;
     }
 }

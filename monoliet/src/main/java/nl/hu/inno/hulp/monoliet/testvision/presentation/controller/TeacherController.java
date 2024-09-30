@@ -42,35 +42,6 @@ public class TeacherController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void deleteTeacher(@PathVariable long id) {
         teacherService.removeTeacher(id);}
-    @PostMapping("/{teacherId}/courses/{courseId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public TeacherDTO addCourseToTeacher(@PathVariable long teacherId, @PathVariable long courseId) {
-        return this.teacherService.addCourseToTeacher(teacherId, courseId);
-    }
-    @GetMapping("/{teacherId}/courses/{courseId}/exams/{examId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public ExamDTO validateExam(@PathVariable long teacherId, @PathVariable long courseId, @PathVariable long examId) throws Exception {
-        return this.teacherService.validateExams(teacherId,examId);
-    }
-    @PatchMapping("/{teacherId}/courses/{courseId}/exams/{examId}/accept")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public ExamDTO acceptExam(@PathVariable long teacherId, @PathVariable long courseId, @PathVariable long examId) throws Exception {
-        return this.teacherService.acceptExam(examId,teacherId);
-    }
-    @PatchMapping("/{teacherId}/courses/{courseId}/exams/{examId}/reject")
-    @ResponseStatus(HttpStatus.OK)
-    public ExamDTO refuseExam(@PathVariable long teacherId, @PathVariable long courseId, @PathVariable long examId, @RequestBody String reason) throws Exception {
-        return  this.teacherService.refuseExam(examId,teacherId,reason);
-    }
-    @GetMapping("/{teacherId}/courses/{courseId}/exams/{examId}/reject/modify")
-    @ResponseStatus(HttpStatus.OK)
-    public ExamDTO viewWrongExam(@PathVariable long examId, @PathVariable long teacherId, @PathVariable long courseId) throws Exception {
-        return  this.teacherService.viewWrongExam(examId,teacherId);
-    }
-    @PutMapping("/{teacherId}/courses/{courseId}/exams/{examId}/reject/modify")
-    @ResponseStatus(HttpStatus.OK)
-    public ExamDTO modifyWrongExam(@PathVariable long examId, @PathVariable long teacherId, @PathVariable long courseId, @RequestBody List<Question>newQuestions) throws Exception {
-        return this.teacherService.modifyWrongExam(examId,teacherId, newQuestions);
-    }
+
 }
 
