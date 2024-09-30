@@ -3,10 +3,7 @@ package nl.hu.inno.hulp.monoliet.testvision.presentation.controller;
 import nl.hu.inno.hulp.monoliet.testvision.application.service.ExaminationService;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exception.ExaminationInactiveException;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exception.NoExaminationFoundException;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.AnswerRequest;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.ExaminationRequest;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.SeeQuestion;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.StartExaminationRequest;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.*;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.ExaminationResponse;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.QuestionResponse;
 import org.springframework.http.HttpStatus;
@@ -22,7 +19,12 @@ public class ExaminationController {
         this.examinationService = examinationService;
     }
 
-    @PostMapping("/start")
+    @PostMapping("/create")
+    public ExaminationResponse createExamination(@RequestBody CreateExamination createExamination) {
+        return new ExaminationResponse(examinationService.createExamination(createExamination));
+    }
+
+    @PostMapping("/session/start")
     public ExaminationResponse startExamination(@RequestBody StartExaminationRequest examRequest) {
         try {
             return new ExaminationResponse(examinationService.startExamination(examRequest));
@@ -31,7 +33,7 @@ public class ExaminationController {
         }
     }
 
-    @GetMapping("/seeQuestion")
+    @GetMapping("/session/seeQuestion")
     public QuestionResponse seeQuestion(@RequestBody SeeQuestion examRequest) {
         try {
             return new QuestionResponse(examinationService.seeQuestion(examRequest));
@@ -42,7 +44,7 @@ public class ExaminationController {
         }
     }
 
-    @PatchMapping("/answer")
+    @PatchMapping("/session/answer")
     public ExaminationResponse enterAnswer(@RequestBody AnswerRequest answerRequest) {
         try {
             return new ExaminationResponse(examinationService.enterAnswer(answerRequest));
@@ -53,7 +55,7 @@ public class ExaminationController {
         }
     }
 
-    @PostMapping("/end")
+    @PostMapping("/session/end")
     public ExaminationResponse endExamination(@RequestBody ExaminationRequest examinationRequest) {
         try {
             return new ExaminationResponse(examinationService.endExam(examinationRequest));

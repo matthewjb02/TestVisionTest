@@ -10,10 +10,7 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.exception.NoExaminationFoundEx
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.AnswerRequest;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.ExaminationRequest;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.SeeQuestion;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.StartExaminationRequest;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +30,14 @@ public class ExaminationService {
         this.studentService = studentService;
         this.examService = examService;
         this.submissionRepository = submissionRepository;
+    }
+
+    public Examination createExamination(CreateExamination request) {
+        Exam exam = examService.getExam(request.examId());
+        Examination examination = new Examination(exam, request.password(), request.examDate(), request.duration(), request.extraTime());
+        examinationRepository.save(examination);
+
+        return examination;
     }
 
     public Examination startExamination(StartExaminationRequest examinationRequest) {

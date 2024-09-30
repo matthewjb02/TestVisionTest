@@ -1,6 +1,8 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain.examination;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exception.PasswordIncorrectException;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
@@ -10,6 +12,7 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Entity
+@Getter
 public class ExamSession {
     @Id
     @GeneratedValue
@@ -21,19 +24,24 @@ public class ExamSession {
     @OneToOne(cascade = CascadeType.ALL)
     private Exam exam;
 
+    @Embedded
+    private ExamDate examDate;
+
     private ExamState state;
     private int duration;
     private int minutesSpent;
-    private String password;
+
+    @Getter(AccessLevel.NONE)
+    private String securedPassword;
 
     protected ExamSession() {
     }
 
-    public ExamSession(Examination context, ExamState state) {
+    public ExamSession(Examination context, Student student) {
         this.state = ExamState.Published;
         this.duration = context.totalDuration(student.isExtraTimeRight());
         this.exam = context.getExam();
-        this.password = context.getPassword();
+        this.securedPassword = context.getPassword();
     }
 
     public ExamSession startSession(String password) {
@@ -66,14 +74,10 @@ public class ExamSession {
 
     public boolean verifyPassword(String inputPassword) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        return encoder.matches(inputPassword, password);
+        return encoder.matches(inputPassword, securedPassword);
     }
 
     public void changeState(ExamState state) {
         this.state = state;
-    }
-
-    public Long getId() {
-        return id;
     }
 }
