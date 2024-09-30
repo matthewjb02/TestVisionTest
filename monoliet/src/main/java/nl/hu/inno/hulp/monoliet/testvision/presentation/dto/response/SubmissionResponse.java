@@ -1,19 +1,19 @@
 package nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response;
 
-import nl.hu.inno.hulp.monoliet.testvision.domain.examination.Examination;
+import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamSession;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Grading;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.SubmissionStatus;
 
 
-public class SubmissionResponse extends ExaminationResponse {
+public class SubmissionResponse extends ExamSessionResponse {
     private Long submissionId;
-    private SubmissionStatus status;
+    private SubmissionStatus submissionStatus;
     private Grading grading;
 
-    public SubmissionResponse(Examination examination, Long submissionId, SubmissionStatus status, Grading grading) {
-        super(examination);
+    public SubmissionResponse(ExamSession examSession, Long submissionId, SubmissionStatus status, Grading grading) {
+        super(examSession);
         this.submissionId = submissionId;
-        this.status = status;
+        this.submissionStatus = status;
         this.grading = grading;
     }
 
@@ -21,8 +21,8 @@ public class SubmissionResponse extends ExaminationResponse {
         return submissionId;
     }
 
-    public SubmissionStatus getStatus() {
-        return status;
+    public SubmissionStatus getSubmissionStatus() {
+        return submissionStatus;
     }
 
     public Grading getGrading() {

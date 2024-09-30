@@ -1,6 +1,7 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain;
 
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
+import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamSession;
 import nl.hu.inno.hulp.monoliet.testvision.domain.examination.Examination;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
@@ -29,7 +30,7 @@ class SubmissionTest {
     @DisplayName("Parameterized test for calculateGrade")
     void testCalculateGrade(int totalExamPoints, int totalOpenPoints, int totalMcPoints, int givenPointsOpen, int givenPointsMC, double expectedGrade) {
 
-        Examination examination = mock(Examination.class);
+        ExamSession examSession = mock(ExamSession.class);
         Exam exam = mock(Exam.class);
         OpenQuestion openQuestion = mock(OpenQuestion.class);
         MultipleChoiceQuestion mcQuestion = mock(MultipleChoiceQuestion.class);
@@ -40,9 +41,9 @@ class SubmissionTest {
         when(exam.getTotalPoints()).thenReturn(totalExamPoints);
         when(exam.getTotalMultipleChoiceQuestionPoints()).thenReturn(totalMcPoints);
         when(exam.getTotalOpenQuestionPoints()).thenReturn(totalOpenPoints);
-        when(examination.getExam()).thenReturn(exam);
+        when(examSession.getExam()).thenReturn(exam);
 
-        Submission submission = new Submission(examination);
+        Submission submission = new Submission(examSession);
 
         when(submission.calculateTotalOpenGivenPoints()).thenReturn(givenPointsOpen);
         when(submission.calculateTotalMultipleChoiceGivenPoints()).thenReturn(givenPointsMC);
@@ -68,8 +69,8 @@ class SubmissionTest {
     @org.junit.jupiter.api.Test
     @DisplayName("When a test is sumbitted the status of the submission is SUBMITTED")
     void testSubmissionState() {
-        Examination examination = mock(Examination.class);
-        Submission submission = new Submission(examination);
+        ExamSession examSession = mock(ExamSession.class);
+        Submission submission = new Submission(examSession);
 
         assertEquals(SubmissionStatus.SUBMITTED, submission.getStatus());
     }
@@ -77,8 +78,8 @@ class SubmissionTest {
     @org.junit.jupiter.api.Test
     @DisplayName("When a test is graded the status of the submission is GRADED")
     void testGradedSubmissionState() {
-        Examination examination = mock(Examination.class);
-        Submission submission = new Submission(examination);
+        ExamSession examSession = mock(ExamSession.class);
+        Submission submission = new Submission(examSession);
 
         submission.addGrading(new Grading());
 

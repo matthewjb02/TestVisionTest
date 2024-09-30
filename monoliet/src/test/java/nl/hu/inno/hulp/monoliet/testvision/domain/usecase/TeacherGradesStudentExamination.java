@@ -1,6 +1,7 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain.usecase;
 
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
+import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamSession;
 import nl.hu.inno.hulp.monoliet.testvision.domain.examination.Examination;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Grading;
@@ -30,27 +31,29 @@ public class TeacherGradesStudentExamination {
         exam.addStatistics(new Statistics());
 
         // een student besluit de toets te maken. Hij beantwoordt de vragen en levert de toets in.
-        Examination examination = new Examination(student, exam);
-        examination.answerQuestion(1, "Potassium");
-        examination.endExam();
-        examination.getExam().addSubmission(new Submission(examination)); // dit gebeurt in the real world in endExam() van de ExamService
+        Examination examination = new Examination("toets1", exam, "hallo", null, 120, 30);
+
+        ExamSession examSession = new ExamSession(examination, student);
+        examSession.answerQuestion(1, "Potassium");
+        examSession.endSession();
+        examSession.getExam().addSubmission(new Submission(examSession)); // dit gebeurt in the real world in endExam() van de ExamService
 
         // Een docent vraagt om de inleveringen van de toets. Hij beoordeelt de inlevering per vraag met evt. feedback toe.
-        Submission submission = examination.getExam().getSubmissions().get(0);
+        Submission submission = examSession.getExam().getSubmissions().get(0);
         submission.updateGradingForQuestion(1, 10, "Well Done!");
 
         // De docent voegt de eindbeoordeling toe met evt. feedback en de toetsstatistieken worden automatisch bijgewerkt.
         submission.addGrading(new Grading(submission.calculateGrade(), "Well Done!"));
-        submission.getExamination().getExam().updateStatistics(); // dit gebeurt in de real world in addGrading() van de SubmissionService
+        submission.getExamSession().getExam().updateStatistics(); // dit gebeurt in de real world in addGrading() van de SubmissionService
 
 
         Statistics statistics = exam.getStatistics();
 
-        OpenQuestion examQuestion = (OpenQuestion)submission.getExamination().seeQuestion(1);
+        OpenQuestion examQuestion = (OpenQuestion)submission.getExamSession().seeQuestion(1);
 
         assertEquals(1, exam.getSubmissions().size());
         assertEquals("Potassium", examQuestion.getAnswer());
-        assertEquals(10, submission.getExamination().seeQuestion(1).getGivenPoints());
+        assertEquals(10, submission.getExamSession().seeQuestion(1).getGivenPoints());
         assertEquals("Well Done!", examQuestion.getTeacherFeedback());
         assertEquals(10, submission.getGrading().getGrade());
         assertEquals("Well Done!", submission.getGrading().getComments());

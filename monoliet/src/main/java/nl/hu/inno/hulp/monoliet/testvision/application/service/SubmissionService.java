@@ -3,6 +3,7 @@ package nl.hu.inno.hulp.monoliet.testvision.application.service;
 import jakarta.transaction.Transactional;
 import nl.hu.inno.hulp.monoliet.testvision.data.SubmissionRepository;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
+import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamSession;
 import nl.hu.inno.hulp.monoliet.testvision.domain.examination.Examination;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Grading;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
@@ -39,7 +40,7 @@ public class SubmissionService {
 
     private Submission findSubmissionByExamAndStudentId(Exam exam, Long studentId) {
         return exam.getSubmissions().stream()
-                .filter(submission -> submission.getExamination().getStudent().getId().equals(studentId))
+                .filter(submission -> submission.getExamSession().getStudent().getId().equals(studentId))
                 .findFirst()
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Submission not found for the given student and exam"));
     }
@@ -48,7 +49,7 @@ public class SubmissionService {
         Exam exam = findExamById(examId);
         return exam.getSubmissions().stream()
                 .map(submission -> new SubmissionResponse(
-                        submission.getExamination(),
+                        submission.getExamSession(),
                         submission.getId(),
                         submission.getStatus(),
                         submission.getGrading()
@@ -56,16 +57,16 @@ public class SubmissionService {
                 .collect(Collectors.toList());
     }
 
-    public List<SubmissionResponse> getSubmissionsByExamAndStudentIdFromExam(Long examId, Long studentId) {
+    /*public List<SubmissionResponse> getSubmissionsByExamAndStudentIdFromExam(Long examId, Long studentId) {
         Exam exam = findExamById(examId);
         return exam.getSubmissions().stream()
                 .filter(submission -> submission.getStudentIDtFromExamSubmission().equals(studentId))
                 .map(submission -> new SubmissionResponse(
-                        new Examination(submission.getStudentFromExamSubmission(), exam),
+                        new ExamSession(submission.getStudentFromExamSubmission()),
                         submission.getId(),
                         submission.getStatus(),
                         submission.getGrading())).collect(Collectors.toList());
-    }
+    }*/
 
     public void updateOpenQuestionGrading(Long examId, Long studentId, int questionNr, UpdateQuestionGradingRequest request) {
         Exam exam = findExamById(examId);
