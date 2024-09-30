@@ -38,8 +38,6 @@ public class Exam {
     @OneToOne
     private Teacher examMaker;
     private int totalPoints;
-    @Transient
-    private Course  course;
     public Exam(){
 
     }
@@ -49,7 +47,6 @@ public class Exam {
             this.questions = new ArrayList<>(Arrays.asList(questions));
             this.examMaker = examMaker;
             this.examValidator = examValidator;
-            this.course = course;
             calculateTotalPoints();
         }
     }
@@ -61,56 +58,7 @@ public class Exam {
         }
         totalPoints = questions.stream().mapToInt(Question::getPoints).sum();
     }
-    private boolean doesTeacherTeachCourse() throws Exception {
 
-        if (this.course.getTeachers().contains(this.examMaker)&&this.examMaker!=this.examValidator||this.course.getTeachers().contains(this.examValidator)&&this.examMaker!=this.examValidator) {
-        return true;
-        } else throw new Exception("The Teacher does not teach this course");
-    }
-
-    private boolean canIApproveThisExam(Teacher examValidator) throws Exception {
-        if (course.getValidatingExams().contains(this)&&this.examValidator ==examValidator){
-            return true;
-        }
-        else if(this.examValidator !=examValidator&&course.getValidatingExams().contains(this)){
-            throw new Exception("The Teacher is not assigned as validator, but the exam needs to be Validated");
-        }
-        else throw new Exception("The exam cannot be validated");
-    }
-
-
-
-    public void approveExam() throws Exception {
-        if (doesTeacherTeachCourse()&& canIApproveThisExam(this.examValidator)){
-            this.setValidationStatus(ValidationStatus.APPROVED);
-            course.getValidatingExams().remove(this);
-            course.getApprovedExams().add(this);
-        }
-    }
-    public void rejectExam(String reason) throws Exception {
-        if (doesTeacherTeachCourse()&& canIApproveThisExam(this.examValidator)) {
-            this.setValidationStatus(ValidationStatus.DENIED);
-            course.getValidatingExams().remove(this);
-            course.getRejectedExams().add(this);
-            this.setReason(reason);
-        }
-    }
-    public void viewWrongExam() throws Exception {
-        if (Objects.equals(this.getMakerMail(), this.examMaker.getEmail().getEmailString()) &&course.getRejectedExams().contains(this)){
-            System.out.println(this.getReason());
-        }
-        else throw new Exception("This exam was not rejected");
-    }
-    public void modifyQuestions(List<Question> oldQuestions, List<Question> newQuestion) {
-        if (Objects.equals(this.getMakerMail(), this.examMaker.getEmail().getEmailString()) &&course.getRejectedExams().contains(this)){
-            this.removeQuestions(oldQuestions);
-            this.addQuestions(newQuestion);
-            course.getValidatingExams().add(this);
-            course.getRejectedExams().remove(this);
-            this.setValidationStatus(ValidationStatus.WAITING);
-            this.setReason("");
-        }
-    }
     public int getTotalPoints(){
         return  totalPoints;
     }
@@ -193,9 +141,6 @@ public class Exam {
     public void addExamValidator(Teacher examValidator) {
         this.examValidator = examValidator;
     }
-    public void addCourse(Course course) {
-        this.course = course;
-    }
     public void addGradingCriteria(GradingCriteria gradingCriteria) {
         this.gradingCriteria = gradingCriteria;
     }
@@ -221,7 +166,7 @@ public class Exam {
     }
 
 
-    private void setValidationStatus(ValidationStatus validationStatus) {
+    public void setValidationStatus(ValidationStatus validationStatus) {
         this.validationStatus = validationStatus;
     }
 

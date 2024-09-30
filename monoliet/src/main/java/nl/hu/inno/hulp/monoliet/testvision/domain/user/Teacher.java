@@ -18,13 +18,14 @@ public class Teacher extends User {
     private long id;
     @Embedded
     private TeacherEmail email;
-    public Teacher() {super();}
     public Teacher(String firstName, String lastName, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = new TeacherEmail(email);
     }
-
+    public Teacher (){
+        super();
+    }
     public TeacherEmail getEmail() {
         return email;
     }

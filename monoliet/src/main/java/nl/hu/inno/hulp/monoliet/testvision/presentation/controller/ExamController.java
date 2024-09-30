@@ -35,26 +35,7 @@ public class ExamController {
     public ExamDTO addExam(@PathVariable Long courseId,@RequestBody Exam exam, @PathVariable Long makerId, @PathVariable Long examValidatorId) {
         return examService.addExam(exam, makerId, examValidatorId,courseId);
     }
-    @GetMapping("/{id}/examValidator/{examValidatorId}")
-    public ExamDTO validateExams(@PathVariable Long id,@PathVariable Long courseId, @PathVariable Long examValidatorId) {
-    return examService.validateExams(examValidatorId,id,courseId);
-    }
-    @PutMapping("{id}/accept")
-    public ExamDTO acceptExam(@PathVariable Long id) throws Exception {
-        return examService.acceptExam(id);
-    }
-    @PutMapping("/{id}/reject")
-    public ExamDTO rejectExam(@PathVariable Long id, @RequestBody String reason) throws Exception {
-        return examService.rejectExam(id, reason);
-    }
-    @GetMapping("/{id}/reject/view")
-    public ExamDTO viewDeniedExam(@PathVariable Long id) throws Exception {
-        return examService.viewDeniedExam(id);
-    }
-    @PutMapping("/{id}/reject/modify")
-    public ExamDTO modifyWrongExam(@PathVariable Long id,@RequestBody List<Question>newQuestions) throws Exception {
-        return examService.modifyWrongExam(id, newQuestions);
-    }
+    
     @DeleteMapping("/{id}")
     public ExamDTO deleteExam(@PathVariable Long id) {
         return examService.deleteExam(id);

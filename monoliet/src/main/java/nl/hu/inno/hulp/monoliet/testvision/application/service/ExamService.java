@@ -40,10 +40,8 @@ public class ExamService {
     public ExamDTO addExam(Exam exam, long examMakerId, long examValidatorId,long courseId) {
         Teacher  maker=teacherRepository.findById(examMakerId).orElseThrow();
         Teacher examValidator=teacherRepository.findById(examValidatorId).orElseThrow();
-        Course course= courseRepository.findById(courseId).orElseThrow();
         exam.addExamValidator(examValidator);
         exam.addExamMaker(maker);
-        exam.addCourse(course);
 
         Statistics statistics = Statistics.createStatistics(0, 0, 0, 0);
         exam.addStatistics(statistics);
@@ -66,42 +64,7 @@ public class ExamService {
 
         return examDTOS;
     }
-    public ExamDTO validateExams(long validatorId,long examId,long courseId) {
-        Course course=courseRepository.findById(courseId).orElseThrow();
-        Exam exam = examRepository.findById(examId).orElseThrow();
-        Teacher teacher=teacherRepository.findById(validatorId).orElseThrow();
-        if (course.getValidatingExams().contains(exam)&&course.getTeachers().contains(teacher)) {
-        return toDTO(exam);}
-        else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-    }
-    public ExamDTO acceptExam(long examId) throws Exception {
-        Exam exam = examRepository.findById(examId).orElseThrow();
-        exam.approveExam();
-        examRepository.save(exam);
-        return toDTO(exam);
-    }
-    public ExamDTO rejectExam(long examId, String reason) throws Exception {
-        Exam exam = examRepository.findById(examId).orElseThrow();
-        exam.rejectExam(reason);
-        examRepository.save(exam);
-        return toDTO(exam);
-    }
 
-    public ExamDTO viewDeniedExam(long examId) throws Exception {
-
-        Exam exam = examRepository.findById(examId).orElseThrow();
-        exam.viewWrongExam();
-        return toDTO(exam);
-    }
-    public ExamDTO modifyWrongExam(long examId, List<Question>newQuestions) throws Exception {
-        Exam exam = examRepository.findById(examId).orElseThrow();
-
-        exam.modifyQuestions(exam.getQuestions(),newQuestions);
-
-        questionRepository.saveAll(exam.getQuestions());
-        examRepository.save(exam);
-        return toDTO(exam);
-    }
     public ExamDTO getExamById(Long id) {
         Exam exam = examRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No exam with id: " + id + " found!"));

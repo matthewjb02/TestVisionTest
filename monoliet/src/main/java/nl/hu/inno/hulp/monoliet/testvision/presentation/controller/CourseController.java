@@ -4,6 +4,7 @@ import nl.hu.inno.hulp.monoliet.testvision.application.dto.CourseDTO;
 import nl.hu.inno.hulp.monoliet.testvision.application.dto.ExamDTO;
 import nl.hu.inno.hulp.monoliet.testvision.domain.Course;
 import nl.hu.inno.hulp.monoliet.testvision.application.service.CourseService;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -47,5 +48,21 @@ public class CourseController {
     @PostMapping("/{courseId}/exams/{examId}")
     public CourseDTO addTestToCourse(@PathVariable Long courseId, @PathVariable Long examId) {
         return courseService.addTestToCourse(courseId, examId);
+    }
+    @PutMapping("{id}/exams/{examId}/accept")
+    public ExamDTO acceptExam(@PathVariable Long id, @PathVariable Long examId) throws Exception {
+        return courseService.acceptExam(examId,id);
+    }
+    @PutMapping("{id}/exams/{examId}/reject")
+    public ExamDTO rejectExam(@PathVariable Long id, @PathVariable Long examId,@RequestBody String reason) throws Exception {
+        return courseService.rejectExam(examId,id, reason);
+    }
+    @GetMapping("/{id}/exams/{examId}/reject/view")
+    public ExamDTO viewDeniedExam(@PathVariable Long examId,@PathVariable Long id) throws Exception {
+        return courseService.viewDeniedExam(examId,id);
+    }
+    @PutMapping("/{id}/exams/{examId}/reject/modify")
+    public ExamDTO modifyWrongExam(@PathVariable Long examId,@PathVariable Long id,@RequestBody List<Question>newQuestions) throws Exception {
+        return courseService.modifyWrongExam(examId,id, newQuestions);
     }
 }
