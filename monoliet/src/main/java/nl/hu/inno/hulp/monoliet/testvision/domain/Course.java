@@ -18,7 +18,6 @@ public class Course {
 
     private String name;
 
-
     @ManyToMany
     private List<Teacher> teachers=new ArrayList<>();
     @OneToMany
