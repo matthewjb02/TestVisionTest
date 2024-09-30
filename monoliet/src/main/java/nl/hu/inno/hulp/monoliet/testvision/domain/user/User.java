@@ -4,8 +4,8 @@ import jakarta.persistence.MappedSuperclass;
 
 @MappedSuperclass
 public class User {
-    private String firstName;
-    private String lastName;
+    String firstName;
+    String lastName;
 
     protected User() {
     }

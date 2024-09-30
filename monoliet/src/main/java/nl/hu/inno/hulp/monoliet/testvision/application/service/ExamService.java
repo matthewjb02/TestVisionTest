@@ -1,15 +1,18 @@
 package nl.hu.inno.hulp.monoliet.testvision.application.service;
 
 import nl.hu.inno.hulp.monoliet.testvision.application.dto.*;
+import nl.hu.inno.hulp.monoliet.testvision.data.CourseRepository;
 import nl.hu.inno.hulp.monoliet.testvision.data.QuestionRepository;
 import nl.hu.inno.hulp.monoliet.testvision.data.TeacherRepository;
 import nl.hu.inno.hulp.monoliet.testvision.data.ExamRepository;
+import nl.hu.inno.hulp.monoliet.testvision.domain.Course;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.GradingCriteria;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Statistics;
+import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,42 +28,22 @@ public class ExamService {
     private final ExamRepository examRepository;
     private final QuestionRepository questionRepository;
     private final TeacherRepository teacherRepository;
+    private final CourseRepository courseRepository;
 
     @Autowired
-    public ExamService(ExamRepository examRepository, QuestionRepository questionRepository, TeacherRepository teacherRepository) {
+    public ExamService(ExamRepository examRepository, QuestionRepository questionRepository, TeacherRepository teacherRepository, CourseRepository courseRepository) {
         this.examRepository = examRepository;
         this.questionRepository = questionRepository;
         this.teacherRepository = teacherRepository;
+        this.courseRepository = courseRepository;
     }
-
-    public List<ExamDTO> getAllExams() {
-        List<Exam> allExams = examRepository.findAll();
-        List<ExamDTO> examDTOS = new ArrayList<>();
-        for (Exam exam : allExams) {
-            examDTOS.add(toDTO(exam));
-        }
-
-        return examDTOS;
-    }
-
-    public ExamDTO getExamById(Long id) {
-        Exam exam = examRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No exam with id: " + id + " found!"));
-
-        return toDTO(exam);
-    }
-
-    public Exam getExam(Long id) {
-        Exam exam = examRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No exam with id: " + id + " found!"));
-        return exam;
-    }
-
-    public ExamDTO addExam(Exam exam, long examMakerId, long examValidatorId) {
-        String  maker=teacherRepository.findById(examMakerId).orElseThrow().getEmail().getEmail();
-        String examValidator=teacherRepository.findById(examValidatorId).orElseThrow().getEmail().getEmail();
-        exam.setExamValidatorMail(examValidator);
-        exam.setMakerMail(maker);
+    public ExamDTO addExam(Exam exam, long examMakerId, long examValidatorId,long courseId) {
+        Teacher  maker=teacherRepository.findById(examMakerId).orElseThrow();
+        Teacher examValidator=teacherRepository.findById(examValidatorId).orElseThrow();
+        Course course= courseRepository.findById(courseId).orElseThrow();
+        exam.addExamValidator(examValidator);
+        exam.addExamMaker(maker);
+        exam.addCourse(course);
 
         Statistics statistics = Statistics.createStatistics(0, 0, 0, 0);
         exam.addStatistics(statistics);
@@ -74,6 +57,65 @@ public class ExamService {
         examRepository.deleteById(id);
         return oldExamDTO;
     }
+    public List<ExamDTO> getAllExams() {
+        List<Exam> allExams = examRepository.findAll();
+        List<ExamDTO> examDTOS = new ArrayList<>();
+        for (Exam exam : allExams) {
+            examDTOS.add(toDTO(exam));
+        }
+
+        return examDTOS;
+    }
+    public ExamDTO validateExams(long validatorId,long examId,long courseId) {
+        Course course=courseRepository.findById(courseId).orElseThrow();
+        Exam exam = examRepository.findById(examId).orElseThrow();
+        Teacher teacher=teacherRepository.findById(validatorId).orElseThrow();
+        if (course.getValidatingExams().contains(exam)&&course.getTeachers().contains(teacher)) {
+        return toDTO(exam);}
+        else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    }
+    public ExamDTO acceptExam(long examId) throws Exception {
+        Exam exam = examRepository.findById(examId).orElseThrow();
+        exam.approveExam();
+        examRepository.save(exam);
+        return toDTO(exam);
+    }
+    public ExamDTO rejectExam(long examId, String reason) throws Exception {
+        Exam exam = examRepository.findById(examId).orElseThrow();
+        exam.rejectExam(reason);
+        examRepository.save(exam);
+        return toDTO(exam);
+    }
+
+    public ExamDTO viewDeniedExam(long examId) throws Exception {
+
+        Exam exam = examRepository.findById(examId).orElseThrow();
+        exam.viewWrongExam();
+        return toDTO(exam);
+    }
+    public ExamDTO modifyWrongExam(long examId, List<Question>newQuestions) throws Exception {
+        Exam exam = examRepository.findById(examId).orElseThrow();
+
+        exam.modifyQuestions(exam.getQuestions(),newQuestions);
+
+        questionRepository.saveAll(exam.getQuestions());
+        examRepository.save(exam);
+        return toDTO(exam);
+    }
+    public ExamDTO getExamById(Long id) {
+        Exam exam = examRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No exam with id: " + id + " found!"));
+
+        return toDTO(exam);
+    }
+
+    public Exam getExam(Long id) {
+        Exam exam = examRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No exam with id: " + id + " found!"));
+        return exam;
+    }
+
+
 
     public ExamDTO addQuestionsByIdsToExam(Long examId, List<Long> questionIds) {
         Exam exam = examRepository.findById(examId)
@@ -137,10 +179,11 @@ public class ExamService {
                 gradingCriteriaDTO,
                 submissionDTOs,
                 statisticsDTO
+
         );
     }
 
-    private List<QuestionDTO> getQuestionDTOs(List<Question> questions) {
+       private List<QuestionDTO> getQuestionDTOs(List<Question> questions) {
 
         if (questions == null){
             return null;

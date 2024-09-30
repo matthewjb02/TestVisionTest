@@ -1,14 +1,17 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain.exam;
 
 import jakarta.persistence.*;
+import nl.hu.inno.hulp.monoliet.testvision.domain.Course;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
+import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
@@ -22,28 +25,31 @@ public class Exam {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Submission> submissions = new ArrayList<>();
 
-    private Validation validationStatus= Validation.WAITING;
+    private ValidationStatus validationStatus= ValidationStatus.WAITING;
     private String reason;
   
     @OneToMany
     private List<Question> questions;
-    private String examValidatorMail;
+    @OneToOne
+    private Teacher examValidator;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Statistics statistics;
-
-    private String makerMail;
+    @OneToOne
+    private Teacher examMaker;
     private int totalPoints;
-
+    @Transient
+    private Course  course;
     public Exam(){
 
     }
 
-    public Exam(String makerMail, String examValidatorMail, Question... questions){
+    public Exam(Course course, Teacher examMaker, Teacher examValidator, Question... questions){
         if (questions.length > 0){
             this.questions = new ArrayList<>(Arrays.asList(questions));
-            this.makerMail = makerMail;
-            this.examValidatorMail = examValidatorMail;
+            this.examMaker = examMaker;
+            this.examValidator = examValidator;
+            this.course = course;
             calculateTotalPoints();
         }
     }
@@ -55,7 +61,56 @@ public class Exam {
         }
         totalPoints = questions.stream().mapToInt(Question::getPoints).sum();
     }
+    private boolean doesTeacherTeachCourse() throws Exception {
 
+        if (this.course.getTeachers().contains(this.examMaker)&&this.examMaker!=this.examValidator||this.course.getTeachers().contains(this.examValidator)&&this.examMaker!=this.examValidator) {
+        return true;
+        } else throw new Exception("The Teacher does not teach this course");
+    }
+
+    private boolean canIApproveThisExam(Teacher examValidator) throws Exception {
+        if (course.getValidatingExams().contains(this)&&this.examValidator ==examValidator){
+            return true;
+        }
+        else if(this.examValidator !=examValidator&&course.getValidatingExams().contains(this)){
+            throw new Exception("The Teacher is not assigned as validator, but the exam needs to be Validated");
+        }
+        else throw new Exception("The exam cannot be validated");
+    }
+
+
+
+    public void approveExam() throws Exception {
+        if (doesTeacherTeachCourse()&& canIApproveThisExam(this.examValidator)){
+            this.setValidationStatus(ValidationStatus.APPROVED);
+            course.getValidatingExams().remove(this);
+            course.getApprovedExams().add(this);
+        }
+    }
+    public void rejectExam(String reason) throws Exception {
+        if (doesTeacherTeachCourse()&& canIApproveThisExam(this.examValidator)) {
+            this.setValidationStatus(ValidationStatus.DENIED);
+            course.getValidatingExams().remove(this);
+            course.getRejectedExams().add(this);
+            this.setReason(reason);
+        }
+    }
+    public void viewWrongExam() throws Exception {
+        if (Objects.equals(this.getMakerMail(), this.examMaker.getEmail().getEmailString()) &&course.getRejectedExams().contains(this)){
+            System.out.println(this.getReason());
+        }
+        else throw new Exception("This exam was not rejected");
+    }
+    public void modifyQuestions(List<Question> oldQuestions, List<Question> newQuestion) {
+        if (Objects.equals(this.getMakerMail(), this.examMaker.getEmail().getEmailString()) &&course.getRejectedExams().contains(this)){
+            this.removeQuestions(oldQuestions);
+            this.addQuestions(newQuestion);
+            course.getValidatingExams().add(this);
+            course.getRejectedExams().remove(this);
+            this.setValidationStatus(ValidationStatus.WAITING);
+            this.setReason("");
+        }
+    }
     public int getTotalPoints(){
         return  totalPoints;
     }
@@ -76,16 +131,16 @@ public class Exam {
         this.questions.addAll(questions);
     }
 
-    public String getExamValidatorMail() {
-        return examValidatorMail;
+    public Teacher getExamValidatorMail() {
+        return examValidator;
     }
 
-    public String getMakerMail() {
-        return makerMail;
+    public Teacher getMakerMail() {
+        return examMaker;
     }
 
 
-    public Validation getValidationStatus() {
+    public ValidationStatus getValidationStatus() {
         return validationStatus;
     }
 
@@ -132,8 +187,15 @@ public class Exam {
                 .sum();
     }
 
-
-
+    public void addExamMaker(Teacher examMaker) {
+        this.examMaker = examMaker;
+    }
+    public void addExamValidator(Teacher examValidator) {
+        this.examValidator = examValidator;
+    }
+    public void addCourse(Course course) {
+        this.course = course;
+    }
     public void addGradingCriteria(GradingCriteria gradingCriteria) {
         this.gradingCriteria = gradingCriteria;
     }
@@ -158,15 +220,8 @@ public class Exam {
         this.statistics = statistics;
     }
 
-    public void setExamValidatorMail(String examValidator) {
-        this.examValidatorMail = examValidator;
-    }
 
-    public void setMakerMail(String maker) {
-        this.makerMail = maker;
-    }
-
-    public void setValidationStatus(Validation validationStatus) {
+    private void setValidationStatus(ValidationStatus validationStatus) {
         this.validationStatus = validationStatus;
     }
 

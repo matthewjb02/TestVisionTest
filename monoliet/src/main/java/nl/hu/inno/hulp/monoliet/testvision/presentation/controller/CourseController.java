@@ -4,6 +4,7 @@ import nl.hu.inno.hulp.monoliet.testvision.application.dto.CourseDTO;
 import nl.hu.inno.hulp.monoliet.testvision.application.dto.ExamDTO;
 import nl.hu.inno.hulp.monoliet.testvision.domain.Course;
 import nl.hu.inno.hulp.monoliet.testvision.application.service.CourseService;
+import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,14 +40,12 @@ public class CourseController {
     public CourseDTO deleteCourse(@PathVariable Long id) {
         return courseService.deleteCourse(id);
     }
-
-    @PostMapping("/{courseId}/tests/{testId}")
-    public CourseDTO addTestToCourse(@PathVariable Long courseId, @PathVariable Long testId) {
-        return courseService.addTestToCourse(courseId, testId);
+    @PostMapping("/{courseId}/teachers/{teacherId}")
+    public CourseDTO addTeacherToCourse(@PathVariable Long courseId ,@PathVariable Long teacherId) {
+       return courseService.addTeacherToCourse(courseId, teacherId);
     }
-
-    @GetMapping("/{courseId}/tests")
-    public List<ExamDTO> getAllTestsByCourseId(@PathVariable Long courseId) {
-        return courseService.getAllTestsByCourseId(courseId);
+    @PostMapping("/{courseId}/exams/{examId}")
+    public CourseDTO addTestToCourse(@PathVariable Long courseId, @PathVariable Long examId) {
+        return courseService.addTestToCourse(courseId, examId);
     }
 }

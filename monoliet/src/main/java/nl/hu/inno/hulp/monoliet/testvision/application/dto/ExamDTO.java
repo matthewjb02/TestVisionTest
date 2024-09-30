@@ -1,17 +1,18 @@
 // In de TestDTO klasse
 package nl.hu.inno.hulp.monoliet.testvision.application.dto;
 
-import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Validation;
+import nl.hu.inno.hulp.monoliet.testvision.domain.Course;
+import nl.hu.inno.hulp.monoliet.testvision.domain.exam.ValidationStatus;
+import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
 
 import java.util.List;
-
 public class ExamDTO {
 
     private Long id;
     private List<QuestionDTO> questions;
-    private String makerMail;
-    private String examValidatorMail;
-    private Validation validation;
+    private Teacher examMaker;
+    private Teacher examValidator;
+    private ValidationStatus validationStatus;
     private String reason;
     private int totalPoints;
     private GradingCriteriaDTO gradingCriteria;
@@ -21,13 +22,13 @@ public class ExamDTO {
     public ExamDTO() {
     }
 
-    public ExamDTO(Long id, List<QuestionDTO> questions, int totalPoints, String makerMail, String examValidatorMail, Validation validation, String reason, GradingCriteriaDTO gradingCriteria, List<SubmissionDTO> submissions, StatisticsDTO statistics) {
+    public ExamDTO(Long id, List<QuestionDTO> questions, int totalPoints,Teacher examMaker, Teacher examValidator, ValidationStatus validationStatus, String reason, GradingCriteriaDTO gradingCriteria, List<SubmissionDTO> submissions, StatisticsDTO statistics) {
         this.id = id;
         this.questions = questions;
         this.totalPoints = totalPoints;
-        this.makerMail = makerMail;
-        this.examValidatorMail = examValidatorMail;
-        this.validation = validation;
+        this.examMaker = examMaker;
+        this.examValidator = examValidator;
+        this.validationStatus = validationStatus;
         this.reason = reason;
         this.gradingCriteria = gradingCriteria;
         this.submissions = submissions;
@@ -58,19 +59,20 @@ public class ExamDTO {
         return statistics;
     }
   
-    public String getMakerMail() {
-        return makerMail;
+    public Teacher getExamMaker() {
+        return examMaker;
     }
 
-    public String getExamValidatorMail() {
-        return examValidatorMail;
+    public Teacher getExamValidator() {
+        return examValidator;
     }
 
-    public Validation getValidation() {
-        return validation;
+    public ValidationStatus getValidation() {
+        return validationStatus;
     }
 
     public String getReason() {
         return reason;
     }
+
 }

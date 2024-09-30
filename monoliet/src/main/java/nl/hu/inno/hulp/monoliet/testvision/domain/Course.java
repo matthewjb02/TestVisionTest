@@ -1,11 +1,9 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Validation;
+import nl.hu.inno.hulp.monoliet.testvision.domain.exam.ValidationStatus;
+import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +15,8 @@ public class Course {
     private Long id;
 
     private String name;
+    @ManyToMany
+    private List<Teacher> teachers;
 
     @OneToMany
     private List<Exam> approvedExams =new ArrayList<>();
@@ -32,19 +32,25 @@ public class Course {
     public Course(String name){
         this.name = name;
     }
-
+    public void addTeacher(Teacher teacher){
+        teachers.add(teacher);
+    }
     public void addExam(Exam exam){
-        if (exam.getValidationStatus().equals(Validation.APPROVED)){
+        if (exam.getValidationStatus().equals(ValidationStatus.APPROVED)){
         approvedExams.add(exam);}
-        else if(exam.getValidationStatus().equals(Validation.WAITING)){
+        else if(exam.getValidationStatus().equals(ValidationStatus.WAITING)){
             validatingExams.add(exam);
-        } else if (exam.getValidationStatus().equals(Validation.DENIED) ) {
+        } else if (exam.getValidationStatus().equals(ValidationStatus.DENIED) ) {
             rejectedExams.add(exam);
         }
     }
 
     public List<Exam> getApprovedExams(){
         return approvedExams;
+    }
+
+    public List<Teacher> getTeachers() {
+        return teachers;
     }
 
     public List<Exam> getValidatingExams() {
@@ -61,4 +67,5 @@ public class Course {
     public String getName() {
         return name;
     }
+
 }

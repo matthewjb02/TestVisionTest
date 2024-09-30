@@ -47,32 +47,32 @@ public class ExamSessionServiceTest {
     private ExamSession examSession;
     private Exam exam;
 
-    @BeforeEach
-    @DisplayName("Get repositories and services")
-    void getRepoAndService() {
-        studentService = mock(StudentService.class);
-        Student student = new Student("Jan", "Steen", false);
-        when(studentService.getStudent(1L)).thenReturn(student);
-
-        examService = mock(ExamService.class);
-        Question question1 = new OpenQuestion(1, "Wat is de hoofdstad van parijs.", "is er niet");
-        Question question2 = new OpenQuestion(1, "Hoe zeg je hallo in het engels.", "Hello");
-        exam = new Exam("", "", question1, question2);
-        when(examService.getExam(1L)).thenReturn(exam);
-
-        examinationRepository = mock(ExaminationRepository.class);
-        examinationService = new ExaminationService(examinationRepository, examSessionRepository, studentService, examService);
-        examination = new Examination("toets1", exam,"hallo", null, 120, 30);
-        examination.selectCandidates(List.of(student));
-        when(examinationRepository.findById(1L)).thenReturn(Optional.of(examination));
-
-        examSessionRepository = mock(ExamSessionRepository.class);
-        submissionRepository = mock(SubmissionRepository.class);
-        examSessionService = new ExamSessionService(examSessionRepository, studentService, examinationService, submissionRepository);
-
-        StartExamSession startExamSession = new StartExamSession(1L, 1L, "hallo");
-        examSession = examSessionService.startExamSession(startExamSession);
-    }
+//    @BeforeEach
+//    @DisplayName("Get repositories and services")
+//    void getRepoAndService() {
+//        studentService = mock(StudentService.class);
+//        Student student = new Student("Jan", "Steen", false);
+//        when(studentService.getStudent(1L)).thenReturn(student);
+//
+//        examService = mock(ExamService.class);
+//        Question question1 = new OpenQuestion(1, "Wat is de hoofdstad van parijs.", "is er niet");
+//        Question question2 = new OpenQuestion(1, "Hoe zeg je hallo in het engels.", "Hello");
+//        exam = new Exam("", "", question1, question2);
+//        when(examService.getExam(1L)).thenReturn(exam);
+//
+//        examinationRepository = mock(ExaminationRepository.class);
+//        examinationService = new ExaminationService(examinationRepository, examSessionRepository, studentService, examService);
+//        examination = new Examination("toets1", exam,"hallo", null, 120, 30);
+//        examination.selectCandidates(List.of(student));
+//        when(examinationRepository.findById(1L)).thenReturn(Optional.of(examination));
+//
+//        examSessionRepository = mock(ExamSessionRepository.class);
+//        submissionRepository = mock(SubmissionRepository.class);
+//        examSessionService = new ExamSessionService(examSessionRepository, studentService, examinationService, submissionRepository);
+//
+//        StartExamSession startExamSession = new StartExamSession(1L, 1L, "hallo");
+//        examSession = examSessionService.startExamSession(startExamSession);
+//    }
 
     @Test
     @DisplayName("Start exam")

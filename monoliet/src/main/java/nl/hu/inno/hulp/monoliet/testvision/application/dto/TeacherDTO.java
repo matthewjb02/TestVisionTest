@@ -9,17 +9,15 @@ public class TeacherDTO {
     private String firstName;
     private String lastName;
     private String email;
-    private List<Course> courses;
 
     public TeacherDTO() {
 
     }
-    public TeacherDTO(long id,String firstName, String lastName, String email, List<Course> courses) {
+    public TeacherDTO(long id,String firstName, String lastName, String email) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.courses = courses;
     }
 
     public String getFirstName() {
@@ -33,9 +31,7 @@ public class TeacherDTO {
     public String getEmail() {
         return email;
     }
-    public List<Course> getCourses() {
-        return courses;
-    }
+
     public long getId() {
         return id;
     }

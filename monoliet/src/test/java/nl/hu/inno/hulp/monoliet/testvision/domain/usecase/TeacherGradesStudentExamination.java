@@ -1,5 +1,6 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain.usecase;
 
+import nl.hu.inno.hulp.monoliet.testvision.domain.Course;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
 import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamSession;
 import nl.hu.inno.hulp.monoliet.testvision.domain.examination.Examination;
@@ -21,11 +22,13 @@ public class TeacherGradesStudentExamination {
 
         // Een student en docent registreren zich voor het systeem
         Teacher maker = new Teacher("Neal", "Tyson", "neal.tyson@hu.nl");
+        Teacher examValidator =new Teacher("Bill","Nye","bill.nye@hu.nl");
         Student student = new Student("Elon", "Musk", false);
+        Course course= new Course("1");
 
         // Een docent maakt een vraag aan die hij kan toevoegen aan de aangemaakte toets. Ook voegt de docent toetsstatistieken toe
         OpenQuestion question = new OpenQuestion(10, "What does the atomic symbol K name", "Potassium");
-        Exam exam = new Exam(maker.getFirstName(), maker.getLastName(), question);
+        Exam exam = new Exam(course,maker,examValidator, question);
         GradingCriteria gradingCriteria = new GradingCriteria(0.5, 0.5);
         exam.addGradingCriteria(gradingCriteria);
         exam.addStatistics(new Statistics());

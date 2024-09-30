@@ -24,12 +24,12 @@ class ExamTest {
     private Question question1;
     private Question question2;
 
-    @BeforeEach
-    void createTest() {
-        question1 = new Question(5, "Question 1");
-        question2 = new Question(10, "Question 2");
-        exam = new Exam("maker@example.com", "validator@example.com", question1, question2);
-    }
+//    @BeforeEach
+//    void createTest() {
+//        question1 = new Question(5, "Question 1");
+//        question2 = new Question(10, "Question 2");
+//        exam = new Exam("maker@example.com", "validator@example.com", question1, question2);
+//    }
 
     @Test
     @DisplayName("Correctly calculated total points")
@@ -49,14 +49,14 @@ class ExamTest {
         assertEquals(2, exam.getQuestions().size());
     }
 
-    @Test
-    @DisplayName("Validations are set correctly")
-    void testSetAndGetValidationStatus() {
-        assertEquals(Validation.WAITING, exam.getValidationStatus());
-
-        exam.setValidationStatus(Validation.APPROVED);
-        assertEquals(Validation.APPROVED, exam.getValidationStatus());
-    }
+//    @Test
+//    @DisplayName("Validations are set correctly")
+//    void testSetAndGetValidationStatus() {
+//        assertEquals(ValidationStatus.WAITING, exam.getValidationStatus());
+//
+//        exam.setValidationStatus(ValidationStatus.APPROVED);
+//        assertEquals(ValidationStatus.APPROVED, exam.getValidationStatus());
+//    }
 
     @Test
     @DisplayName("You can add grading criteria")

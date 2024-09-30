@@ -2,12 +2,14 @@ package nl.hu.inno.hulp.monoliet.testvision.application.service;
 
 import nl.hu.inno.hulp.monoliet.testvision.application.dto.*;
 import nl.hu.inno.hulp.monoliet.testvision.data.ExamRepository;
+import nl.hu.inno.hulp.monoliet.testvision.data.TeacherRepository;
 import nl.hu.inno.hulp.monoliet.testvision.domain.Course;
 import nl.hu.inno.hulp.monoliet.testvision.data.CourseRepository;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
+import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -22,11 +24,13 @@ public class CourseService {
 
     private final CourseRepository courseRepository;
     private final ExamRepository examRepository;
+    private final TeacherRepository teacherRepository;
 
     @Autowired
-    public CourseService(CourseRepository courseRepository, ExamRepository examRepository) {
+    public CourseService(CourseRepository courseRepository, ExamRepository examRepository, TeacherRepository teacherRepository) {
         this.courseRepository = courseRepository;
         this.examRepository = examRepository;
+        this.teacherRepository = teacherRepository;
     }
 
     public List<CourseDTO> getAllCourses() {
@@ -56,6 +60,13 @@ public class CourseService {
         courseRepository.deleteById(id);
         return oldDTO;
     }
+    public CourseDTO addTeacherToCourse(Long courseId, Long teacherId) {
+        Course course=courseRepository.findById(courseId).orElseThrow();
+        Teacher teacher= teacherRepository.findById(teacherId).orElseThrow();
+        course.addTeacher(teacher);
+        courseRepository.save(course);
+        return getDTO(course);
+    }
 
     public CourseDTO addTestToCourse(Long courseId, Long testId) {
         Course course = courseRepository.findById(courseId)
@@ -81,7 +92,13 @@ public class CourseService {
 
         return examDTOS;
     }
-
+    private TeacherDTO getTeacherDTO(Teacher teacher) {
+        return new TeacherDTO(
+                teacher.getId(),
+                teacher.getFirstName(),
+                teacher.getLastName(),
+                teacher.getEmail().getEmailString());
+    }
     private CourseDTO getDTO(Course course){
         List<ExamDTO> approvedExamDTOS = new ArrayList<>();
         for (Exam exam : course.getApprovedExams()){
@@ -95,11 +112,16 @@ public class CourseService {
         for (Exam exam : course.getValidatingExams()){
             validatingExamDTOS.add(getTestDTO(exam));
         }
+        List<TeacherDTO> teacherDTOS = new ArrayList<>();
+        for (Teacher teacher : course.getTeachers()){
+            teacherDTOS.add(getTeacherDTO(teacher));
+        }
 
 
         return new CourseDTO(
                 course.getId(),
                 course.getName(),
+                teacherDTOS,
                 approvedExamDTOS,
                 rejectedExamDTOS,
                 validatingExamDTOS
