@@ -74,8 +74,4 @@ public class Examination {
     public boolean validateStudent(Student student) {
         return candidates.contains(student);
     }
-
-    public void changePassword(String newPassword) {
-        this.password = newPassword;
-    }
 }
