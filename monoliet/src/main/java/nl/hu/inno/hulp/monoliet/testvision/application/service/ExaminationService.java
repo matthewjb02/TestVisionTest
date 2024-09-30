@@ -4,6 +4,7 @@ import nl.hu.inno.hulp.monoliet.testvision.data.ExamSessionRepository;
 import nl.hu.inno.hulp.monoliet.testvision.data.ExaminationRepository;
 import nl.hu.inno.hulp.monoliet.testvision.data.SubmissionRepository;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
+import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamDate;
 import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamSession;
 import nl.hu.inno.hulp.monoliet.testvision.domain.examination.Examination;
 import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamState;
@@ -37,7 +38,8 @@ public class ExaminationService {
 
     public Examination createExamination(CreateExamination request) {
         Exam exam = examService.getExam(request.examId());
-        Examination examination = new Examination(request.name(), exam, request.password(), request.examDate(), request.duration(), request.extraTime());
+        ExamDate examDate = new ExamDate(request.examDate().startDate, request.examDate().endDate);
+        Examination examination = new Examination(request.name(), exam, request.password(), examDate, request.duration(), request.extraTime());
         examinationRepository.save(examination);
 
         return examination;
