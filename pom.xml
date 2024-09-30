@@ -20,8 +20,6 @@
 	
 	<modules>
 		<module>monoliet</module>
-		<module>SubmissionGrading</module>
-		<module>Commons</module>
 
 	</modules>
 	
