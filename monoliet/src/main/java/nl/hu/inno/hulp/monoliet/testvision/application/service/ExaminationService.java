@@ -1,8 +1,10 @@
 package nl.hu.inno.hulp.monoliet.testvision.application.service;
 
+import nl.hu.inno.hulp.monoliet.testvision.data.ExamSessionRepository;
 import nl.hu.inno.hulp.monoliet.testvision.data.ExaminationRepository;
 import nl.hu.inno.hulp.monoliet.testvision.data.SubmissionRepository;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
+import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamSession;
 import nl.hu.inno.hulp.monoliet.testvision.domain.examination.Examination;
 import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamState;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exception.ExaminationInactiveException;
@@ -19,77 +21,50 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ExaminationService {
     private final ExaminationRepository examinationRepository;
+    private final ExamSessionRepository examSessionRepository;
     private final StudentService studentService;
     private final ExamService examService;
-    private final SubmissionRepository submissionRepository;
 
 
     @Autowired
-    public ExaminationService(ExaminationRepository examinationRepository, StudentService studentService, ExamService examService, SubmissionRepository submissionRepository) {
+    public ExaminationService(ExaminationRepository examinationRepository, ExamSessionRepository examSessionRepository,
+                              StudentService studentService, ExamService examService) {
         this.examinationRepository = examinationRepository;
+        this.examSessionRepository = examSessionRepository;
         this.studentService = studentService;
         this.examService = examService;
-        this.submissionRepository = submissionRepository;
     }
 
     public Examination createExamination(CreateExamination request) {
         Exam exam = examService.getExam(request.examId());
-        Examination examination = new Examination(exam, request.password(), request.examDate(), request.duration(), request.extraTime());
+        Examination examination = new Examination(request.name(), exam, request.password(), request.examDate(), request.duration(), request.extraTime());
         examinationRepository.save(examination);
 
         return examination;
     }
 
-    public Examination startExamination(StartExaminationRequest examinationRequest) {
-        Student student = studentService.getStudent(examinationRequest.studentId());
-        Exam exam = examService.getExam(examinationRequest.examId());
-        Examination examination = new Examination(student, exam);
-        examinationRepository.save(examination);
+    public Examination createSessions(Long id) {
+        Examination examination = getExaminationById(id);
+        examination.setupExamSessions();
+        examSessionRepository.saveAll(examination.getExamSessions());
 
         return examination;
     }
 
-    public Question seeQuestion(SeeQuestion examRequest)  {
-        Examination examination = getExamById(examRequest.examId());
-
-        if (examination.getState() == ExamState.Active) {
-            return examination.seeQuestion(examRequest.questionNr());
-        } else {
-            throw new ExaminationInactiveException("This exam is inactive");
-        }
+    public Examination selectCandidates(Candidates candidates) {
+        Examination examination = getExaminationById(candidates.examinationId);
+        return examination.selectCandidates(candidates.students);
     }
 
-    public Examination enterAnswer(AnswerRequest answerRequest) {
-        Examination examination = getExamById(answerRequest.examId());
+    public boolean validatingStudent(StartExamSession request) {
+        Examination examination = getExaminationById(request.examinationId());
+        Student student = studentService.getStudent(request.studentId());
 
-        if (examination.getState() == ExamState.Active) {
-            examination.answerQuestion(answerRequest.questionNr(), answerRequest.answer());
-            examinationRepository.save(examination);
-            return examination;
-        } else {
-            throw new ExaminationInactiveException("This exam is inactive");
-        }
+        return examination.validateStudent(student);
     }
 
-    public Examination endExam(ExaminationRequest examinationRequest) {
-        Examination examination = getExamById(examinationRequest.examId());
-
-        if (examination.getState() == ExamState.Active) {
-            examination.endExam();
-
-            Submission submission = Submission.createSubmission(examination);
-            examination.getExam().addSubmission(submission);
-            submissionRepository.save(submission);
-
-            return examination;
-
-        } else {
-            throw new ExaminationInactiveException("This exam is already completed");
-        }
-    }
-
-    public Examination getExamById(Long id) {
+    public Examination getExaminationById(Long id) {
         return examinationRepository.findById(id)
-                .orElseThrow(() -> new NoExaminationFoundException("No exam with id: " + id + " found!"));
+                .orElseThrow(() -> new NoExaminationFoundException("No examination with id: " + id + " found!"));
     }
 }
