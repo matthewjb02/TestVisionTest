@@ -9,7 +9,7 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestio
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Entity
 @Getter
@@ -40,7 +40,8 @@ public class ExamSession {
         this.state = ExamState.Published;
         this.duration = context.totalDuration(student.isExtraTimeRight());
         this.exam = context.getExam();
-        this.securedPassword = hashPassword(context.getPassword());
+        //this.securedPassword = hashPassword(context.getPassword());
+        this.securedPassword = context.getPassword();
         this.examDate = context.getExamDate();
         this.student = student;
     }
@@ -77,14 +78,15 @@ public class ExamSession {
         return this;
     }
 
-    public String hashPassword(String password) {
+    /*public String hashPassword(String password) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return passwordEncoder.encode(password);
-    }
+    }*/
 
     public boolean verifyPassword(String inputPassword) {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        return encoder.matches(inputPassword, securedPassword);
+        //BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        //return encoder.matches(inputPassword, securedPassword);
+        return securedPassword.equals(inputPassword); //security will be implemented after splitting up in smaller applications
     }
 
     public void changeState(ExamState state) {
