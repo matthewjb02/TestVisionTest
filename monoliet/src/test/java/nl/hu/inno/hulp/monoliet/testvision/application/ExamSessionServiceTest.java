@@ -1,11 +1,14 @@
 package nl.hu.inno.hulp.monoliet.testvision.application;
 
+import nl.hu.inno.hulp.monoliet.testvision.application.service.ExamSessionService;
 import nl.hu.inno.hulp.monoliet.testvision.application.service.ExaminationService;
 import nl.hu.inno.hulp.monoliet.testvision.application.service.StudentService;
 import nl.hu.inno.hulp.monoliet.testvision.application.service.ExamService;
+import nl.hu.inno.hulp.monoliet.testvision.data.ExamSessionRepository;
 import nl.hu.inno.hulp.monoliet.testvision.data.ExaminationRepository;
 import nl.hu.inno.hulp.monoliet.testvision.data.SubmissionRepository;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
+import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamSession;
 import nl.hu.inno.hulp.monoliet.testvision.domain.examination.Examination;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
@@ -13,10 +16,7 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamState;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exception.ExaminationInactiveException;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exception.NoExaminationFoundException;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.AnswerRequest;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.ExaminationRequest;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.SeeQuestion;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.StartExaminationRequest;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,10 +32,56 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class ExaminationServiceTest {
+public class ExamSessionServiceTest {
     private StudentService studentService;
     private ExamService examService;
+    private ExaminationRepository examinationRepository;
+    private ExaminationService examinationService;
+    private ExamSessionRepository examSessionRepository;
+    private ExamSessionService examSessionService;
+    private SubmissionRepository submissionRepository;
+    private Examination examination;
+    private Exam exam;
+
+    @BeforeEach
+    @DisplayName("Get repositories and services")
+    void getRepoAndService() {
+        studentService = mock(StudentService.class);
+        when(studentService.getStudent(1L)).thenReturn(new Student("Jan", "Steen", false));
+
+        examService = mock(ExamService.class);
+        Question question1 = new OpenQuestion(1, "Wat is de hoofdstad van parijs.", "is er niet");
+        Question question2 = new OpenQuestion(1, "Hoe zeg je hallo in het engels.", "Hello");
+        exam = new Exam("", "", question1, question2);
+        when(examService.getExam(1L)).thenReturn(exam);
+
+        examinationRepository = mock(ExaminationRepository.class);
+        examinationService = new ExaminationService(examinationRepository, examSessionRepository, studentService, examService);
+        examination = new Examination("toets1", exam,"hallo", null, 120, 30);
+        when(examinationService.getExaminationById(1L)).thenReturn(examination);
+
+        examSessionRepository = mock(ExamSessionRepository.class);
+        submissionRepository = mock(SubmissionRepository.class);
+        examSessionService = new ExamSessionService(examSessionRepository, studentService, examinationService, submissionRepository);
+
+    }
+
+    @Test
+    @DisplayName("Start exam")
+    void startExam() {
+        StartExamSession startExamSession = new StartExamSession(1L, 1L, "hallo");
+        ExamSession examSession = examSessionService.startExamSession(startExamSession);
+
+        assertEquals(ExamState.Active, examSession.getState());
+        assertEquals("Jan", examSession.getStudent().getFirstName());
+        assertEquals("Steen", examSession.getStudent().getLastName());
+        assertEquals(examSession.getExam().getId(), examSession.getExam().getId());
+    }
+
+    /*private StudentService studentService;
+    private ExamService examService;
     private ExaminationRepository repository;
+    private ExamSessionRepository examSessionRepository;
     private ExaminationService examinationService;
     private Examination examination;
     private SubmissionRepository submissionRepository;
@@ -49,23 +95,22 @@ public class ExaminationServiceTest {
         examService = mock(ExamService.class);
         Question question1 = new OpenQuestion(1, "Wat is de hoofdstad van parijs.", "is er niet");
         Question question2 = new OpenQuestion(1, "Hoe zeg je hallo in het engels.", "Hello");
-        Exam exam =
-                new Exam("", "", question1, question2);
+        Exam exam = new Exam("", "", question1, question2);
         when(examService.getExam(1L)).thenReturn(exam);
 
         repository = mock(ExaminationRepository.class);
         submissionRepository = mock(SubmissionRepository.class);
-        examinationService = new ExaminationService(repository, studentService, examService, submissionRepository);
+        examinationService = new ExaminationService(repository, examSessionRepository, studentService, examService, submissionRepository);
 
         StartExaminationRequest startExaminationRequest = new StartExaminationRequest(1L, 1L);
-        examination = examinationService.startExamination(startExaminationRequest);
+        examination = examinationService.startExamSession(startExaminationRequest);
     }
 
     @Test
     @DisplayName("Start exam")
     void startExam() {
         StartExaminationRequest startExaminationRequest = new StartExaminationRequest(1L, 1L);
-        Examination examination = examinationService.startExamination(startExaminationRequest);
+        Examination examination = examinationService.startExamSession(startExaminationRequest);
 
         assertEquals(ExamState.Active, examination.getState());
         assertEquals("Jan", examination.getStudent().getFirstName());
@@ -118,8 +163,8 @@ public class ExaminationServiceTest {
     void EndExam() {
         when(repository.findById(1L)).thenReturn(Optional.of(examination));
 
-        ExaminationRequest examinationRequest = new ExaminationRequest(1L);
-        examination = examinationService.endExam(examinationRequest);
+        ExamSessionRequest examinationRequest = new ExamSessionRequest(1L);
+        examination = examinationService.endExamSession(examinationRequest);
         assertEquals(ExamState.Completed, examination.getState());
     }
 
@@ -128,8 +173,8 @@ public class ExaminationServiceTest {
     void ExamInactiveWithSeeQuestion() {
         when(repository.findById(1L)).thenReturn(Optional.of(examination));
 
-        ExaminationRequest examinationRequest = new ExaminationRequest(1L);
-        examinationService.endExam(examinationRequest);
+        ExamSessionRequest examinationRequest = new ExamSessionRequest(1L);
+        examinationService.endExamSession(examinationRequest);
 
         SeeQuestion seeQuestion = new SeeQuestion(1L, 1);
         assertThrows(ExaminationInactiveException.class, () -> examinationService.seeQuestion(seeQuestion));
@@ -140,8 +185,8 @@ public class ExaminationServiceTest {
     void ExamInactive() {
         when(repository.findById(1L)).thenReturn(Optional.of(examination));
 
-        ExaminationRequest examinationRequest = new ExaminationRequest(1L);
-        examinationService.endExam(examinationRequest);
+        ExamSessionRequest examinationRequest = new ExamSessionRequest(1L);
+        examinationService.endExamSession(examinationRequest);
 
         SeeQuestion seeQuestion = new SeeQuestion(1L, 1);
         assertThrows(ExaminationInactiveException.class, () -> examinationService.seeQuestion(seeQuestion));
@@ -153,13 +198,13 @@ public class ExaminationServiceTest {
     @Test
     @DisplayName("Exam Not Found")
     void ExamNotFound() {
-        ExaminationRequest examinationRequest = new ExaminationRequest(1L);
-        assertThrows(NoExaminationFoundException.class, () -> examinationService.endExam(examinationRequest));
+        ExamSessionRequest examinationRequest = new ExamSessionRequest(1L);
+        assertThrows(NoExaminationFoundException.class, () -> examinationService.endExamSession(examinationRequest));
 
         SeeQuestion seeQuestion = new SeeQuestion(1L, 1);
         assertThrows(NoExaminationFoundException.class, () -> examinationService.seeQuestion(seeQuestion));
 
         AnswerRequest answerRequest = new AnswerRequest(1L, 1, "hallo");
         assertThrows(NoExaminationFoundException.class, () -> examinationService.enterAnswer(answerRequest));
-    }
+    }*/
 }

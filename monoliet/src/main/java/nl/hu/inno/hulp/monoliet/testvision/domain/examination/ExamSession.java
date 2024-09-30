@@ -54,7 +54,7 @@ public class ExamSession {
     }
 
     public ExamSession answerQuestion(int questionNr, Object answer) {
-        Question question = exam.getQuestions().get(questionNr - 1);
+        Question question = seeQuestion(questionNr);
 
         if (question.getClass().equals(MultipleChoiceQuestion.class)){
             MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion)question;
@@ -65,6 +65,10 @@ public class ExamSession {
         }
 
         return this;
+    }
+
+    public Question seeQuestion(int questionNr) {
+        return exam.getQuestions().get(questionNr - 1);
     }
 
     public ExamSession endSession() {
@@ -79,5 +83,9 @@ public class ExamSession {
 
     public void changeState(ExamState state) {
         this.state = state;
+    }
+
+    public Long getStudentId() {
+        return student.getId();
     }
 }
