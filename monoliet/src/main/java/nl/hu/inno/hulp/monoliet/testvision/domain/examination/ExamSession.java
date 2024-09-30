@@ -29,7 +29,6 @@ public class ExamSession {
 
     private ExamState state;
     private int duration;
-    private int minutesSpent;
 
     @Getter(AccessLevel.NONE)
     private String securedPassword;
@@ -41,7 +40,9 @@ public class ExamSession {
         this.state = ExamState.Published;
         this.duration = context.totalDuration(student.isExtraTimeRight());
         this.exam = context.getExam();
-        this.securedPassword = context.getPassword();
+        this.securedPassword = hashPassword(context.getPassword());
+        this.examDate = context.getExamDate();
+        this.student = student;
     }
 
     public ExamSession startSession(String password) {
@@ -74,6 +75,11 @@ public class ExamSession {
     public ExamSession endSession() {
         changeState(ExamState.Completed);
         return this;
+    }
+
+    public String hashPassword(String password) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        return passwordEncoder.encode(password);
     }
 
     public boolean verifyPassword(String inputPassword) {

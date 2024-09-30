@@ -75,11 +75,6 @@ public class Examination {
         return candidates.contains(student);
     }
 
-    public String hashPassword(String password) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        return passwordEncoder.encode(password);
-    }
-
     public void changePassword(String newPassword) {
         this.password = newPassword;
     }

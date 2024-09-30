@@ -10,6 +10,8 @@ import nl.hu.inno.hulp.monoliet.testvision.data.SubmissionRepository;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
 import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamSession;
 import nl.hu.inno.hulp.monoliet.testvision.domain.examination.Examination;
+import nl.hu.inno.hulp.monoliet.testvision.domain.exception.NoExamSessionFoundException;
+import nl.hu.inno.hulp.monoliet.testvision.domain.exception.PasswordIncorrectException;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamState;
@@ -24,6 +26,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -41,13 +44,15 @@ public class ExamSessionServiceTest {
     private ExamSessionService examSessionService;
     private SubmissionRepository submissionRepository;
     private Examination examination;
+    private ExamSession examSession;
     private Exam exam;
 
     @BeforeEach
     @DisplayName("Get repositories and services")
     void getRepoAndService() {
         studentService = mock(StudentService.class);
-        when(studentService.getStudent(1L)).thenReturn(new Student("Jan", "Steen", false));
+        Student student = new Student("Jan", "Steen", false);
+        when(studentService.getStudent(1L)).thenReturn(student);
 
         examService = mock(ExamService.class);
         Question question1 = new OpenQuestion(1, "Wat is de hoofdstad van parijs.", "is er niet");
@@ -58,12 +63,15 @@ public class ExamSessionServiceTest {
         examinationRepository = mock(ExaminationRepository.class);
         examinationService = new ExaminationService(examinationRepository, examSessionRepository, studentService, examService);
         examination = new Examination("toets1", exam,"hallo", null, 120, 30);
-        when(examinationService.getExaminationById(1L)).thenReturn(examination);
+        examination.selectCandidates(List.of(student));
+        when(examinationRepository.findById(1L)).thenReturn(Optional.of(examination));
 
         examSessionRepository = mock(ExamSessionRepository.class);
         submissionRepository = mock(SubmissionRepository.class);
         examSessionService = new ExamSessionService(examSessionRepository, studentService, examinationService, submissionRepository);
 
+        StartExamSession startExamSession = new StartExamSession(1L, 1L, "hallo");
+        examSession = examSessionService.startExamSession(startExamSession);
     }
 
     @Test
@@ -78,44 +86,11 @@ public class ExamSessionServiceTest {
         assertEquals(examSession.getExam().getId(), examSession.getExam().getId());
     }
 
-    /*private StudentService studentService;
-    private ExamService examService;
-    private ExaminationRepository repository;
-    private ExamSessionRepository examSessionRepository;
-    private ExaminationService examinationService;
-    private Examination examination;
-    private SubmissionRepository submissionRepository;
-
-    @BeforeEach
-    @DisplayName("Get repositories and services")
-    void getRepoAndService() {
-        studentService = mock(StudentService.class);
-        when(studentService.getStudent(1L)).thenReturn(new Student("Jan", "Steen", false));
-
-        examService = mock(ExamService.class);
-        Question question1 = new OpenQuestion(1, "Wat is de hoofdstad van parijs.", "is er niet");
-        Question question2 = new OpenQuestion(1, "Hoe zeg je hallo in het engels.", "Hello");
-        Exam exam = new Exam("", "", question1, question2);
-        when(examService.getExam(1L)).thenReturn(exam);
-
-        repository = mock(ExaminationRepository.class);
-        submissionRepository = mock(SubmissionRepository.class);
-        examinationService = new ExaminationService(repository, examSessionRepository, studentService, examService, submissionRepository);
-
-        StartExaminationRequest startExaminationRequest = new StartExaminationRequest(1L, 1L);
-        examination = examinationService.startExamSession(startExaminationRequest);
-    }
-
     @Test
-    @DisplayName("Start exam")
-    void startExam() {
-        StartExaminationRequest startExaminationRequest = new StartExaminationRequest(1L, 1L);
-        Examination examination = examinationService.startExamSession(startExaminationRequest);
-
-        assertEquals(ExamState.Active, examination.getState());
-        assertEquals("Jan", examination.getStudent().getFirstName());
-        assertEquals("Steen", examination.getStudent().getLastName());
-        assertEquals(examination.getExam().getId(), examination.getExam().getId());
+    @DisplayName("Wrong password")
+    void WrongPassword() {
+        StartExamSession startExamSession = new StartExamSession(1L, 1L, "hi");
+        assertThrows(PasswordIncorrectException.class, () -> examSessionService.startExamSession(startExamSession));
     }
 
     @ParameterizedTest
@@ -124,10 +99,10 @@ public class ExamSessionServiceTest {
     void seeQuestions(Long examId, String questionStr, int questionNr) {
         Question question;
         SeeQuestion seeQuestion;
-        when(repository.findById(1L)).thenReturn(Optional.of(examination));
+        when(examSessionRepository.findById(1L)).thenReturn(Optional.of(examSession));
 
         seeQuestion = new SeeQuestion(examId, questionNr);
-        question = examinationService.seeQuestion(seeQuestion);
+        question = examSessionService.seeQuestion(seeQuestion);
         assertEquals(questionStr, question.getQuestion());
     }
 
@@ -143,11 +118,11 @@ public class ExamSessionServiceTest {
     @DisplayName("Answering Questions")
     void answeringQuestions(Long examId, int questionNr, String answer) {
         AnswerRequest answerRequest;
-        when(repository.findById(1L)).thenReturn(Optional.of(examination));
+        when(examSessionRepository.findById(1L)).thenReturn(Optional.of(examSession));
 
         answerRequest = new AnswerRequest(examId, questionNr, answer);
-        examination = examinationService.enterAnswer(answerRequest);
-        OpenQuestion question = (OpenQuestion) examination.seeQuestion(questionNr);
+        examSession = examSessionService.enterAnswer(answerRequest);
+        OpenQuestion question = (OpenQuestion) examSession.seeQuestion(questionNr);
         assertEquals(answer, question.getAnswer());
     }
 
@@ -161,50 +136,50 @@ public class ExamSessionServiceTest {
     @Test
     @DisplayName("End exam")
     void EndExam() {
-        when(repository.findById(1L)).thenReturn(Optional.of(examination));
+        when(examSessionRepository.findById(1L)).thenReturn(Optional.of(examSession));
 
-        ExamSessionRequest examinationRequest = new ExamSessionRequest(1L);
-        examination = examinationService.endExamSession(examinationRequest);
-        assertEquals(ExamState.Completed, examination.getState());
+        ExamSessionRequest examSessionRequest = new ExamSessionRequest(1L);
+        examSession = examSessionService.endExamSession(examSessionRequest);
+        assertEquals(ExamState.Completed, examSession.getState());
     }
 
     @Test
     @DisplayName("Exam Inactive With seeQuestion")
     void ExamInactiveWithSeeQuestion() {
-        when(repository.findById(1L)).thenReturn(Optional.of(examination));
+        when(examSessionRepository.findById(1L)).thenReturn(Optional.of(examSession));
 
-        ExamSessionRequest examinationRequest = new ExamSessionRequest(1L);
-        examinationService.endExamSession(examinationRequest);
+        ExamSessionRequest examSessionRequest = new ExamSessionRequest(1L);
+        examSession = examSessionService.endExamSession(examSessionRequest);
 
         SeeQuestion seeQuestion = new SeeQuestion(1L, 1);
-        assertThrows(ExaminationInactiveException.class, () -> examinationService.seeQuestion(seeQuestion));
+        assertThrows(ExaminationInactiveException.class, () -> examSessionService.seeQuestion(seeQuestion));
     }
 
     @Test
     @DisplayName("Exam Inactive")
     void ExamInactive() {
-        when(repository.findById(1L)).thenReturn(Optional.of(examination));
+        when(examSessionRepository.findById(1L)).thenReturn(Optional.of(examSession));
 
-        ExamSessionRequest examinationRequest = new ExamSessionRequest(1L);
-        examinationService.endExamSession(examinationRequest);
+        ExamSessionRequest examSessionRequest = new ExamSessionRequest(1L);
+        examSessionService.endExamSession(examSessionRequest);
 
         SeeQuestion seeQuestion = new SeeQuestion(1L, 1);
-        assertThrows(ExaminationInactiveException.class, () -> examinationService.seeQuestion(seeQuestion));
+        assertThrows(ExaminationInactiveException.class, () -> examSessionService.seeQuestion(seeQuestion));
 
         AnswerRequest answerRequest = new AnswerRequest(1L, 1, "hallo");
-        assertThrows(ExaminationInactiveException.class, () -> examinationService.enterAnswer(answerRequest));
+        assertThrows(ExaminationInactiveException.class, () -> examSessionService.enterAnswer(answerRequest));
     }
 
     @Test
     @DisplayName("Exam Not Found")
     void ExamNotFound() {
         ExamSessionRequest examinationRequest = new ExamSessionRequest(1L);
-        assertThrows(NoExaminationFoundException.class, () -> examinationService.endExamSession(examinationRequest));
+        assertThrows(NoExamSessionFoundException.class, () -> examSessionService.endExamSession(examinationRequest));
 
         SeeQuestion seeQuestion = new SeeQuestion(1L, 1);
-        assertThrows(NoExaminationFoundException.class, () -> examinationService.seeQuestion(seeQuestion));
+        assertThrows(NoExamSessionFoundException.class, () -> examSessionService.seeQuestion(seeQuestion));
 
         AnswerRequest answerRequest = new AnswerRequest(1L, 1, "hallo");
-        assertThrows(NoExaminationFoundException.class, () -> examinationService.enterAnswer(answerRequest));
-    }*/
+        assertThrows(NoExamSessionFoundException.class, () -> examSessionService.enterAnswer(answerRequest));
+    }
 }
