@@ -25,7 +25,7 @@ Na opstarten kun je alvast kijken op
 # README RPC:
 
 ## RPC Rik:
-Ik heb de module course gemaakt. Aangezien de applicatie niet helemaal gesplitst/samengevoegd kon worden staat deze in de branch: splits-exam-in-module.
+Ik heb de module course gemaakt. Aangezien de applicatie niet helemaal gesplitst/samengevoegd kon worden staat deze in de branch: [splits-exam-in-module](https://github.com/huict/hulp-24a-v3b-testvision-team4-v3b/tree/splits-exam-in-module).
 Hier staan de Course, Exam, Questions etc., samen met de services en repositories. De DTO's staan in de Commons module.
 Op deze branch werkt de monoliet zelf niet meer omdat de dependencies veranderd zijn.
 
