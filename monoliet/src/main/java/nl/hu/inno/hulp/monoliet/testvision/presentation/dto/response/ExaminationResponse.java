@@ -13,13 +13,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ExaminationResponse {
-    private final StudentResponse student;
     private final ExamDTO exam;
-    private final ExamState state;
 
     public ExaminationResponse(Examination examination) {
-        this.student = new StudentResponse(examination.getStudent());
-
         GradingCriteriaDTO gradingCriteriaDTO = null;
         Exam exam = examination.getExam();
         if (exam.getGradingCriteria() != null) {
@@ -54,7 +50,6 @@ public class ExaminationResponse {
                                 submissionDTOs,
                                 statisticsDTO
                 );
-        this.state = examination.getState();
     }
 
     private List<QuestionDTO> getQuestionDTOs(List<Question> questions) {
@@ -88,16 +83,7 @@ public class ExaminationResponse {
         return dtos;
     }
 
-
-    public StudentResponse getStudent() {
-        return student;
-    }
-
     public ExamDTO getExam() {
         return exam;
-    }
-
-    public ExamState getState() {
-        return state;
     }
 }
