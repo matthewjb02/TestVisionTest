@@ -32,22 +32,20 @@ Op deze branch werkt de monoliet zelf niet meer omdat de dependencies veranderd 
 ## RPC Matthew:
 
 ### DDD 
-Voordat ik aan mijn module ben begonnen heb ik mijn stuk uitgebreid op o.a. de feedback van de monoliet
+Voordat ik aan mijn module ben begonnen heb ik mijn stuk(Submssion, Grading. Gradingcritera, Statistics) uitgebreid op o.a. de feedback van de monoliet
 - Onnodige setters eruit
 - DTO's en objecten in services(Course, Teacher. Test) niet = null gemaakt
 - Geen setters in GradingRequest en SubmissionResponse
 - In de calculation van een grade wordt er nu gebruikt gemaakt complexere logica met daarbij de GradingCriteria van beide soort vragen(Open en Multiple vragen)
 
-### Implementatie
-Ik heb de SubmissionGrading module gemaakt -> ?
+### Implementatie/Functionaliteit
+Ik heb de SubmissionGrading module gemaakt, die de code bevat van Submission(aggerate) en Grading  -> 
 - de pom van deze module heeft een referentie naar de parent pom
 - de parent pom heeft de SubmissionGrading als module
 - Er zijn geen dependecies naar andere modules
+- De dto's betrekkend op de SubmissionGrading module zijn in de aparte Commons module
+Aangezien er nog wat domeindingen moesten gebeuren, andere modules nog niet afwaren/gemerged was ik niet staat optijd succesvol een poging te doen tot communicatie met andere modules.
 
-### RPC Functionaliteit
-Aangezien veel van de andere modules nog niet was gemaakt/niet werkten is het mij gering gelukt een poging tot communicatie te maken
-Daarom heb ik geprobeerd te communiceren met RPC tussen de Grading van de SubmissionGrading en de Teacher van de monoliet module omdat Grading een Teacher nodig heeft.
-Ik heb in de monoliet aangegeven welke code eigenlijk zou moeten horen in de module die gaat over de Teacher. Dit gaat natuurlijk veranderen.
 
 ## RPC Ruben:
 Ik heb alles in de examination module gemaakt en gezet. De code staat in de examination branch.
