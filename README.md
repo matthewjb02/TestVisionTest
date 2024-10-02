@@ -39,7 +39,7 @@ Voordat ik aan mijn module ben begonnen heb ik mijn stuk(Submssion, Grading. Gra
 - In de calculation van een grade wordt er nu gebruikt gemaakt complexere logica met daarbij de GradingCriteria van beide soort vragen(Open en Multiple vragen)
 
 ### Implementatie/Functionaliteit
-Ik heb de SubmissionGrading module gemaakt, die de code bevat van Submission(aggerate) en Grading  -> 
+Ik heb de SubmissionGrading module gemaakt, die de code bevat van Submission(aggerate) en Grading  -> branch: SubmissonGrading-module-matthew
 - de pom van deze module heeft een referentie naar de parent pom
 - de parent pom heeft de SubmissionGrading als module
 - Er zijn geen dependecies naar andere modules
