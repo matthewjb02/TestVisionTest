@@ -18,10 +18,10 @@ public class ExamSession {
     @GeneratedValue
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     private Student student;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     private Exam exam;
 
     @Embedded

@@ -38,13 +38,19 @@ public class ExaminationController {
         return new ExaminationResponse(examinationService.createExamination(createExamination));
     }
 
-    @PatchMapping("{id}/session/create")
-    public ExaminationResponse createSessions(@PathVariable Long id) {
-        return new ExaminationResponse(examinationService.createSessions(id));
-    }
-
-    @PatchMapping("candidates")
+    @PatchMapping("/candidates")
     public CandidatesResponse selectCandidates(@RequestBody Candidates candidates) {
         return new CandidatesResponse(examinationService.selectCandidates(candidates));
+    }
+
+    @PatchMapping("/candidate")
+    public CandidatesResponse selectCandidate(@RequestBody Candidate candidate) {
+        return new CandidatesResponse(examinationService.selectCandidate(candidate));
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteExamination(@PathVariable Long id) {
+        examinationService.deleteExamination(id);
     }
 }

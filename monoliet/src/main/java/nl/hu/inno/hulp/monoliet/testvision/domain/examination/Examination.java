@@ -14,13 +14,13 @@ public class Examination {
     @GeneratedValue
     private Long id;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany
     private List<Student> candidates;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<ExamSession> examSessions;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     private Exam exam;
 
     private String name;
@@ -56,14 +56,9 @@ public class Examination {
         this.candidates = candidates;
         return this;
     }
-
-    public List<ExamSession> setupExamSessions() {
-        for (Student student : candidates) {
-            ExamSession examSession = new ExamSession(this, student);
-            storeExamSession(examSession);
-        }
-
-        return examSessions;
+    public Examination selectCandidate(Student student) {
+        this.candidates.add(student);
+        return this;
     }
 
     public void storeExamSession(ExamSession examSession) {

@@ -45,17 +45,14 @@ public class ExaminationService {
         return examination;
     }
 
-    public Examination createSessions(Long id) {
-        Examination examination = getExaminationById(id);
-        examination.setupExamSessions();
-        examSessionRepository.saveAll(examination.getExamSessions());
-
-        return examination;
-    }
-
     public Examination selectCandidates(Candidates candidates) {
         Examination examination = getExaminationById(candidates.examinationId);
         return examination.selectCandidates(candidates.students);
+    }
+
+    public Examination selectCandidate(Candidate candidate) {
+        Examination examination = getExaminationById(candidate.examinationId);
+        return examination.selectCandidate(candidate.student);
     }
 
     public boolean validatingStudent(StartExamSession request) {
@@ -63,6 +60,10 @@ public class ExaminationService {
         Student student = studentService.getStudent(request.studentId());
 
         return examination.validateStudent(student);
+    }
+
+    public void deleteExamination(Long id) {
+        examinationRepository.delete(getExaminationById(id));
     }
 
     public Examination getExaminationById(Long id) {
