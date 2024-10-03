@@ -1,5 +1,6 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain.user;
 
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -10,18 +11,25 @@ public class Student extends User {
     @GeneratedValue
     private Long id;
     private boolean extraTimeRight = false;
+    @Embedded
+    private StudentEmail email;
 
     protected Student() {
         super();
     }
 
-    public Student(String firstName, String lastName, boolean extraTimeRight) {
+    public Student(String firstName, String lastName, boolean extraTimeRight,String email) {
         super(firstName, lastName);
         this.extraTimeRight = extraTimeRight;
+        this.email = new StudentEmail(email);
     }
 
     public Long getId() {
         return id;
+    }
+
+    public StudentEmail getEmail() {
+        return email;
     }
 
     public void changeExtraTimeRight(boolean right) {

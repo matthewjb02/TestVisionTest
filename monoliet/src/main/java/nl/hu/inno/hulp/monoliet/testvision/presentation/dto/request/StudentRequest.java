@@ -4,4 +4,5 @@ public class StudentRequest {
     public String firstName;
     public String lastName;
     public boolean extraTimeRight;
+    public String email;
 }
