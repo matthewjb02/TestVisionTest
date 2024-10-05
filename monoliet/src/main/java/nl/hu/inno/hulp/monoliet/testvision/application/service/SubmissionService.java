@@ -60,16 +60,6 @@ public class SubmissionService {
                 .collect(Collectors.toList());
     }
 
-    /*public List<SubmissionResponse> getSubmissionsByExamAndStudentIdFromExam(Long examId, Long studentId) {
-        Exam exam = findExamById(examId);
-        return exam.getSubmissions().stream()
-                .filter(submission -> submission.getStudentIDtFromExamSubmission().equals(studentId))
-                .map(submission -> new SubmissionResponse(
-                        new ExamSession(submission.getStudentFromExamSubmission()),
-                        submission.getId(),
-                        submission.getStatus(),
-                        submission.getGrading())).collect(Collectors.toList());
-    }*/
 
     public void updateOpenQuestionGrading(Long examId, Long studentId, int questionNr, UpdateQuestionGradingRequest request) {
         Exam exam = findExamById(examId);

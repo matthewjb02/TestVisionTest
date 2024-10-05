@@ -26,10 +26,6 @@ public class SubmissionController {
         return submissionService.getSubmissionsByExamId(testId);
     }
 
-    //@GetMapping("/{testId}/{studentId}")
-    //public List<SubmissionResponse> getSubmissionsByTestAndStudentIdFromExam(@PathVariable Long testId, @PathVariable Long studentId) {
-        //return submissionService.getSubmissionsByExamAndStudentIdFromExam(testId, studentId);
-    //}
 
     @PutMapping("/{testId}/{studentId}/question/{questionNr}")
     public void updateQuestionGrading(@PathVariable Long testId, @PathVariable Long studentId, @PathVariable int questionNr, @RequestBody UpdateQuestionGradingRequest request) {
