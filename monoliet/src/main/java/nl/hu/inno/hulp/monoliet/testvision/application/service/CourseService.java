@@ -272,4 +272,8 @@ public class CourseService {
         return dtos;
     }
 
+    public Course findCourseByExamId(Long examId) {
+        return courseRepository.findByApprovedExamsId(examId);
+    }
+
 }
