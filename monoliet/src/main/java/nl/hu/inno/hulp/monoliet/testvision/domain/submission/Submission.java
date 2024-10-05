@@ -34,7 +34,7 @@ public class Submission {
         this.status = SubmissionStatus.SUBMITTED;
     }
 
-    public Submission() {
+    protected Submission() {
     }
 
     public static Submission createSubmission(ExamSession examSession) {

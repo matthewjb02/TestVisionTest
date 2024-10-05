@@ -25,7 +25,7 @@ public class Statistics {
         this.averageScore = averageScore;
     }
 
-    public Statistics() {
+    protected Statistics() {
     }
 
     public static Statistics createStatistics(int submissionCount, int passCount, int failCount, double averageScore) {
