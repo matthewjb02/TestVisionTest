@@ -38,7 +38,7 @@ public class Exam {
     @OneToOne
     private Teacher examMaker;
     private int totalPoints;
-    public Exam(){
+    protected Exam(){
 
     }
 

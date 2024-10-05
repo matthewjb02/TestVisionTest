@@ -21,7 +21,7 @@ public class Grading {
         this.comments = comments;
     }
 
-    public Grading() {}
+    protected Grading() {}
 
     public static Grading createGrading(double grade, String comments) {
         return new Grading(grade, comments);

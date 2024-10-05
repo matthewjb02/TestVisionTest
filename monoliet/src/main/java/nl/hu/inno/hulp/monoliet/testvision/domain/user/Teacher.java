@@ -23,7 +23,7 @@ public class Teacher extends User {
         this.lastName = lastName;
         this.email = new TeacherEmail(email);
     }
-    public Teacher (){
+    protected Teacher (){
         super();
     }
     public TeacherEmail getEmail() {

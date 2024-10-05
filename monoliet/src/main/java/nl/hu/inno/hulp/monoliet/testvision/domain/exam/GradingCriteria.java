@@ -19,7 +19,7 @@ public class GradingCriteria {
         this.closedQuestionWeight = closedQuestionWeight;
     }
 
-    public GradingCriteria() {
+    protected GradingCriteria() {
 
     }
 

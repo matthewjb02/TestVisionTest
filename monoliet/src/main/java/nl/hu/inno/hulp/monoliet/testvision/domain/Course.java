@@ -27,7 +27,7 @@ public class Course {
     @OneToMany
     private List<Exam> rejectedExams =new ArrayList<>();
 
-    public Course(){
+    protected Course(){
 
     }
 
