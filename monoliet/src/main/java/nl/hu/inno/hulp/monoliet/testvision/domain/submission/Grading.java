@@ -36,11 +36,5 @@ public class Grading {
 
     }
 
-    public int getGrade() {
-        return (int) grade;
-    }
 
-    public String getComments() {
-        return comments;
-    }
 }
