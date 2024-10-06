@@ -3,8 +3,6 @@ package nl.hu.inno.hulp.monoliet.testvision.application.service;
 import jakarta.transaction.Transactional;
 import nl.hu.inno.hulp.monoliet.testvision.data.SubmissionRepository;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
-import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamSession;
-import nl.hu.inno.hulp.monoliet.testvision.domain.examination.Examination;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Grading;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;

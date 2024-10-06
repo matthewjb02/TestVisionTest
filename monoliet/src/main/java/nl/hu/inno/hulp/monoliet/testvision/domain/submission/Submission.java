@@ -2,12 +2,8 @@ package nl.hu.inno.hulp.monoliet.testvision.domain.submission;
 
 import jakarta.persistence.*;
 import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamSession;
-import nl.hu.inno.hulp.monoliet.testvision.domain.examination.Examination;
-
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
-
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
-
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.GradingCriteria;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
