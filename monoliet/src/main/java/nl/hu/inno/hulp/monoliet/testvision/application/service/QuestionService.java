@@ -1,5 +1,6 @@
 package nl.hu.inno.hulp.monoliet.testvision.application.service;
 
+import jakarta.transaction.Transactional;
 import nl.hu.inno.hulp.monoliet.testvision.application.dto.MultipleChoiceQuestionDTO;
 import nl.hu.inno.hulp.monoliet.testvision.application.dto.OpenQuestionDTO;
 import nl.hu.inno.hulp.monoliet.testvision.application.dto.QuestionDTO;
@@ -7,6 +8,7 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestio
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.data.QuestionRepository;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 public class QuestionService {
 
     private final QuestionRepository questionRepository;
@@ -26,9 +29,9 @@ public class QuestionService {
     }
 
     public List<QuestionDTO> getAllQuestions() {
-        List<Question> allQuestions = questionRepository.findAll();
+        List<QuestionEntity> allQuestions = questionRepository.findAll();
         List<QuestionDTO> questionDTOs = new ArrayList<>();
-        for (Question question : allQuestions) {
+        for (QuestionEntity question : allQuestions) {
             questionDTOs.add(toDTO(question));
         }
 
@@ -36,13 +39,13 @@ public class QuestionService {
     }
 
     public QuestionDTO getQuestionById(Long id) {
-        Question question = questionRepository.findById(id)
+        QuestionEntity question = questionRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No question with id: " + id + " found!"));
 
         return toDTO(question);
     }
 
-    public QuestionDTO addQuestion(Question question) {
+    public QuestionDTO addQuestion(QuestionEntity question) {
         questionRepository.save(question);
 
         return toDTO(question);
@@ -54,7 +57,7 @@ public class QuestionService {
         return oldDTO;
     }
 
-    private QuestionDTO toDTO(Question question) {
+    private QuestionDTO toDTO(QuestionEntity question) {
         if (question.getClass().equals(MultipleChoiceQuestion.class)){
             MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion)question;
 

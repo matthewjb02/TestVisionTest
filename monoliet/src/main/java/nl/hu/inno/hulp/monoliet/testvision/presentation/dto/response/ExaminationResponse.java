@@ -7,6 +7,7 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamState;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,10 +53,10 @@ public class ExaminationResponse {
                 );
     }
 
-    private List<QuestionDTO> getQuestionDTOs(List<Question> questions) {
+    private List<QuestionDTO> getQuestionDTOs(List<QuestionEntity> questions) {
         List<QuestionDTO> dtos = new ArrayList<>();
 
-        for (Question question : questions){
+        for (QuestionEntity question : questions){
             if (question.getClass().equals(MultipleChoiceQuestion.class)){
                 MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion)question;
 

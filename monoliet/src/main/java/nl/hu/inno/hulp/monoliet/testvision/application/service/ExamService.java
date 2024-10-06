@@ -12,6 +12,7 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.GradingCriteria;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Statistics;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -83,7 +84,7 @@ public class ExamService {
     public ExamDTO addQuestionsByIdsToExam(Long examId, List<Long> questionIds) {
         Exam exam = examRepository.findById(examId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Exam not found"));
-        List<Question> newQuestions = questionRepository.findAllById(questionIds);
+        List<QuestionEntity> newQuestions = questionRepository.findAllById(questionIds);
         exam.getQuestions().addAll(newQuestions);
         exam.calculateTotalPoints();
         examRepository.save(exam);
@@ -146,7 +147,7 @@ public class ExamService {
         );
     }
 
-       private List<QuestionDTO> getQuestionDTOs(List<Question> questions) {
+       private List<QuestionDTO> getQuestionDTOs(List<QuestionEntity> questions) {
 
         if (questions == null){
             return null;
@@ -154,7 +155,7 @@ public class ExamService {
 
         List<QuestionDTO> dtos = new ArrayList<>();
 
-        for (Question question : questions){
+        for (QuestionEntity question : questions){
             if (question.getClass().equals(MultipleChoiceQuestion.class)){
                 MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion)question;
 

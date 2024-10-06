@@ -8,6 +8,7 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.exception.PasswordIncorrectExc
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -56,7 +57,7 @@ public class ExamSession {
     }
 
     public ExamSession answerQuestion(int questionNr, Object answer) {
-        Question question = seeQuestion(questionNr);
+        QuestionEntity question = seeQuestion(questionNr);
 
         if (question.getClass().equals(MultipleChoiceQuestion.class)){
             MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion)question;
@@ -69,7 +70,7 @@ public class ExamSession {
         return this;
     }
 
-    public Question seeQuestion(int questionNr) {
+    public QuestionEntity seeQuestion(int questionNr) {
         return exam.getQuestions().get(questionNr - 1);
     }
 

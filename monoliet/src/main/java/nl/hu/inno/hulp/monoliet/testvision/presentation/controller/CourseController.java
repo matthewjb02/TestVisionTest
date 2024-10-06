@@ -5,6 +5,7 @@ import nl.hu.inno.hulp.monoliet.testvision.application.dto.ExamDTO;
 import nl.hu.inno.hulp.monoliet.testvision.domain.Course;
 import nl.hu.inno.hulp.monoliet.testvision.application.service.CourseService;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -62,7 +63,7 @@ public class CourseController {
         return courseService.viewDeniedExam(examId,id);
     }
     @PutMapping("/{id}/exams/{examId}/reject/modify")
-    public ExamDTO modifyWrongExam(@PathVariable Long examId,@PathVariable Long id,@RequestBody List<Question>newQuestions) throws Exception {
+    public ExamDTO modifyWrongExam(@PathVariable Long examId,@PathVariable Long id,@RequestBody List<QuestionEntity>newQuestions) throws Exception {
         return courseService.modifyWrongExam(examId,id, newQuestions);
     }
 }

@@ -2,13 +2,14 @@ package nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response;
 
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
 
 import java.util.List;
 
 public class ExamResponse {
     private final Long id;
     private final int totalPoints;
-    private final List<Question> questions;
+    private final List<QuestionEntity> questions;
 
     public ExamResponse(Exam exam) {
         this.id = exam.getId();
@@ -24,7 +25,7 @@ public class ExamResponse {
         return totalPoints;
     }
 
-    public List<Question> getQuestions() {
+    public List<QuestionEntity> getQuestions() {
         return questions;
     }
 }

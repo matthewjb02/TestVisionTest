@@ -6,6 +6,7 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestio
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.GradingCriteria;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
 
 
@@ -54,7 +55,7 @@ public class Submission {
     }
 
     public void updateGradingForQuestion(int questionNr, int givenPoints, String feedback) {
-        Question question = examSession.seeQuestion(questionNr);
+        QuestionEntity question = examSession.seeQuestion(questionNr);
         if (question != null) {
             if(givenPoints > question.getPoints() || givenPoints < 0) {
                 throw new IllegalArgumentException("Given points must be between 0 and the maximum points of the question");
@@ -100,7 +101,7 @@ public class Submission {
 
     public int calculateTotalOpenGivenPoints() {
         int totalOpenGivenPoints = 0;
-        for (Question question : examSession.getExam().getQuestions()) {
+        for (QuestionEntity question : examSession.getExam().getQuestions()) {
             if (question instanceof OpenQuestion) {
                 totalOpenGivenPoints += question.getGivenPoints();
             }
@@ -110,7 +111,7 @@ public class Submission {
 
     public int calculateTotalMultipleChoiceGivenPoints() {
         int totalMultipleChoiceGivenPoints = 0;
-        for (Question question : examSession.getExam().getQuestions()) {
+        for (QuestionEntity question : examSession.getExam().getQuestions()) {
             if (question instanceof MultipleChoiceQuestion) {
                 MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion) question;
                 if (mcQuestion.getCorrectAnswerIndex() == mcQuestion.getAnswer()) {

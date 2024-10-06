@@ -3,32 +3,54 @@ package nl.hu.inno.hulp.monoliet.testvision.domain.question;
 import jakarta.persistence.Entity;
 
 @Entity
-public class OpenQuestion extends Question {
-
+public class OpenQuestion extends QuestionEntity {
     private String correctAnswer;
     private String answer = "";
     private String teacherFeedback = "";
 
-    protected OpenQuestion(){
+    protected OpenQuestion() {
     }
 
-    public OpenQuestion(int points, String question, String correctAnswer){
-        this.setPoints(points);
-        this.setQuestion(question);
+    public OpenQuestion(int points, String question, String correctAnswer) {
+        super(points, question);
         this.correctAnswer = correctAnswer;
-        this.answer = "";
     }
 
-    public void setAnswer(String answer){
-        this.answer = answer;
+    @Override
+    public int getPoints() {
+        return points;
     }
 
-    public String getAnswer(){
+    @Override
+    public String getQuestion() {
+        return question;
+    }
+
+    @Override
+    public void addGivenPoints(int points) {
+        this.givenPoints += points;
+    }
+
+    @Override
+    public void setPoints(int points) {
+        this.points = points;
+    }
+
+    @Override
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
+    public String getCorrectAnswer() {
+        return correctAnswer;
+    }
+
+    public String getAnswer() {
         return answer;
     }
 
-    public String getCorrectAnswer(){
-        return correctAnswer;
+    public void setAnswer(String answer) {
+        this.answer = answer;
     }
 
     public String getTeacherFeedback() {
@@ -36,6 +58,6 @@ public class OpenQuestion extends Question {
     }
 
     public void setTeacherFeedback(String feedback) {
-        this.teacherFeedback += feedback;
+        this.teacherFeedback = feedback;
     }
 }

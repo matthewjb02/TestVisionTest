@@ -10,6 +10,7 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestio
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -118,7 +119,7 @@ public class CourseService {
         course.viewWrongExam(exam);
         return toDTO(exam);
     }
-    public ExamDTO modifyWrongExam(long examId, Long courseId, List<Question>newQuestions) throws Exception {
+    public ExamDTO modifyWrongExam(long examId, Long courseId, List<QuestionEntity>newQuestions) throws Exception {
         Exam exam = examRepository.findById(examId).orElseThrow();
         Course course = courseRepository.findById(courseId).orElseThrow();
         course.modifyQuestions(exam,exam.getQuestions(),newQuestions);
@@ -241,10 +242,10 @@ public class CourseService {
         );
     }
 
-    private List<QuestionDTO> getQuestionDTOs(List<Question> questions) {
+    private List<QuestionDTO> getQuestionDTOs(List<QuestionEntity> questions) {
         List<QuestionDTO> dtos = new ArrayList<>();
 
-        for (Question question : questions){
+        for (QuestionEntity question : questions){
             if (question.getClass().equals(MultipleChoiceQuestion.class)){
                 MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion)question;
 

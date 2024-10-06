@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.ValidationStatus;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
 
 import java.util.ArrayList;
@@ -86,7 +87,7 @@ public class Course {
         }
         else throw new Exception("This exam was not rejected");
     }
-    public void modifyQuestions(Exam exam,List<Question> oldQuestions, List<Question> newQuestion) {
+    public void modifyQuestions(Exam exam, List<QuestionEntity> oldQuestions, List<QuestionEntity> newQuestion) {
         if (this.getRejectedExams().contains(exam)){
             exam.removeQuestions(oldQuestions);
             exam.addQuestions(newQuestion);
