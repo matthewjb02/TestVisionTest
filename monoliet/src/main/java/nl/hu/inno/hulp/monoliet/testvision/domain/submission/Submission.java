@@ -127,16 +127,6 @@ public class Submission {
 
 
 
-    public Student getStudentFromExamSubmission() {
-        return examSession.getStudent();
-
-    }
-
-    public Long getStudentIDtFromExamSubmission() {
-        return examSession.getStudentId();
-
-    }
-
     public void addGrading(Grading grading) {
         this.grading = grading;
         this.status = SubmissionStatus.GRADED;
