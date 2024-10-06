@@ -2,6 +2,7 @@ package nl.hu.inno.hulp.monoliet.testvision.application.service;
 
 import jakarta.transaction.Transactional;
 import nl.hu.inno.hulp.monoliet.testvision.data.SubmissionRepository;
+import nl.hu.inno.hulp.monoliet.testvision.domain.Course;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Grading;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
@@ -24,12 +25,14 @@ public class SubmissionService {
     private final SubmissionRepository submissionRepository;
     private final TeacherService teacherService;
     private final ExamService examService;
+    private final CourseService courseService;
 
     @Autowired
-    public SubmissionService(SubmissionRepository submissionRepository, TeacherService teacherService, ExamService examService) {
+    public SubmissionService(SubmissionRepository submissionRepository, TeacherService teacherService, ExamService examService, CourseService courseService) {
         this.submissionRepository = submissionRepository;
         this.teacherService = teacherService;
         this.examService = examService;
+        this.courseService = courseService;
     }
 
     private Exam findExamById(Long examId) {
@@ -79,7 +82,14 @@ public class SubmissionService {
         Teacher teacher = teacherService.getTeacherById(request.getTeacherId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Teacher not found"));
 
-        Grading grading = Grading.createGrading(submission.calculateGrade(), request.getComments());
+        // teacher can only grade the submission if the teacher teaches the course
+        Course examCourse = courseService.findCourseByExamId(examId);
+        if (!examCourse.getTeachers().contains(teacher)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Teacher is not allowed to grade this submission because he does not teach the course");
+        }
+
+
+        Grading grading = Grading.createGrading(submission.calculateGrade(), request.getComments(), teacher);
         grading.setGrader(teacher);
         submission.addGrading(grading);
 

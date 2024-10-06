@@ -16,15 +16,16 @@ public class Grading {
     @OneToOne
     private Teacher grader;
 
-    public Grading(double grade, String comments) {
+    public Grading(double grade, String comments, Teacher grader) {
         this.grade = grade;
         this.comments = comments;
+        this.grader = grader;
     }
 
     protected Grading() {}
 
-    public static Grading createGrading(double grade, String comments) {
-        return new Grading(grade, comments);
+    public static Grading createGrading(double grade, String comments, Teacher grader) {
+        return new Grading(grade, comments, grader);
     }
 
     public Long getId() {
