@@ -1,7 +1,7 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain.exam;
 
 import jakarta.persistence.*;
-import nl.hu.inno.hulp.monoliet.testvision.domain.Course;
+import lombok.Getter;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
+@Getter
 public class Exam {
     @Id
     @GeneratedValue
@@ -51,10 +52,6 @@ public class Exam {
     }
 
     public void calculateTotalPoints(){
-        if (questions == null){
-            //TODO: Throw error
-            return;
-        }
         totalPoints = questions.stream().mapToInt(QuestionEntity::getPoints).sum();
     }
 
@@ -93,12 +90,6 @@ public class Exam {
 
     public String getReason() {
         return reason;
-    }
-
-    public List<String> getQuestionsAsString() {
-        return questions.stream()
-                .map(QuestionEntity::getQuestion)
-                .collect(Collectors.toList());
     }
 
     public void updateStatistics() {

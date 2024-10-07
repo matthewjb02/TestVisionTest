@@ -9,6 +9,10 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.data.QuestionRepository;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.QuestionRequest;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.MultipleChoiceQuestionResponse;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.OpenQuestionResponse;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.QuestionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -28,58 +32,40 @@ public class QuestionService {
         this.questionRepository = questionRepository;
     }
 
-    public List<QuestionDTO> getAllQuestions() {
+    public List<QuestionResponse> getAllQuestions() {
         List<QuestionEntity> allQuestions = questionRepository.findAll();
-        List<QuestionDTO> questionDTOs = new ArrayList<>();
+        List<QuestionResponse> questionResponses = new ArrayList<>();
         for (QuestionEntity question : allQuestions) {
-            questionDTOs.add(toDTO(question));
+            questionResponses.add(new QuestionResponse(question));
         }
 
-        return questionDTOs;
+        return questionResponses;
     }
 
-    public QuestionDTO getQuestionById(Long id) {
+    public QuestionResponse getQuestionById(Long id) {
         QuestionEntity question = questionRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No question with id: " + id + " found!"));
 
-        return toDTO(question);
+        if (question.getClass().equals(MultipleChoiceQuestion.class)){
+            return new MultipleChoiceQuestionResponse((MultipleChoiceQuestion) question);
+        } else {
+            return new OpenQuestionResponse((OpenQuestion) question);
+        }
     }
 
-    public QuestionDTO addQuestion(QuestionEntity question) {
+    public QuestionResponse addQuestion(QuestionEntity question) {
         questionRepository.save(question);
 
-        return toDTO(question);
-    }
-
-    public QuestionDTO deleteQuestion(Long id) {
-        QuestionDTO oldDTO = getQuestionById(id);
-        questionRepository.deleteById(id);
-        return oldDTO;
-    }
-
-    private QuestionDTO toDTO(QuestionEntity question) {
         if (question.getClass().equals(MultipleChoiceQuestion.class)){
-            MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion)question;
-
-            return new MultipleChoiceQuestionDTO(
-                    mcQuestion.getId(),
-                    mcQuestion.getPoints(),
-                    mcQuestion.getQuestion(),
-                    mcQuestion.getGivenPoints(),
-                    mcQuestion.getAnswers(),
-                    mcQuestion.getCorrectAnswerIndexes(),
-                    mcQuestion.getGivenAnswers());
+            return new MultipleChoiceQuestionResponse((MultipleChoiceQuestion) question);
         } else {
-            OpenQuestion openQuestion = (OpenQuestion)question;
-
-            return new OpenQuestionDTO(
-                    openQuestion.getId(),
-                    openQuestion.getPoints(),
-                    openQuestion.getQuestion(),
-                    openQuestion.getGivenPoints(),
-                    openQuestion.getTeacherFeedback(),
-                    openQuestion.getCorrectAnswer(),
-                    openQuestion.getAnswer());
+            return new OpenQuestionResponse((OpenQuestion) question);
         }
+    }
+
+    public QuestionResponse deleteQuestion(Long id) {
+        QuestionResponse oldResponse = getQuestionById(id);
+        questionRepository.deleteById(id);
+        return oldResponse;
     }
 }
