@@ -30,8 +30,7 @@ public class ExamSessionController {
             return new ExamSessionResponse(examSessionService.startExamSession(examRequest));
         } catch(NotAllowedException | PasswordIncorrectException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        }
-        catch(NoExamSessionFoundException e) {
+        } catch(NoExamSessionFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }

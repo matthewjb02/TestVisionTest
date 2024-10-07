@@ -108,14 +108,14 @@ public class CourseService {
         Exam exam = examRepository.findById(examId).orElseThrow();
         Course course = courseRepository.findById(courseId).orElseThrow();
 
-        course.approveExam(exam,exam.getExamValidatorMail());
+        course.approveExam(exam,exam.getExamValidator());
         examRepository.save(exam);
         return new ExamResponse(exam);
     }
     public ExamResponse rejectExam(long examId, Long courseId, String reason) throws Exception {
         Exam exam = examRepository.findById(examId).orElseThrow();
         Course course = courseRepository.findById(courseId).orElseThrow();
-        course.rejectExam(exam,exam.getExamValidatorMail(),reason);
+        course.rejectExam(exam,exam.getExamValidator(),reason);
         examRepository.save(exam);
         return new ExamResponse(exam);
     }

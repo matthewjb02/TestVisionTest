@@ -112,4 +112,8 @@ public class Exam {
     public void addSubmission(Submission submission) {
         this.submissions.add(submission);
     }
+
+    public void addStatistics(Statistics statistics) {
+        this.statistics = statistics;
+    }
 }

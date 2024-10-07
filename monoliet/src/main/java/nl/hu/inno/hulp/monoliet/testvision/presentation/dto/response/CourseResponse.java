@@ -7,6 +7,7 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
 
 import java.util.ArrayList;
@@ -92,8 +93,8 @@ public class CourseResponse {
                 exam.getId(),
                 getQuestionDTOs(exam.getQuestions()),
                 exam.getTotalPoints(),
-                exam.getMakerMail(),
-                exam.getExamValidatorMail(),
+                exam.getExamMaker(),
+                exam.getExamValidator(),
                 exam.getValidationStatus(),
                 exam.getReason(),
                 gradingCriteriaDTO,
@@ -102,33 +103,11 @@ public class CourseResponse {
 
         );
     }
-    private List<QuestionDTO> getQuestionDTOs(List<Question> questions) {
-        List<QuestionDTO> dtos = new ArrayList<>();
+    private List<QuestionResponse> getQuestionDTOs(List<QuestionEntity> questions) {
+        List<QuestionResponse> dtos = new ArrayList<>();
 
-        for (Question question : questions){
-            if (question.getClass().equals(MultipleChoiceQuestion.class)){
-                MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion)question;
-
-                dtos.add(new MultipleChoiceQuestionDTO(
-                        mcQuestion.getId(),
-                        mcQuestion.getPoints(),
-                        mcQuestion.getQuestion(),
-                        mcQuestion.getGivenPoints(),
-                        mcQuestion.getAnswers(),
-                        mcQuestion.getCorrectAnswerIndex(),
-                        mcQuestion.getAnswer()));
-            } else {
-                OpenQuestion openQuestion = (OpenQuestion)question;
-
-                dtos.add(new OpenQuestionDTO(
-                        openQuestion.getId(),
-                        openQuestion.getPoints(),
-                        openQuestion.getQuestion(),
-                        openQuestion.getGivenPoints(),
-                        openQuestion.getTeacherFeedback(),
-                        openQuestion.getCorrectAnswer(),
-                        openQuestion.getAnswer()));
-            }
+        for (QuestionEntity question : questions) {
+            dtos.add(new QuestionResponse(question));
         }
         return dtos;
     }

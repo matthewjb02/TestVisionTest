@@ -3,7 +3,6 @@ package nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response;
 import nl.hu.inno.hulp.monoliet.testvision.application.dto.*;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
 import nl.hu.inno.hulp.monoliet.testvision.domain.examination.Examination;
-import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamState;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
