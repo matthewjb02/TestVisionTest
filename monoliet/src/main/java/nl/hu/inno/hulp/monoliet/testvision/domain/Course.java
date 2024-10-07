@@ -51,16 +51,16 @@ public class Course {
     }
     private boolean doesTeacherTeachCourse(Exam exam) throws Exception {
 
-        if (this.getTeachers().contains(exam.getMakerMail())&&exam.getMakerMail()!=exam.getExamValidatorMail()||this.getTeachers().contains(exam.getExamValidatorMail())&&exam.getExamValidatorMail()!=exam.getMakerMail()) {
+        if (this.getTeachers().contains(exam.getExamMaker())&&exam.getExamMaker()!=exam.getExamValidator()||this.getTeachers().contains(exam.getExamValidator())&&exam.getExamValidator()!=exam.getExamMaker()) {
             return true;
         } else throw new Exception("The Teacher does not teach this course");
     }
 
     private boolean canIApproveThisExam(Teacher examValidator,Exam exam) throws Exception {
-        if (this.getValidatingExams().contains(exam)&&exam.getExamValidatorMail() ==examValidator){
+        if (this.getValidatingExams().contains(exam)&&exam.getExamValidator() ==examValidator){
             return true;
         }
-        else if(exam.getExamValidatorMail() !=examValidator&&this.getValidatingExams().contains(exam)){
+        else if(exam.getExamValidator() !=examValidator&&this.getValidatingExams().contains(exam)){
             throw new Exception("The Teacher is not assigned as validator, but the exam needs to be Validated");
         }
         else throw new Exception("The exam cannot be validated");

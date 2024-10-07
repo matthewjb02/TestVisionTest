@@ -60,4 +60,8 @@ public class OpenQuestion extends QuestionEntity {
     public void setTeacherFeedback(String feedback) {
         this.teacherFeedback = feedback;
     }
+
+    public void addTeacherFeedback(String feedback) {
+        this.teacherFeedback = feedback;
+    }
 }
