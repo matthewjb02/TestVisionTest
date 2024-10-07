@@ -29,20 +29,18 @@ import java.util.stream.Collectors;
 
 @Service
 public class ExamService {
-//todo fix maker/validator assigning
+
     private final ExamRepository examRepository;
     private final QuestionRepository questionRepository;
     private final TeacherRepository teacherRepository;
-    private final CourseRepository courseRepository;
 
     @Autowired
-    public ExamService(ExamRepository examRepository, QuestionRepository questionRepository, TeacherRepository teacherRepository, CourseRepository courseRepository) {
+    public ExamService(ExamRepository examRepository, QuestionRepository questionRepository, TeacherRepository teacherRepository) {
         this.examRepository = examRepository;
         this.questionRepository = questionRepository;
         this.teacherRepository = teacherRepository;
-        this.courseRepository = courseRepository;
     }
-    public ExamResponse addExam(Exam exam, long examMakerId, long examValidatorId, long courseId) {
+    public ExamResponse addExam(Exam exam, long examMakerId, long examValidatorId) {
         Teacher  maker=teacherRepository.findById(examMakerId).orElseThrow();
         Teacher examValidator=teacherRepository.findById(examValidatorId).orElseThrow();
         exam.addExamValidator(examValidator);
@@ -52,7 +50,7 @@ public class ExamService {
         exam.addStatistics(statistics);
         Exam savedExam = examRepository.save(exam);
 
-        return new ExamResponse(exam);
+        return new ExamResponse(savedExam);
     }
 
     public ExamResponse deleteExam(Long id) {
