@@ -2,8 +2,6 @@ package nl.hu.inno.hulp.monoliet.testvision.presentation.controller;
 
 import nl.hu.inno.hulp.monoliet.testvision.application.dto.TeacherDTO;
 import nl.hu.inno.hulp.monoliet.testvision.application.service.TeacherService;
-import nl.hu.inno.hulp.monoliet.testvision.application.dto.ExamDTO;
-import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

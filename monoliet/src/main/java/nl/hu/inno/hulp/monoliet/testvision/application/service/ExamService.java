@@ -14,6 +14,7 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.exam.GradingCriteria;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Statistics;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.ExamResponse;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.MultipleChoiceQuestionResponse;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.OpenQuestionResponse;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.QuestionResponse;
@@ -41,7 +42,7 @@ public class ExamService {
         this.teacherRepository = teacherRepository;
         this.courseRepository = courseRepository;
     }
-    public ExamDTO addExam(Exam exam, long examMakerId, long examValidatorId,long courseId) {
+    public ExamResponse addExam(Exam exam, long examMakerId, long examValidatorId, long courseId) {
         Teacher  maker=teacherRepository.findById(examMakerId).orElseThrow();
         Teacher examValidator=teacherRepository.findById(examValidatorId).orElseThrow();
         exam.addExamValidator(examValidator);
@@ -51,29 +52,29 @@ public class ExamService {
         exam.addStatistics(statistics);
         Exam savedExam = examRepository.save(exam);
 
-        return toDTO(savedExam);
+        return new ExamResponse(exam);
     }
 
-    public ExamDTO deleteExam(Long id) {
-        ExamDTO oldExamDTO = getExamById(id);
+    public ExamResponse deleteExam(Long id) {
+        ExamResponse oldExamDTO = getExamById(id);
         examRepository.deleteById(id);
         return oldExamDTO;
     }
-    public List<ExamDTO> getAllExams() {
+    public List<ExamResponse> getAllExams() {
         List<Exam> allExams = examRepository.findAll();
-        List<ExamDTO> examDTOS = new ArrayList<>();
+        List<ExamResponse> examDTOS = new ArrayList<>();
         for (Exam exam : allExams) {
-            examDTOS.add(toDTO(exam));
+            examDTOS.add(new ExamResponse(exam));
         }
 
         return examDTOS;
     }
 
-    public ExamDTO getExamById(Long id) {
+    public ExamResponse getExamById(Long id) {
         Exam exam = examRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No exam with id: " + id + " found!"));
 
-        return toDTO(exam);
+        return new ExamResponse(exam);
     }
 
     public Exam getExam(Long id) {
@@ -84,17 +85,17 @@ public class ExamService {
 
 
 
-    public ExamDTO addQuestionsByIdsToExam(Long examId, List<Long> questionIds) {
+    public ExamResponse addQuestionsByIdsToExam(Long examId, List<Long> questionIds) {
         Exam exam = examRepository.findById(examId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Exam not found"));
         List<QuestionEntity> newQuestions = questionRepository.findAllById(questionIds);
         exam.getQuestions().addAll(newQuestions);
         exam.calculateTotalPoints();
         examRepository.save(exam);
-        return toDTO(exam);
+        return new ExamResponse(exam);
     }
 
-    public ExamDTO addGradingCriteriaToExam(Long examId, GradingCriteriaDTO gradingCriteriaDTO) {
+    public ExamResponse addGradingCriteriaToExam(Long examId, GradingCriteriaDTO gradingCriteriaDTO) {
         Exam exam = examRepository.findById(examId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Exam not found"));
 
@@ -106,10 +107,10 @@ public class ExamService {
         exam.addGradingCriteria(gradingCriteria);
         examRepository.save(exam);
 
-        return toDTO(exam);
+        return new ExamResponse(exam);
     }
 
-    private ExamDTO toDTO(Exam exam) {
+    private ExamResponse toDTO(Exam exam) {
 
         GradingCriteriaDTO gradingCriteriaDTO = new  GradingCriteriaDTO(0,0);
         if (exam.getGradingCriteria() != null) {
@@ -135,19 +136,7 @@ public class ExamService {
         }
 
        
-      return new ExamDTO(
-                exam.getId(),
-                getQuestionResponses(exam.getQuestions()),
-                exam.getTotalPoints(),
-                exam.getMakerMail(),
-                exam.getExamValidatorMail(),
-                exam.getValidationStatus(),
-                exam.getReason(),
-                gradingCriteriaDTO,
-                submissionDTOs,
-                statisticsDTO
-
-        );
+      return new ExamResponse(exam);
     }
 
     private List<QuestionResponse> getQuestionResponses(List<QuestionEntity> questions) {

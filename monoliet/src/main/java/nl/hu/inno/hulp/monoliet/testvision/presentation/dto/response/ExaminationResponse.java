@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ExaminationResponse {
-    private final ExamDTO exam;
+    private final ExamResponse exam;
 
     public ExaminationResponse(Examination examination) {
         GradingCriteriaDTO gradingCriteriaDTO = null;
@@ -40,17 +40,7 @@ public class ExaminationResponse {
             );
         }
 
-        this.exam = new ExamDTO(examination.getExam().getId(),
-                                getQuestionResponses(examination.getExam().getQuestions()),
-                                examination.getExam().getTotalPoints(),
-                                examination.getExam().getMakerMail(),
-                                examination.getExam().getExamValidatorMail(),
-                                examination.getExam().getValidationStatus(),
-                                examination.getExam().getReason(),
-                                gradingCriteriaDTO,
-                                submissionDTOs,
-                                statisticsDTO
-                );
+        this.exam = new ExamResponse(exam);
     }
 
     private List<QuestionResponse> getQuestionResponses(List<QuestionEntity> questions) {
@@ -70,7 +60,7 @@ public class ExaminationResponse {
         return responses;
     }
 
-    public ExamDTO getExam() {
+    public ExamResponse getExam() {
         return exam;
     }
 }
