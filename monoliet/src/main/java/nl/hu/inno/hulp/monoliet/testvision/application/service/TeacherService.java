@@ -12,6 +12,7 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestio
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.TeacherRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,13 +36,13 @@ public class TeacherService {
     public TeacherService() {
     }
 
-    public TeacherDTO saveTeacher(Teacher teacher) {
-
+    public Teacher saveTeacher(TeacherRequest teacherRequest) {
+        Teacher teacher=new Teacher(teacherRequest.firstName(), teacherRequest.lastName(), teacherRequest.email());
          teacherRepository.save(teacher);
-         return getTeacherDTO(teacher);
+         return getTeacherById(teacher.getId());
     }
-    public Optional<Teacher> getTeacherById(long id) {
-        return teacherRepository.findById(id);
+    public Teacher getTeacherById(long id) {
+        return teacherRepository.findById(id).orElseThrow();
     }
     public List<Teacher> getAllTeachers() {
         return teacherRepository.findAll();
@@ -50,13 +51,6 @@ public class TeacherService {
         teacherRepository.deleteById(id);
     }
 
-    private TeacherDTO getTeacherDTO(Teacher teacher) {
-        return new TeacherDTO(
-                teacher.getId(),
-                teacher.getFirstName(),
-                teacher.getLastName(),
-                teacher.getEmail().getEmailString());
-    }
 
 
 }

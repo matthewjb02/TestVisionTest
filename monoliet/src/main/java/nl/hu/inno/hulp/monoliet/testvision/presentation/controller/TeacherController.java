@@ -1,16 +1,14 @@
 package nl.hu.inno.hulp.monoliet.testvision.presentation.controller;
 
-import nl.hu.inno.hulp.monoliet.testvision.application.dto.TeacherDTO;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.TeacherResponse;
 import nl.hu.inno.hulp.monoliet.testvision.application.service.TeacherService;
-import nl.hu.inno.hulp.monoliet.testvision.application.dto.ExamDTO;
-import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.TeacherRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/teacher")
@@ -25,13 +23,13 @@ public class TeacherController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TeacherDTO saveTeacher(@RequestBody Teacher teacher) {
-       return this.teacherService.saveTeacher(teacher);
+    public TeacherResponse saveTeacher(@RequestBody TeacherRequest teacher) {
+       return new TeacherResponse(this.teacherService.saveTeacher(teacher));
     }
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.FOUND)
-    public Optional<Teacher> getTeacher(@PathVariable long id) {
-        return teacherService.getTeacherById(id);
+    public TeacherResponse getTeacher(@PathVariable long id) {
+        return new TeacherResponse(teacherService.getTeacherById(id));
     }
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.FOUND)
