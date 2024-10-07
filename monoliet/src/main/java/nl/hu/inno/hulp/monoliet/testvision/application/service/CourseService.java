@@ -63,6 +63,7 @@ public class CourseService {
 
     public CourseResponse addCourse(CourseRequest course) {
         Course savedCourse = new Course(course.name());
+        courseRepository.save(savedCourse);
         return getDTO(savedCourse);
     }
 

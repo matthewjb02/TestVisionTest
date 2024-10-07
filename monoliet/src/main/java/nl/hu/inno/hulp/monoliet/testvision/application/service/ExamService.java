@@ -40,9 +40,10 @@ public class ExamService {
         this.questionRepository = questionRepository;
         this.teacherRepository = teacherRepository;
     }
-    public ExamResponse addExam(Exam exam, long examMakerId, long examValidatorId) {
+    public ExamResponse addExam( long examMakerId, long examValidatorId) {
         Teacher  maker=teacherRepository.findById(examMakerId).orElseThrow();
         Teacher examValidator=teacherRepository.findById(examValidatorId).orElseThrow();
+        Exam exam=new Exam(maker, examValidator);
         exam.addExamValidator(examValidator);
         exam.addExamMaker(maker);
 

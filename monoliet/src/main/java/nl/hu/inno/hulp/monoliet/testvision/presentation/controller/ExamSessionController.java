@@ -35,16 +35,27 @@ public class ExamSessionController {
         }
     }
 
-    @GetMapping("/seeQuestion")
-    public QuestionResponse seeQuestion(@RequestBody SeeQuestion examRequest) {
-        try {
-            return new QuestionResponse(examSessionService.seeQuestion(examRequest));
-        } catch(ExaminationInactiveException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        } catch (NoExamSessionFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+//    @GetMapping("/seeQuestion/")
+//    public QuestionResponse seeQuestion(@RequestBody SeeQuestion examRequest) {
+//        try {
+//            return new QuestionResponse(examSessionService.seeQuestion(examRequest));
+//        } catch(ExaminationInactiveException e) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+//        } catch (NoExamSessionFoundException e) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+//        }
+//    }
+@GetMapping("/seeQuestion/{questionId}/{examId}")
+public QuestionResponse seeQuestion(@PathVariable long examId, @PathVariable int questionId) {
+    SeeQuestion examRequest = new SeeQuestion(examId, questionId);
+    try {
+        return new QuestionResponse(examSessionService.seeQuestion(examRequest));
+    } catch(ExaminationInactiveException e) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+    } catch (NoExamSessionFoundException e) {
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
     }
+}
 
     @PatchMapping("/answer")
     public ExamSessionResponse enterAnswer(@RequestBody AnswerRequest answerRequest) {

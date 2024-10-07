@@ -20,10 +20,10 @@ public class SubmissionResponse extends ExamSessionResponse {
         this.grading = new GradingResponse(grading);
     }
 
-    public SubmissionResponse(Submission submission){
-        super(null);
-        this.submissionId = submission.getId();
-        this.submissionStatus = submission.getStatus();
-        this.grading = new GradingResponse(submission.getGrading());
-    }
+//    public SubmissionResponse(Submission submission){
+//        super(null);
+//        this.submissionId = submission.getId();
+//        this.submissionStatus = submission.getStatus();
+//        this.grading = new GradingResponse(submission.getGrading());
+//    }
 }

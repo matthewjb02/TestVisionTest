@@ -31,6 +31,7 @@ public class Submission {
     public Submission(ExamSession examSession) {
         this.examSession = examSession;
         this.status = SubmissionStatus.SUBMITTED;
+        this.grading = new Grading();
     }
 
     protected Submission() {

@@ -27,39 +27,31 @@ public class CourseResponse {
         }
 
         public CourseResponse(Course course) {
+            this.teachers=new ArrayList<>();
+            this.approvedTests=new ArrayList<>();
+            this.rejectedTests=new ArrayList<>();
+            this.validatingTests=new ArrayList<>();
+
             this.id = course.getId();
             this.name = course.getName();
             if (course.getTeachers() != null) {
                  for (Teacher t:course.getTeachers()){
                      this.teachers.add(new TeacherResponse(t));}
             }
-            else if(course.getTeachers()==null){
-                this.teachers = null;
-            }
             if(course.getValidatingExams()!=null){
                 for (Exam exam:course.getValidatingExams()){
                     this.validatingTests.add(toDTO(exam));
                 }
-            }
-
-            else if(course.getValidatingExams()==null){
-                this.validatingTests = null;
             }
             if(course.getRejectedExams()!=null){
                 for (Exam exam:course.getRejectedExams()){
                     this.rejectedTests.add(toDTO(exam));
                 }
             }
-            else if(course.getRejectedExams()==null){
-                this.rejectedTests = null;
-            }
             if(course.getApprovedExams()!=null){
                 for (Exam exam:course.getApprovedExams()){
                     this.approvedTests.add(toDTO(exam));
                 }
-            }
-            else if(course.getApprovedExams()==null){
-                this.approvedTests = null;
             }
 
         }

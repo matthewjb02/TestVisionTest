@@ -1,7 +1,8 @@
 package nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response;
 
+import lombok.Getter;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Statistics;
-
+@Getter
 public class StatisticsResponse {
     private int submissionCount;
     private int passCount;

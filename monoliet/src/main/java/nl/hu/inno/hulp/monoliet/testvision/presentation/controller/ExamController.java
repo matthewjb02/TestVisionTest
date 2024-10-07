@@ -31,8 +31,8 @@ public class ExamController {
     }
 
     @PostMapping("/examMaker/{makerId}/examValidator/{examValidatorId}")
-    public ExamResponse addExam(@RequestBody Exam exam, @PathVariable Long makerId, @PathVariable Long examValidatorId) {
-        return examService.addExam(exam, makerId, examValidatorId);
+    public ExamResponse addExam( @PathVariable Long makerId, @PathVariable Long examValidatorId) {
+        return examService.addExam(makerId, examValidatorId);
     }
     
     @DeleteMapping("/{id}")

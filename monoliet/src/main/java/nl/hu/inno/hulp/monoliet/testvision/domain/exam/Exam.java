@@ -45,16 +45,16 @@ public class Exam {
 
     }
 
-    public Exam(Teacher examMaker, Teacher examValidator, QuestionEntity... questions){
-        if (questions.length > 0){
-            this.questions = new ArrayList<>(Arrays.asList(questions));
+    public Exam(Teacher examMaker, Teacher examValidator){
             this.examMaker = examMaker;
             this.examValidator = examValidator;
+            this.questions = new ArrayList<>();
             calculateTotalPoints();
-        }
+
     }
 
     public void calculateTotalPoints(){
+
         totalPoints = questions.stream().mapToInt(QuestionEntity::getPoints).sum();
     }
 

@@ -42,7 +42,7 @@ public class ExamTeacherResponse {
         this.gradingCriteria = new GradingCriteriaDTO(exam.getGradingCriteria().getOpenQuestionWeight(), exam.getGradingCriteria().getClosedQuestionWeight());
         this.submissions = new ArrayList<>();
         for (Submission submission : exam.getSubmissions()){
-            submissions.add(new SubmissionResponse(submission));
+            submissions.add(new SubmissionResponse(submission.getExamSession(), submission.getId(), submission.getStatus(),submission.getGrading()));
         }
         this.statistics = new StatisticsResponse(exam.getStatistics());
     }
