@@ -10,6 +10,8 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
+
+import java.util.List;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Entity
@@ -61,7 +63,7 @@ public class ExamSession {
 
         if (question.getClass().equals(MultipleChoiceQuestion.class)){
             MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion)question;
-            mcQuestion.setAnswer((int)answer);
+            mcQuestion.setGivenAnswers((List<Integer>)answer);
         } else {
             OpenQuestion openQuestion = (OpenQuestion)question;
             openQuestion.setAnswer((String) answer);
