@@ -53,7 +53,7 @@ public class Examination {
     }
 
     public Examination selectCandidates(List<Student> candidates) {
-        this.candidates = candidates;
+        this.candidates.addAll(candidates);
         return this;
     }
     public Examination selectCandidate(Student student) {
@@ -61,8 +61,17 @@ public class Examination {
         return this;
     }
 
-    public void storeExamSession(ExamSession examSession) {
-        examSessions.add(examSession);
+    public Examination removeCandidates(List<Student> candidates) {
+        this.candidates.removeAll(candidates);
+        return this;
+    }
+    public Examination removeCandidate(Student student) {
+        this.candidates.remove(student);
+        return this;
+    }
+
+    public boolean storeExamSession(ExamSession examSession) {
+        return examSessions.add(examSession);
     }
 
     public boolean validateStudent(Student student) {

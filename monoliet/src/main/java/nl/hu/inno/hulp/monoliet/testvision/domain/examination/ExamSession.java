@@ -18,6 +18,8 @@ public class ExamSession {
     @GeneratedValue
     private Long id;
 
+    private Long examinationId;
+
     @OneToOne
     private Student student;
 
@@ -38,6 +40,7 @@ public class ExamSession {
 
     public ExamSession(Examination context, Student student) {
         this.state = ExamState.Published;
+        this.examinationId = context.getId();
         this.duration = context.totalDuration(student.isExtraTimeRight());
         this.exam = context.getExam();
         //this.securedPassword = hashPassword(context.getPassword());
@@ -91,9 +94,5 @@ public class ExamSession {
 
     public void changeState(ExamState state) {
         this.state = state;
-    }
-
-    public Long getStudentId() {
-        return student.getId();
     }
 }

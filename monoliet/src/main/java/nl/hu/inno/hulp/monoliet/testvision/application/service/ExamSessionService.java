@@ -4,6 +4,7 @@ import nl.hu.inno.hulp.monoliet.testvision.data.ExamSessionRepository;
 import nl.hu.inno.hulp.monoliet.testvision.data.SubmissionRepository;
 import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamSession;
 import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamState;
+import nl.hu.inno.hulp.monoliet.testvision.domain.exception.ExamSessionNotStored;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exception.ExaminationInactiveException;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exception.NoExamSessionFoundException;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exception.NotAllowedException;
@@ -79,6 +80,10 @@ public class ExamSessionService {
             Submission submission = Submission.createSubmission(examSession);
             examSession.getExam().addSubmission(submission);
             submissionRepository.save(submission);
+
+            if (!examinationService.storeExamSession(examSession)) {
+                throw new ExamSessionNotStored("Exam session can't be stored in examination.");
+            }
 
             return examSession;
 
