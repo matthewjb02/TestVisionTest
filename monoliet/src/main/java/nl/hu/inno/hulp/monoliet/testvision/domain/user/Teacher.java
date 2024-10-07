@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
+@Getter
 public class Teacher extends User {
     @GeneratedValue
     @Id
@@ -26,11 +27,5 @@ public class Teacher extends User {
     protected Teacher (){
         super();
     }
-    public TeacherEmail getEmail() {
-        return email;
-    }
 
-    public long getId() {
-        return id;
-    }
 }

@@ -69,8 +69,7 @@ public class SubmissionService {
     public void addGrading(Long examId, Long studentId, GradingRequest request) {
         Exam exam = findExamById(examId);
         Submission submission = findSubmissionByExamAndStudentId(exam, studentId);
-        Teacher teacher = teacherService.getTeacherById(request.getTeacherId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Teacher not found"));
+        Teacher teacher = teacherService.getTeacherById(request.getTeacherId());
 
         // teacher can only grade the submission if the teacher teaches the course
         Course examCourse = courseService.findCourseByExamId(examId);
@@ -79,8 +78,8 @@ public class SubmissionService {
         }
 
 
-        Grading grading = Grading.createGrading(submission.calculateGrade(), request.getComments(), teacher);
-        grading.setGrader(teacher);
+        Grading grading = Grading.createGrading(submission.calculateGrade(), request.getComments());
+        grading.addGrader(teacher);
         submission.addGrading(grading);
 
         // after the final grade we update the exam statistics

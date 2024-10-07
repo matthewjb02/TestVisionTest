@@ -1,11 +1,14 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain.submission;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
 
 @Entity
+@Getter
 public class Grading {
 
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,7 +19,7 @@ public class Grading {
     @OneToOne
     private Teacher grader;
 
-    public Grading(double grade, String comments, Teacher grader) {
+    public Grading(double grade, String comments) {
         this.grade = grade;
         this.comments = comments;
         this.grader = grader;
@@ -24,15 +27,11 @@ public class Grading {
 
     protected Grading() {}
 
-    public static Grading createGrading(double grade, String comments, Teacher grader) {
-        return new Grading(grade, comments, grader);
+    public static Grading createGrading(double grade, String comments) {
+        return new Grading(grade, comments);
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setGrader(Teacher grader) {
+    public void addGrader(Teacher grader) {
         this.grader = grader;
 
     }

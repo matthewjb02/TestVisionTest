@@ -1,6 +1,7 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain.submission;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamSession;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
@@ -10,6 +11,7 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
 
 
+@Getter
 @Entity
 public class Submission {
 
@@ -38,22 +40,6 @@ public class Submission {
         return new Submission(examSession);
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public SubmissionStatus getStatus() {
-        return status;
-    }
-
-    public ExamSession getExamSession() {
-        return examSession;
-    }
-
-    public Grading getGrading() {
-        return grading;
-    }
-
     public void updateGradingForQuestion(int questionNr, int givenPoints, String feedback) {
         QuestionEntity question = examSession.seeQuestion(questionNr);
         if (question != null) {
@@ -64,7 +50,7 @@ public class Submission {
 
             if (question.getClass().equals(OpenQuestion.class)){
                 OpenQuestion openQuestion = (OpenQuestion)question;
-                openQuestion.setTeacherFeedback(feedback);
+                openQuestion.addTeacherFeedback(feedback);
             }
         }
 

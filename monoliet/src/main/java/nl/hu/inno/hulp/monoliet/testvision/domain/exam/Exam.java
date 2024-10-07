@@ -2,6 +2,8 @@ package nl.hu.inno.hulp.monoliet.testvision.domain.exam;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
+import nl.hu.inno.hulp.monoliet.testvision.domain.Course;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
@@ -15,6 +17,7 @@ import java.util.stream.Collectors;
 
 @Entity
 @Getter
+@Setter
 public class Exam {
     @Id
     @GeneratedValue
@@ -55,41 +58,12 @@ public class Exam {
         totalPoints = questions.stream().mapToInt(QuestionEntity::getPoints).sum();
     }
 
-    public int getTotalPoints(){
-        return  totalPoints;
-    }
-
-    public Long getId(){
-        return id;
-    }
-
-    public List<QuestionEntity> getQuestions(){
-        return questions;
-    }
-
     public void removeQuestions(List<QuestionEntity> questions){
         this.questions.removeAll(questions);
     }
 
     public void addQuestions(List<QuestionEntity> questions){
         this.questions.addAll(questions);
-    }
-
-    public Teacher getExamValidatorMail() {
-        return examValidator;
-    }
-
-    public Teacher getMakerMail() {
-        return examMaker;
-    }
-
-
-    public ValidationStatus getValidationStatus() {
-        return validationStatus;
-    }
-
-    public String getReason() {
-        return reason;
     }
 
     public void updateStatistics() {
@@ -137,30 +111,5 @@ public class Exam {
 
     public void addSubmission(Submission submission) {
         this.submissions.add(submission);
-    }
-
-    public GradingCriteria getGradingCriteria() {
-        return gradingCriteria;
-    }
-
-    public List<Submission> getSubmissions() {
-        return submissions;
-    }
-
-    public Statistics getStatistics() {
-        return statistics;
-    }
-
-    public void addStatistics(Statistics statistics) {
-        this.statistics = statistics;
-    }
-
-
-    public void setValidationStatus(ValidationStatus validationStatus) {
-        this.validationStatus = validationStatus;
-    }
-
-    public void setReason(String reason) {
-        this.reason = reason;
     }
 }

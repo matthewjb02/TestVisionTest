@@ -16,6 +16,9 @@ import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.ExamRespons
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.MultipleChoiceQuestionResponse;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.OpenQuestionResponse;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.QuestionResponse;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.CourseRequest;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.CourseResponse;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.TeacherResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -41,9 +44,9 @@ public class CourseService {
         this.questionRepository = questionRepository;
     }
 
-    public List<CourseDTO> getAllCourses() {
+    public List<CourseResponse> getAllCourses() {
         List<Course> allCourses = courseRepository.findAll();
-        List<CourseDTO> courseDTOs = new ArrayList<>();
+        List<CourseResponse> courseDTOs = new ArrayList<>();
         for (Course course : allCourses){
             courseDTOs.add(getDTO(course));
         }
@@ -51,24 +54,24 @@ public class CourseService {
         return courseDTOs;
     }
 
-    public CourseDTO getCourseById(Long id) {
+    public CourseResponse getCourseById(Long id) {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No course with id: " + id + " found!"));
 
         return getDTO(course);
     }
 
-    public CourseDTO addCourse(Course course) {
-        Course savedCourse = courseRepository.save(course);
+    public CourseResponse addCourse(CourseRequest course) {
+        Course savedCourse = new Course(course.name());
         return getDTO(savedCourse);
     }
 
-    public CourseDTO deleteCourse(Long id) {
-        CourseDTO oldDTO = getCourseById(id);
+    public CourseResponse deleteCourse(Long id) {
+        CourseResponse oldDTO = getCourseById(id);
         courseRepository.deleteById(id);
         return oldDTO;
     }
-    public CourseDTO addTeacherToCourse(Long courseId, Long teacherId) {
+    public CourseResponse addTeacherToCourse(Long courseId, Long teacherId) {
         Course course=courseRepository.findById(courseId).orElseThrow();
         Teacher teacher= teacherRepository.findById(teacherId).orElseThrow();
         course.addTeacher(teacher);
@@ -76,7 +79,7 @@ public class CourseService {
         return getDTO(course);
     }
 
-    public CourseDTO addTestToCourse(Long courseId, Long testId) {
+    public CourseResponse addTestToCourse(Long courseId, Long testId) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found"));
 
@@ -123,6 +126,7 @@ public class CourseService {
         course.viewWrongExam(exam);
         return new ExamResponse(exam);
     }
+  
     public ExamResponse modifyWrongExam(long examId, Long courseId, List<QuestionEntity>newQuestions) throws Exception {
         Exam exam = examRepository.findById(examId).orElseThrow();
         Course course = courseRepository.findById(courseId).orElseThrow();
@@ -132,14 +136,12 @@ public class CourseService {
         examRepository.save(exam);
         return new ExamResponse(exam);
     }
-    private TeacherDTO getTeacherDTO(Teacher teacher) {
-        return new TeacherDTO(
-                teacher.getId(),
-                teacher.getFirstName(),
-                teacher.getLastName(),
-                teacher.getEmail().getEmailString());
+    private TeacherResponse getTeacherDTO(Teacher teacher) {
+        return new TeacherResponse(
+                teacher);
     }
-    private CourseDTO getDTO(Course course){
+
+    private CourseResponse getDTO(Course course){
         List<ExamResponse> approvedExamDTOS = new ArrayList<>();
         for (Exam exam : course.getApprovedExams()){
             approvedExamDTOS.add(new ExamResponse(exam));
@@ -152,21 +154,12 @@ public class CourseService {
         for (Exam exam : course.getValidatingExams()){
             validatingExamDTOS.add(new ExamResponse(exam));
         }
-        List<TeacherDTO> teacherDTOS = new ArrayList<>();
+        List<TeacherResponse> teacherResponses = new ArrayList<>();
         for (Teacher teacher : course.getTeachers()){
-            teacherDTOS.add(getTeacherDTO(teacher));
+            teacherResponses.add(getTeacherDTO(teacher));
         }
-
-
-        return new CourseDTO(
-                course.getId(),
-                course.getName(),
-                teacherDTOS,
-                approvedExamDTOS,
-                rejectedExamDTOS,
-                validatingExamDTOS
-
-        );
+      
+        return new CourseResponse( course);
     }
 
     private List<QuestionResponse> getQuestionResponses(List<QuestionEntity> questions) {

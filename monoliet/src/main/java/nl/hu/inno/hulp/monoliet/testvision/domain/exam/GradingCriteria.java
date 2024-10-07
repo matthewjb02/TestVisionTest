@@ -1,9 +1,11 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain.exam;
 
 import jakarta.persistence.Embeddable;
+import lombok.Getter;
 
 import java.util.Objects;
 
+@Getter
 @Embeddable
 public class GradingCriteria {
 
@@ -23,14 +25,6 @@ public class GradingCriteria {
 
     }
 
-
-    public double getOpenQuestionWeight() {
-        return openQuestionWeight;
-    }
-
-    public double getClosedQuestionWeight() {
-        return closedQuestionWeight;
-    }
 
     @Override
     public boolean equals(Object o) {
