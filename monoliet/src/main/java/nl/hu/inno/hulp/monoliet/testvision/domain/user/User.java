@@ -1,7 +1,9 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain.user;
 
 import jakarta.persistence.MappedSuperclass;
+import lombok.Getter;
 
+@Getter
 @MappedSuperclass
 public class User {
     String firstName;
@@ -15,11 +17,4 @@ public class User {
         this.lastName = lastName;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
 }

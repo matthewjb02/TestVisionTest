@@ -4,8 +4,10 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import lombok.Getter;
 
 @Entity
+@Getter
 public class Student extends User {
     @Id
     @GeneratedValue
@@ -22,14 +24,6 @@ public class Student extends User {
         super(firstName, lastName);
         this.extraTimeRight = extraTimeRight;
         this.email = new StudentEmail(email);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public StudentEmail getEmail() {
-        return email;
     }
 
     public void changeExtraTimeRight(boolean right) {
