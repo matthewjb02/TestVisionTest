@@ -8,9 +8,14 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.Course;
 import nl.hu.inno.hulp.monoliet.testvision.data.CourseRepository;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
-import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.QuestionRequest;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.ExamResponse;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.MultipleChoiceQuestionResponse;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.OpenQuestionResponse;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.QuestionResponse;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.CourseRequest;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.CourseResponse;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.TeacherResponse;
@@ -87,177 +92,91 @@ public class CourseService {
         return getDTO(course);
     }
 
+    public List<ExamResponse> getAllTestsByCourseId(Long courseId) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No course with id: " + courseId + " found!"));
 
-    public ExamDTO acceptExam(long examId, Long courseId) throws Exception {
+        List<ExamResponse> examDTOS = new ArrayList<>();
+        for (Exam exam : course.getApprovedExams()) {
+            examDTOS.add(new ExamResponse(exam));
+        }
+
+        return examDTOS;
+    }
+
+    public ExamResponse acceptExam(long examId, Long courseId) throws Exception {
         Exam exam = examRepository.findById(examId).orElseThrow();
         Course course = courseRepository.findById(courseId).orElseThrow();
 
         course.approveExam(exam,exam.getExamValidatorMail());
         examRepository.save(exam);
-        return toDTO(exam);
+        return new ExamResponse(exam);
     }
-    public ExamDTO rejectExam(long examId, Long courseId, String reason) throws Exception {
+    public ExamResponse rejectExam(long examId, Long courseId, String reason) throws Exception {
         Exam exam = examRepository.findById(examId).orElseThrow();
         Course course = courseRepository.findById(courseId).orElseThrow();
         course.rejectExam(exam,exam.getExamValidatorMail(),reason);
         examRepository.save(exam);
-        return toDTO(exam);
+        return new ExamResponse(exam);
     }
 
-    public ExamDTO viewDeniedExam(long examId, Long courseId) throws Exception {
+    public ExamResponse viewDeniedExam(long examId, Long courseId) throws Exception {
         Exam exam = examRepository.findById(examId).orElseThrow();
         Course course = courseRepository.findById(courseId).orElseThrow();
         course.viewWrongExam(exam);
-        return toDTO(exam);
+        return new ExamResponse(exam);
     }
-    public ExamDTO modifyWrongExam(long examId, Long courseId, List<Question>newQuestions) {
+  
+    public ExamResponse modifyWrongExam(long examId, Long courseId, List<QuestionEntity>newQuestions) throws Exception {
         Exam exam = examRepository.findById(examId).orElseThrow();
         Course course = courseRepository.findById(courseId).orElseThrow();
         course.modifyQuestions(exam,exam.getQuestions(),newQuestions);
 
         questionRepository.saveAll(exam.getQuestions());
         examRepository.save(exam);
-        return toDTO(exam);
+        return new ExamResponse(exam);
     }
     private TeacherResponse getTeacherDTO(Teacher teacher) {
         return new TeacherResponse(
                 teacher);
     }
+
     private CourseResponse getDTO(Course course){
-        List<ExamDTO> approvedExamDTOS = new ArrayList<>();
+        List<ExamResponse> approvedExamDTOS = new ArrayList<>();
         for (Exam exam : course.getApprovedExams()){
-            approvedExamDTOS.add(getTestDTO(exam));
+            approvedExamDTOS.add(new ExamResponse(exam));
         }
-        List<ExamDTO> rejectedExamDTOS = new ArrayList<>();
+        List<ExamResponse> rejectedExamDTOS = new ArrayList<>();
         for (Exam exam : course.getRejectedExams()){
-            rejectedExamDTOS.add(getTestDTO(exam));
+            rejectedExamDTOS.add(new ExamResponse(exam));
         }
-        List<ExamDTO> validatingExamDTOS = new ArrayList<>();
+        List<ExamResponse> validatingExamDTOS = new ArrayList<>();
         for (Exam exam : course.getValidatingExams()){
-            validatingExamDTOS.add(getTestDTO(exam));
+            validatingExamDTOS.add(new ExamResponse(exam));
         }
         List<TeacherResponse> teacherResponses = new ArrayList<>();
         for (Teacher teacher : course.getTeachers()){
             teacherResponses.add(getTeacherDTO(teacher));
         }
-
-
+      
         return new CourseResponse( course);
-
-
-
-
-
-
-
-    }
-    private ExamDTO toDTO(Exam exam) {
-
-        GradingCriteriaDTO gradingCriteriaDTO = new  GradingCriteriaDTO(0,0);
-        if (exam.getGradingCriteria() != null) {
-            gradingCriteriaDTO = new GradingCriteriaDTO(
-                    exam.getGradingCriteria().getOpenQuestionWeight(),
-                    exam.getGradingCriteria().getClosedQuestionWeight()
-            );
-        }
-
-        List<SubmissionDTO> submissionDTOs = exam.getSubmissions().stream()
-                .map(submission -> new SubmissionDTO(submission.getId(), submission.getStatus()))
-                .collect(Collectors.toList());
-
-
-        StatisticsDTO statisticsDTO = new StatisticsDTO(0, 0, 0, 0);
-        if (exam.getStatistics() != null) {
-            statisticsDTO = new StatisticsDTO(
-                    exam.getStatistics().getSubmissionCount(),
-                    exam.getStatistics().getPassCount(),
-                    exam.getStatistics().getFailCount(),
-                    exam.getStatistics().getAverageScore()
-            );
-        }
-
-
-        return new ExamDTO(
-                exam.getId(),
-                getQuestionDTOs(exam.getQuestions()),
-                exam.getTotalPoints(),
-                exam.getMakerMail(),
-                exam.getExamValidatorMail(),
-                exam.getValidationStatus(),
-                exam.getReason(),
-                gradingCriteriaDTO,
-                submissionDTOs,
-                statisticsDTO
-
-        );
     }
 
-    private ExamDTO getTestDTO(Exam exam) {
-        GradingCriteriaDTO gradingCriteriaDTO = new GradingCriteriaDTO(0, 0);
-        if (exam.getGradingCriteria() != null) {
-            gradingCriteriaDTO = new GradingCriteriaDTO(
-                    exam.getGradingCriteria().getOpenQuestionWeight(),
-                    exam.getGradingCriteria().getClosedQuestionWeight()
-            );
-        }
+    private List<QuestionResponse> getQuestionResponses(List<QuestionEntity> questions) {
+        List<QuestionResponse> responses = new ArrayList<>();
 
-        List<SubmissionDTO> submissionDTOs = exam.getSubmissions().stream()
-                .map(submission -> new SubmissionDTO(submission.getId(), submission.getStatus()))
-                .collect(Collectors.toList());
-
-        StatisticsDTO statisticsDTO = new StatisticsDTO(0, 0, 0, 0);
-        if (exam.getStatistics() != null) {
-            statisticsDTO = new StatisticsDTO(
-                    exam.getStatistics().getSubmissionCount(),
-                    exam.getStatistics().getPassCount(),
-                    exam.getStatistics().getFailCount(),
-                    exam.getStatistics().getAverageScore()
-            );
-        }
-
-      return new ExamDTO(
-                exam.getId(),
-                getQuestionDTOs(exam.getQuestions()),
-                exam.getTotalPoints(),
-                exam.getMakerMail(),
-                exam.getExamValidatorMail(),
-                exam.getValidationStatus(),
-                exam.getReason(),
-                gradingCriteriaDTO,
-                submissionDTOs,
-                statisticsDTO
-        );
-    }
-
-    private List<QuestionDTO> getQuestionDTOs(List<Question> questions) {
-        List<QuestionDTO> dtos = new ArrayList<>();
-
-        for (Question question : questions){
+        for (QuestionEntity question : questions){
             if (question.getClass().equals(MultipleChoiceQuestion.class)){
                 MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion)question;
 
-                dtos.add(new MultipleChoiceQuestionDTO(
-                        mcQuestion.getId(),
-                        mcQuestion.getPoints(),
-                        mcQuestion.getQuestion(),
-                        mcQuestion.getGivenPoints(),
-                        mcQuestion.getAnswers(),
-                        mcQuestion.getCorrectAnswerIndex(),
-                        mcQuestion.getAnswer()));
+                responses.add(new MultipleChoiceQuestionResponse(mcQuestion));
             } else {
                 OpenQuestion openQuestion = (OpenQuestion)question;
 
-                dtos.add(new OpenQuestionDTO(
-                        openQuestion.getId(),
-                        openQuestion.getPoints(),
-                        openQuestion.getQuestion(),
-                        openQuestion.getGivenPoints(),
-                        openQuestion.getTeacherFeedback(),
-                        openQuestion.getCorrectAnswer(),
-                        openQuestion.getAnswer()));
+                responses.add(new OpenQuestionResponse(openQuestion));
             }
         }
-        return dtos;
+        return responses;
     }
 
     public Course findCourseByExamId(Long examId) {

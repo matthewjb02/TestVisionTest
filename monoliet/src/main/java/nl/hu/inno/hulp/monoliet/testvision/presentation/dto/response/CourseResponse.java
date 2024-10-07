@@ -1,11 +1,18 @@
 package nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response;
 
 import lombok.Getter;
-import nl.hu.inno.hulp.monoliet.testvision.application.dto.ExamDTO;
+import nl.hu.inno.hulp.monoliet.testvision.application.dto.*;
 import nl.hu.inno.hulp.monoliet.testvision.domain.Course;
+import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Getter
 public class CourseResponse {
         private Long id;
@@ -25,12 +32,104 @@ public class CourseResponse {
                  for (Teacher t:course.getTeachers()){
                      this.teachers.add(new TeacherResponse(t));}
             }
-            else{
+            else if(course.getTeachers()==null){
                 this.teachers = null;
             }
+            if(course.getValidatingExams()!=null){
+                for (Exam exam:course.getValidatingExams()){
+                    this.validatingTests.add(toDTO(exam));
+                }
+            }
 
-//            this.approvedTests = course.getApprovedExams();
-//            this.rejectedTests = course.getRejectedExams();
-//            this.validatingTests = course.getValidatingExams();
+            else if(course.getValidatingExams()==null){
+                this.validatingTests = null;
+            }
+            if(course.getRejectedExams()!=null){
+                for (Exam exam:course.getRejectedExams()){
+                    this.rejectedTests.add(toDTO(exam));
+                }
+            }
+            else if(course.getRejectedExams()==null){
+                this.rejectedTests = null;
+            }
+            if(course.getApprovedExams()!=null){
+                for (Exam exam:course.getApprovedExams()){
+                    this.approvedTests.add(toDTO(exam));
+                }
+            }
+            else if(course.getApprovedExams()==null){
+                this.approvedTests = null;
+            }
+
         }
+    private ExamDTO toDTO(Exam exam) {
+
+        GradingCriteriaDTO gradingCriteriaDTO = new GradingCriteriaDTO(0, 0);
+        if (exam.getGradingCriteria() != null) {
+            gradingCriteriaDTO = new GradingCriteriaDTO(
+                    exam.getGradingCriteria().getOpenQuestionWeight(),
+                    exam.getGradingCriteria().getClosedQuestionWeight()
+            );
+        }
+
+        List<SubmissionDTO> submissionDTOs = exam.getSubmissions().stream()
+                .map(submission -> new SubmissionDTO(submission.getId(), submission.getStatus()))
+                .collect(Collectors.toList());
+
+
+        StatisticsDTO statisticsDTO = new StatisticsDTO(0, 0, 0, 0);
+        if (exam.getStatistics() != null) {
+            statisticsDTO = new StatisticsDTO(
+                    exam.getStatistics().getSubmissionCount(),
+                    exam.getStatistics().getPassCount(),
+                    exam.getStatistics().getFailCount(),
+                    exam.getStatistics().getAverageScore()
+            );
+        }
+
+
+        return new ExamDTO(
+                exam.getId(),
+                getQuestionDTOs(exam.getQuestions()),
+                exam.getTotalPoints(),
+                exam.getMakerMail(),
+                exam.getExamValidatorMail(),
+                exam.getValidationStatus(),
+                exam.getReason(),
+                gradingCriteriaDTO,
+                submissionDTOs,
+                statisticsDTO
+
+        );
+    }
+    private List<QuestionDTO> getQuestionDTOs(List<Question> questions) {
+        List<QuestionDTO> dtos = new ArrayList<>();
+
+        for (Question question : questions){
+            if (question.getClass().equals(MultipleChoiceQuestion.class)){
+                MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion)question;
+
+                dtos.add(new MultipleChoiceQuestionDTO(
+                        mcQuestion.getId(),
+                        mcQuestion.getPoints(),
+                        mcQuestion.getQuestion(),
+                        mcQuestion.getGivenPoints(),
+                        mcQuestion.getAnswers(),
+                        mcQuestion.getCorrectAnswerIndex(),
+                        mcQuestion.getAnswer()));
+            } else {
+                OpenQuestion openQuestion = (OpenQuestion)question;
+
+                dtos.add(new OpenQuestionDTO(
+                        openQuestion.getId(),
+                        openQuestion.getPoints(),
+                        openQuestion.getQuestion(),
+                        openQuestion.getGivenPoints(),
+                        openQuestion.getTeacherFeedback(),
+                        openQuestion.getCorrectAnswer(),
+                        openQuestion.getAnswer()));
+            }
+        }
+        return dtos;
+    }
 }
