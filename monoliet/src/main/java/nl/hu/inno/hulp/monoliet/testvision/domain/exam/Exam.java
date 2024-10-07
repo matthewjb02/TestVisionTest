@@ -6,20 +6,18 @@ import lombok.Setter;
 import nl.hu.inno.hulp.monoliet.testvision.domain.Course;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
-import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
 @Getter
 @Setter
-
 public class Exam {
     @Id
     @GeneratedValue
@@ -32,9 +30,9 @@ public class Exam {
 
     private ValidationStatus validationStatus= ValidationStatus.WAITING;
     private String reason;
-  
+
     @OneToMany
-    private List<Question> questions;
+    private List<QuestionEntity> questions;
     @OneToOne
     private Teacher examValidator;
 
@@ -47,7 +45,7 @@ public class Exam {
 
     }
 
-    public Exam(Course course, Teacher examMaker, Teacher examValidator, Question... questions){
+    public Exam(Teacher examMaker, Teacher examValidator, QuestionEntity... questions){
         if (questions.length > 0){
             this.questions = new ArrayList<>(Arrays.asList(questions));
             this.examMaker = examMaker;
@@ -57,33 +55,15 @@ public class Exam {
     }
 
     public void calculateTotalPoints(){
-        if (questions == null){
-            //TODO: Throw error
-            return;
-        }
-        totalPoints = questions.stream().mapToInt(Question::getPoints).sum();
+        totalPoints = questions.stream().mapToInt(QuestionEntity::getPoints).sum();
     }
 
-    public void removeQuestions(List<Question> questions){
+    public void removeQuestions(List<QuestionEntity> questions){
         this.questions.removeAll(questions);
     }
 
-    public void addQuestions(List<Question> questions){
+    public void addQuestions(List<QuestionEntity> questions){
         this.questions.addAll(questions);
-    }
-
-    public Teacher getExamValidatorMail() {
-        return examValidator;
-    }
-
-    public Teacher getMakerMail() {
-        return examMaker;
-    }
-
-    public List<String> getQuestionsAsString() {
-        return questions.stream()
-                .map(Question::getQuestion)
-                .collect(Collectors.toList());
     }
 
     public void updateStatistics() {
@@ -108,14 +88,14 @@ public class Exam {
     public int getTotalOpenQuestionPoints(){
         return questions.stream()
                 .filter(question -> question instanceof OpenQuestion)
-                .mapToInt(Question::getPoints)
+                .mapToInt(QuestionEntity::getPoints)
                 .sum();
     }
 
     public int getTotalMultipleChoiceQuestionPoints(){
        return questions.stream()
                 .filter(question -> question instanceof MultipleChoiceQuestion)
-                .mapToInt(Question::getPoints)
+                .mapToInt(QuestionEntity::getPoints)
                 .sum();
     }
 

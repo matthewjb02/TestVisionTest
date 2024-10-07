@@ -5,25 +5,26 @@ import java.util.List;
 public class MultipleChoiceQuestionDTO extends QuestionDTO{
 
     private List<String> answers;
-    private int correctAnswerIndex;
-    private int answer;
+    private List<Integer> correctAnswerIndexes;
+    private List<Integer> givenAnswers;
 
-    public MultipleChoiceQuestionDTO(Long id, int points, String question, double givenPoints, List<String> answers, int correctAnswerIndex, int answer) {
+    public MultipleChoiceQuestionDTO(Long id, int points, String question, double givenPoints, List<String> answers,
+                                     List<Integer> correctAnswerIndexes, List<Integer> givenAnswers) {
         super(id, points, question, givenPoints);
         this.answers = answers;
-        this.correctAnswerIndex = correctAnswerIndex;
-        this.answer = answer;
+        this.correctAnswerIndexes = correctAnswerIndexes;
+        this.givenAnswers = givenAnswers;
     }
 
     public List<String> getAnswers() {
         return answers;
     }
 
-    public int getCorrectAnswerIndex() {
-        return correctAnswerIndex;
+    public List<Integer> getCorrectAnswerIndexes() {
+        return correctAnswerIndexes;
     }
 
-    public int getAnswer() {
-        return answer;
+    public List<Integer> getGivenAnswers() {
+        return givenAnswers;
     }
 }
