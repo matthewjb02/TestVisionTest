@@ -142,12 +142,7 @@ public class CourseService {
         }
 
 
-        return new CourseResponse( course.getId(),
-                course.getName(),
-                teacherResponses,
-                approvedExamDTOS,
-                rejectedExamDTOS,
-                validatingExamDTOS);
+        return new CourseResponse( course);
 
 
 

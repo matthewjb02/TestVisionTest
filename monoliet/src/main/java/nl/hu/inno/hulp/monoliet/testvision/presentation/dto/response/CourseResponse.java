@@ -2,6 +2,8 @@ package nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response;
 
 import lombok.Getter;
 import nl.hu.inno.hulp.monoliet.testvision.application.dto.ExamDTO;
+import nl.hu.inno.hulp.monoliet.testvision.domain.Course;
+import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
 
 import java.util.List;
 @Getter
@@ -16,12 +18,19 @@ public class CourseResponse {
         protected CourseResponse() {
         }
 
-        public CourseResponse(Long id, String name, List<TeacherResponse> teachers, List<ExamDTO> approvedTests, List<ExamDTO> rejectedTests, List<ExamDTO> validatingTests) {
-            this.id = id;
-            this.name = name;
-            this.teachers = teachers;
-            this.approvedTests = approvedTests;
-            this.rejectedTests = rejectedTests;
-            this.validatingTests = validatingTests;
+        public CourseResponse(Course course) {
+            this.id = course.getId();
+            this.name = course.getName();
+            if (course.getTeachers() != null) {
+                 for (Teacher t:course.getTeachers()){
+                     this.teachers.add(new TeacherResponse(t));}
+            }
+            else{
+                this.teachers = null;
+            }
+
+//            this.approvedTests = course.getApprovedExams();
+//            this.rejectedTests = course.getRejectedExams();
+//            this.validatingTests = course.getValidatingExams();
         }
 }
