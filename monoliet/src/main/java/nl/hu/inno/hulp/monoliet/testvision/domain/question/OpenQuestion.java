@@ -1,8 +1,13 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain.question;
 
 import jakarta.persistence.Entity;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+
 public class OpenQuestion extends Question {
 
     private String correctAnswer;
@@ -19,23 +24,9 @@ public class OpenQuestion extends Question {
         this.answer = "";
     }
 
-    public void setAnswer(String answer){
-        this.answer = answer;
-    }
 
-    public String getAnswer(){
-        return answer;
-    }
 
-    public String getCorrectAnswer(){
-        return correctAnswer;
-    }
-
-    public String getTeacherFeedback() {
-        return teacherFeedback;
-    }
-
-    public void setTeacherFeedback(String feedback) {
+    public void addTeacherFeedback(String feedback) {
         this.teacherFeedback += feedback;
     }
 }
