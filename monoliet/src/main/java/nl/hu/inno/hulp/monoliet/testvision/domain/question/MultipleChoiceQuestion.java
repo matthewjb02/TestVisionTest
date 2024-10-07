@@ -3,6 +3,7 @@ package nl.hu.inno.hulp.monoliet.testvision.domain.question;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,17 +18,17 @@ public class MultipleChoiceQuestion extends QuestionEntity {
     private String question;
     private int givenPoints;
     private List<String> answers;
-    private int correctAnswerIndex;
-    private int answer;
+    private List<Integer> correctAnswerIndexes;
+    private List<Integer> givenAnswers;
 
     protected MultipleChoiceQuestion() {
     }
 
-    public MultipleChoiceQuestion(int points, String question, int correctAnswerIndex, String... answers) {
+    public MultipleChoiceQuestion(int points, String question, List<Integer> correctAnswerIndexes, String... answers) {
         this.points = points;
         this.question = question;
         this.answers = Arrays.asList(answers);
-        this.correctAnswerIndex = correctAnswerIndex;
+        this.correctAnswerIndexes = correctAnswerIndexes;
     }
 
     @Override
@@ -69,15 +70,15 @@ public class MultipleChoiceQuestion extends QuestionEntity {
         return answers;
     }
 
-    public int getCorrectAnswerIndex() {
-        return correctAnswerIndex;
+    public List<Integer> getCorrectAnswerIndexes() {
+        return correctAnswerIndexes;
     }
 
-    public int getAnswer() {
-        return answer;
+    public List<Integer> getGivenAnswers() {
+        return givenAnswers;
     }
 
-    public void setAnswer(int answer) {
-        this.answer = answer;
+    public void setGivenAnswers(List<Integer> answers) {
+        this.givenAnswers = answers;
     }
 }

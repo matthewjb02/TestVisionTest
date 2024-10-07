@@ -255,8 +255,8 @@ public class CourseService {
                         mcQuestion.getQuestion(),
                         mcQuestion.getGivenPoints(),
                         mcQuestion.getAnswers(),
-                        mcQuestion.getCorrectAnswerIndex(),
-                        mcQuestion.getAnswer()));
+                        mcQuestion.getCorrectAnswerIndexes(),
+                        mcQuestion.getGivenAnswers()));
             } else {
                 OpenQuestion openQuestion = (OpenQuestion)question;
 

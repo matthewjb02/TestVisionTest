@@ -114,7 +114,7 @@ public class Submission {
         for (QuestionEntity question : examSession.getExam().getQuestions()) {
             if (question instanceof MultipleChoiceQuestion) {
                 MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion) question;
-                if (mcQuestion.getCorrectAnswerIndex() == mcQuestion.getAnswer()) {
+                if (mcQuestion.getCorrectAnswerIndexes().equals(mcQuestion.getGivenAnswers())) {
                     totalMultipleChoiceGivenPoints += mcQuestion.getPoints();
                 }
             }
