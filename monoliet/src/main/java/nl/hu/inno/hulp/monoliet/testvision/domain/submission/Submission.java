@@ -67,7 +67,7 @@ public class Submission {
 
             if (question.getClass().equals(OpenQuestion.class)){
                 OpenQuestion openQuestion = (OpenQuestion)question;
-                openQuestion.setTeacherFeedback(feedback);
+                openQuestion.addTeacherFeedback(feedback);
             }
         }
 

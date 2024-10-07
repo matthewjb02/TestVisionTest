@@ -1,11 +1,16 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain.question;
 
 import jakarta.persistence.Entity;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Arrays;
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
+
 public class MultipleChoiceQuestion extends Question {
     private List<String> answers;
     private int correctAnswerIndex;
@@ -21,19 +26,6 @@ public class MultipleChoiceQuestion extends Question {
         this.correctAnswerIndex = correctAnswerIndex;
     }
 
-    public void setAnswer(int answer){
-        this.answer = answer;
-    }
 
-    public List<String> getAnswers() {
-        return answers;
-    }
 
-    public int getCorrectAnswerIndex() {
-        return correctAnswerIndex;
-    }
-
-    public int getAnswer() {
-        return answer;
-    }
 }
