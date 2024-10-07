@@ -78,8 +78,8 @@ public class SubmissionService {
         }
 
 
-        Grading grading = Grading.createGrading(submission.calculateGrade(), request.getComments(), teacher);
-        grading.setGrader(teacher);
+        Grading grading = Grading.createGrading(submission.calculateGrade(), request.getComments());
+        grading.addGrader(teacher);
         submission.addGrading(grading);
 
         // after the final grade we update the exam statistics
