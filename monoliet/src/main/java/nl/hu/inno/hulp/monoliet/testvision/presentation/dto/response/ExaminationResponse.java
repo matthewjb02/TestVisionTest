@@ -41,7 +41,7 @@ public class ExaminationResponse {
         }
 
         this.exam = new ExamDTO(examination.getExam().getId(),
-                                getQuestionDTOs(examination.getExam().getQuestions()),
+                                getQuestionResponses(examination.getExam().getQuestions()),
                                 examination.getExam().getTotalPoints(),
                                 examination.getExam().getMakerMail(),
                                 examination.getExam().getExamValidatorMail(),
@@ -53,35 +53,21 @@ public class ExaminationResponse {
                 );
     }
 
-    private List<QuestionDTO> getQuestionDTOs(List<QuestionEntity> questions) {
-        List<QuestionDTO> dtos = new ArrayList<>();
+    private List<QuestionResponse> getQuestionResponses(List<QuestionEntity> questions) {
+        List<QuestionResponse> responses = new ArrayList<>();
 
         for (QuestionEntity question : questions){
             if (question.getClass().equals(MultipleChoiceQuestion.class)){
                 MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion)question;
 
-                dtos.add(new MultipleChoiceQuestionDTO(
-                        mcQuestion.getId(),
-                        mcQuestion.getPoints(),
-                        mcQuestion.getQuestion(),
-                        mcQuestion.getGivenPoints(),
-                        mcQuestion.getAnswers(),
-                        mcQuestion.getCorrectAnswerIndexes(),
-                        mcQuestion.getGivenAnswers()));
+                responses.add(new MultipleChoiceQuestionResponse(mcQuestion));
             } else {
                 OpenQuestion openQuestion = (OpenQuestion)question;
 
-                dtos.add(new OpenQuestionDTO(
-                        openQuestion.getId(),
-                        openQuestion.getPoints(),
-                        openQuestion.getQuestion(),
-                        openQuestion.getGivenPoints(),
-                        openQuestion.getTeacherFeedback(),
-                        openQuestion.getCorrectAnswer(),
-                        openQuestion.getAnswer()));
+                responses.add(new OpenQuestionResponse(openQuestion));
             }
         }
-        return dtos;
+        return responses;
     }
 
     public ExamDTO getExam() {

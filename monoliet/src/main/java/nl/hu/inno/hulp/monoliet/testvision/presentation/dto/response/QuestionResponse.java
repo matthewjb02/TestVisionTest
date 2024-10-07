@@ -5,8 +5,8 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
 
 @Getter
 public class QuestionResponse {
-    private final int points;
-    private final String question;
+    private int points;
+    private String question;
 
     public QuestionResponse(QuestionEntity question) {
         this.points = question.getPoints();

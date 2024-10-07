@@ -2,10 +2,12 @@ package nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import lombok.Getter;
 import nl.hu.inno.hulp.monoliet.testvision.application.dto.MultipleChoiceQuestionDTO;
 import nl.hu.inno.hulp.monoliet.testvision.application.dto.OpenQuestionDTO;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
 
+@Getter
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,

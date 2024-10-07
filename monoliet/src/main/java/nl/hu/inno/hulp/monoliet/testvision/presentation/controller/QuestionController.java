@@ -2,6 +2,7 @@ package nl.hu.inno.hulp.monoliet.testvision.presentation.controller;
 
 import nl.hu.inno.hulp.monoliet.testvision.application.service.QuestionService;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.QuestionRequest;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.QuestionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +31,7 @@ public class QuestionController {
     }
 
     @PostMapping
-    public QuestionResponse addQuestion(@RequestBody QuestionEntity question) {
+    public QuestionResponse addQuestion(@RequestBody QuestionRequest question) {
         return questionService.addQuestion(question);
     }
 

@@ -8,10 +8,13 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.Course;
 import nl.hu.inno.hulp.monoliet.testvision.data.CourseRepository;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
-import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.QuestionRequest;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.MultipleChoiceQuestionResponse;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.OpenQuestionResponse;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.QuestionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -192,7 +195,7 @@ public class CourseService {
 
         return new ExamDTO(
                 exam.getId(),
-                getQuestionDTOs(exam.getQuestions()),
+                getQuestionResponses(exam.getQuestions()),
                 exam.getTotalPoints(),
                 exam.getMakerMail(),
                 exam.getExamValidatorMail(),
@@ -230,7 +233,7 @@ public class CourseService {
 
       return new ExamDTO(
                 exam.getId(),
-                getQuestionDTOs(exam.getQuestions()),
+                getQuestionResponses(exam.getQuestions()),
                 exam.getTotalPoints(),
                 exam.getMakerMail(),
                 exam.getExamValidatorMail(),
@@ -242,35 +245,21 @@ public class CourseService {
         );
     }
 
-    private List<QuestionDTO> getQuestionDTOs(List<QuestionEntity> questions) {
-        List<QuestionDTO> dtos = new ArrayList<>();
+    private List<QuestionResponse> getQuestionResponses(List<QuestionEntity> questions) {
+        List<QuestionResponse> responses = new ArrayList<>();
 
         for (QuestionEntity question : questions){
             if (question.getClass().equals(MultipleChoiceQuestion.class)){
                 MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion)question;
 
-                dtos.add(new MultipleChoiceQuestionDTO(
-                        mcQuestion.getId(),
-                        mcQuestion.getPoints(),
-                        mcQuestion.getQuestion(),
-                        mcQuestion.getGivenPoints(),
-                        mcQuestion.getAnswers(),
-                        mcQuestion.getCorrectAnswerIndexes(),
-                        mcQuestion.getGivenAnswers()));
+                responses.add(new MultipleChoiceQuestionResponse(mcQuestion));
             } else {
                 OpenQuestion openQuestion = (OpenQuestion)question;
 
-                dtos.add(new OpenQuestionDTO(
-                        openQuestion.getId(),
-                        openQuestion.getPoints(),
-                        openQuestion.getQuestion(),
-                        openQuestion.getGivenPoints(),
-                        openQuestion.getTeacherFeedback(),
-                        openQuestion.getCorrectAnswer(),
-                        openQuestion.getAnswer()));
+                responses.add(new OpenQuestionResponse(openQuestion));
             }
         }
-        return dtos;
+        return responses;
     }
 
     public Course findCourseByExamId(Long examId) {

@@ -1,5 +1,8 @@
 package nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request;
 
+import lombok.Getter;
+
+@Getter
 public class OpenQuestionRequest extends QuestionRequest{
 
     private String correctAnswer;

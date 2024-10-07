@@ -9,6 +9,8 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.data.QuestionRepository;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.MultipleChoiceQuestionRequest;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.OpenQuestionRequest;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.QuestionRequest;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.MultipleChoiceQuestionResponse;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.OpenQuestionResponse;
@@ -46,21 +48,34 @@ public class QuestionService {
         QuestionEntity question = questionRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No question with id: " + id + " found!"));
 
-        if (question.getClass().equals(MultipleChoiceQuestion.class)){
+        if (question instanceof MultipleChoiceQuestion){
             return new MultipleChoiceQuestionResponse((MultipleChoiceQuestion) question);
         } else {
             return new OpenQuestionResponse((OpenQuestion) question);
         }
     }
 
-    public QuestionResponse addQuestion(QuestionEntity question) {
-        questionRepository.save(question);
+    public QuestionResponse addQuestion(QuestionRequest question) {
 
-        if (question.getClass().equals(MultipleChoiceQuestion.class)){
-            return new MultipleChoiceQuestionResponse((MultipleChoiceQuestion) question);
+        QuestionEntity entity;
+        if (question instanceof MultipleChoiceQuestionRequest){
+            entity = new MultipleChoiceQuestion(question.getPoints(), question.getQuestion(),
+                    ((MultipleChoiceQuestionRequest) question).getCorrectAnswerIndexes(),
+                    ((MultipleChoiceQuestionRequest) question).getAnswers());
+
         } else {
-            return new OpenQuestionResponse((OpenQuestion) question);
+            entity = new OpenQuestion(question.getPoints(), question.getQuestion(), ((OpenQuestionRequest)question).getCorrectAnswer());
         }
+
+        QuestionEntity savedEntity = questionRepository.save(entity);
+
+//        if (entity instanceof MultipleChoiceQuestion){
+//            return new MultipleChoiceQuestionResponse((MultipleChoiceQuestion) savedEntity);
+//        } else {
+//            return new OpenQuestionResponse((OpenQuestion) savedEntity);
+//        }
+
+        return getQuestionById(savedEntity.getId());
     }
 
     public QuestionResponse deleteQuestion(Long id) {

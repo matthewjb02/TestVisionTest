@@ -4,11 +4,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.List;
 
 @Entity
+@Getter
 public class MultipleChoiceQuestion extends QuestionEntity {
     @Id
     @GeneratedValue
@@ -24,10 +26,10 @@ public class MultipleChoiceQuestion extends QuestionEntity {
     protected MultipleChoiceQuestion() {
     }
 
-    public MultipleChoiceQuestion(int points, String question, List<Integer> correctAnswerIndexes, String... answers) {
+    public MultipleChoiceQuestion(int points, String question, List<Integer> correctAnswerIndexes, List<String> answers) {
         this.points = points;
         this.question = question;
-        this.answers = Arrays.asList(answers);
+        this.answers = answers;
         this.correctAnswerIndexes = correctAnswerIndexes;
     }
 
