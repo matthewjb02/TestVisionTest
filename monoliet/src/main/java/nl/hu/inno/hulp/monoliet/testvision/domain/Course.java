@@ -1,6 +1,7 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.ValidationStatus;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
+@Getter
 public class Course {
     @Id
     @GeneratedValue
@@ -97,27 +99,5 @@ public class Course {
         }
     }
 
-    public List<Exam> getApprovedExams(){
-        return approvedExams;
-    }
-
-    public List<Teacher> getTeachers() {
-        return teachers;
-    }
-
-    public List<Exam> getValidatingExams() {
-        return validatingExams;
-    }
-    public List<Exam> getRejectedExams(){
-        return rejectedExams;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
 
 }
