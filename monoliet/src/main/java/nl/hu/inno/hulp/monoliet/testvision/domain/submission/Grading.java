@@ -22,7 +22,6 @@ public class Grading {
     public Grading(double grade, String comments) {
         this.grade = grade;
         this.comments = comments;
-        this.grader = grader;
     }
 
     protected Grading() {}
