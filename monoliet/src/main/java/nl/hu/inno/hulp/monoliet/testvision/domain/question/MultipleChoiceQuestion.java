@@ -1,12 +1,8 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain.question;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.Getter;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -16,11 +12,11 @@ public class MultipleChoiceQuestion extends QuestionEntity {
     @GeneratedValue
     private Long id;
 
-    private int points;
-    private String question;
-    private int givenPoints;
+    @ElementCollection
     private List<String> answers;
+    @ElementCollection
     private List<Integer> correctAnswerIndexes;
+    @ElementCollection
     private List<Integer> givenAnswers;
 
     protected MultipleChoiceQuestion() {
@@ -34,53 +30,11 @@ public class MultipleChoiceQuestion extends QuestionEntity {
     }
 
     @Override
-    public Long getId() {
-        return id;
-    }
-
-    @Override
-    public int getPoints() {
-        return points;
-    }
-
-    @Override
-    public String getQuestion() {
-        return question;
-    }
-
-    @Override
-    public int getGivenPoints() {
-        return givenPoints;
-    }
-
-    @Override
     public void addGivenPoints(int points) {
         throw new IllegalArgumentException("Points for multiple choice questions are automatically calculated.");
     }
 
-    @Override
-    public void setPoints(int points) {
-        this.points = points;
-    }
-
-    @Override
-    public void setQuestion(String question) {
-        this.question = question;
-    }
-
-    public List<String> getAnswers() {
-        return answers;
-    }
-
-    public List<Integer> getCorrectAnswerIndexes() {
-        return correctAnswerIndexes;
-    }
-
-    public List<Integer> getGivenAnswers() {
-        return givenAnswers;
-    }
-
-    public void setGivenAnswers(List<Integer> answers) {
-        this.givenAnswers = answers;
+    public void setGivenAnswers(List<Integer> givenAnswers){
+        this.givenAnswers = givenAnswers;
     }
 }
