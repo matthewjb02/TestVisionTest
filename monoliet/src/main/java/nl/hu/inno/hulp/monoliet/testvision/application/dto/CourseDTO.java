@@ -1,19 +1,22 @@
 package nl.hu.inno.hulp.monoliet.testvision.application.dto;
 
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.ExamResponse;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.TeacherResponse;
+
 import java.util.List;
 
 public class CourseDTO {
     private Long id;
     private String name;
-    private List<TeacherDTO> teachers;
-    private List<ExamDTO> approvedTests;
-    private List<ExamDTO> rejectedTests;
-    private List<ExamDTO> validatingTests;
+    private List<TeacherResponse> teachers;
+    private List<ExamResponse> approvedTests;
+    private List<ExamResponse> rejectedTests;
+    private List<ExamResponse> validatingTests;
 
     public CourseDTO() {
     }
 
-    public CourseDTO(Long id, String name,List<TeacherDTO> teachers, List<ExamDTO> approvedTests, List<ExamDTO> rejectedTests, List<ExamDTO> validatingTests) {
+    public CourseDTO(Long id, String name, List<TeacherResponse> teachers, List<ExamResponse> approvedTests, List<ExamResponse> rejectedTests, List<ExamResponse> validatingTests) {
         this.id = id;
         this.name = name;
         this.teachers = teachers;
@@ -30,18 +33,18 @@ public class CourseDTO {
         return name;
     }
 
-    public List<ExamDTO> getApprovedTests() {
+    public List<ExamResponse> getApprovedTests() {
         return approvedTests;
     }
 
-    public List<ExamDTO> getRejectedTests() {
+    public List<ExamResponse> getRejectedTests() {
         return rejectedTests;
     }
 
-    public List<ExamDTO> getValidatingTests() {
+    public List<ExamResponse> getValidatingTests() {
         return validatingTests;
     }
-    public List<TeacherDTO> getTeachers() {
+    public List<TeacherResponse> getTeachers() {
         return teachers;
     }
 }

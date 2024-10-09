@@ -1,15 +1,15 @@
 // In de TestDTO klasse
 package nl.hu.inno.hulp.monoliet.testvision.application.dto;
 
-import nl.hu.inno.hulp.monoliet.testvision.domain.Course;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.ValidationStatus;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.QuestionResponse;
 
 import java.util.List;
 public class ExamDTO {
 
     private Long id;
-    private List<QuestionDTO> questions;
+    private List<QuestionResponse> questions;
     private Teacher examMaker;
     private Teacher examValidator;
     private ValidationStatus validationStatus;
@@ -22,7 +22,7 @@ public class ExamDTO {
     public ExamDTO() {
     }
 
-    public ExamDTO(Long id, List<QuestionDTO> questions, int totalPoints,Teacher examMaker, Teacher examValidator, ValidationStatus validationStatus, String reason, GradingCriteriaDTO gradingCriteria, List<SubmissionDTO> submissions, StatisticsDTO statistics) {
+    public ExamDTO(Long id, List<QuestionResponse> questions, int totalPoints, Teacher examMaker, Teacher examValidator, ValidationStatus validationStatus, String reason, GradingCriteriaDTO gradingCriteria, List<SubmissionDTO> submissions, StatisticsDTO statistics) {
         this.id = id;
         this.questions = questions;
         this.totalPoints = totalPoints;
@@ -39,7 +39,7 @@ public class ExamDTO {
         return id;
     }
 
-    public List<QuestionDTO> getQuestions() {
+    public List<QuestionResponse> getQuestions() {
         return questions;
     }
 

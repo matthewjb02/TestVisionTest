@@ -1,8 +1,9 @@
 package nl.hu.inno.hulp.monoliet.testvision.presentation.controller;
 
-import nl.hu.inno.hulp.monoliet.testvision.application.dto.QuestionDTO;
 import nl.hu.inno.hulp.monoliet.testvision.application.service.QuestionService;
-import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.QuestionRequest;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.QuestionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,22 +21,22 @@ public class QuestionController {
     }
 
     @GetMapping
-    public List<QuestionDTO> getAllQuestions() {
+    public List<QuestionResponse> getAllQuestions() {
         return questionService.getAllQuestions();
     }
 
     @GetMapping("/{id}")
-    public QuestionDTO getQuestionById(@PathVariable Long id) {
+    public QuestionResponse getQuestionById(@PathVariable Long id) {
         return questionService.getQuestionById(id);
     }
 
     @PostMapping
-    public QuestionDTO addQuestion(@RequestBody Question question) {
+    public QuestionResponse addQuestion(@RequestBody QuestionRequest question) {
         return questionService.addQuestion(question);
     }
 
     @DeleteMapping("/{id}")
-    public QuestionDTO deleteQuestion(@PathVariable Long id) {
+    public QuestionResponse deleteQuestion(@PathVariable Long id) {
         return questionService.deleteQuestion(id);
     }
 }

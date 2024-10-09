@@ -1,11 +1,13 @@
 package nl.hu.inno.hulp.monoliet.testvision.presentation.controller;
 
 import nl.hu.inno.hulp.monoliet.testvision.application.dto.CourseDTO;
-import nl.hu.inno.hulp.monoliet.testvision.application.dto.ExamDTO;
 import nl.hu.inno.hulp.monoliet.testvision.domain.Course;
 import nl.hu.inno.hulp.monoliet.testvision.application.service.CourseService;
-import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.ExamResponse;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.CourseRequest;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.CourseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,46 +25,46 @@ public class CourseController {
     }
 
     @GetMapping
-    public List<CourseDTO> getAllCourses() {
+    public List<CourseResponse> getAllCourses() {
         return courseService.getAllCourses();
     }
 
     @GetMapping("/{id}")
-    public CourseDTO getCourseById(@PathVariable Long id) {
+    public CourseResponse getCourseById(@PathVariable Long id) {
         return courseService.getCourseById(id);
     }
 
     @PostMapping
-    public CourseDTO addCourse(@RequestBody Course course) {
+    public CourseResponse addCourse(@RequestBody CourseRequest course) {
         return courseService.addCourse(course);
     }
 
     @DeleteMapping("/{id}")
-    public CourseDTO deleteCourse(@PathVariable Long id) {
+    public CourseResponse deleteCourse(@PathVariable Long id) {
         return courseService.deleteCourse(id);
     }
     @PostMapping("/{courseId}/teachers/{teacherId}")
-    public CourseDTO addTeacherToCourse(@PathVariable Long courseId ,@PathVariable Long teacherId) {
+    public CourseResponse addTeacherToCourse(@PathVariable Long courseId ,@PathVariable Long teacherId) {
        return courseService.addTeacherToCourse(courseId, teacherId);
     }
     @PostMapping("/{courseId}/exams/{examId}")
-    public CourseDTO addTestToCourse(@PathVariable Long courseId, @PathVariable Long examId) {
+    public CourseResponse addTestToCourse(@PathVariable Long courseId, @PathVariable Long examId) {
         return courseService.addTestToCourse(courseId, examId);
     }
     @PutMapping("{id}/exams/{examId}/accept")
-    public ExamDTO acceptExam(@PathVariable Long id, @PathVariable Long examId) throws Exception {
+    public ExamResponse acceptExam(@PathVariable Long id, @PathVariable Long examId) throws Exception {
         return courseService.acceptExam(examId,id);
     }
     @PutMapping("{id}/exams/{examId}/reject")
-    public ExamDTO rejectExam(@PathVariable Long id, @PathVariable Long examId,@RequestBody String reason) throws Exception {
+    public ExamResponse rejectExam(@PathVariable Long id, @PathVariable Long examId,@RequestBody String reason) throws Exception {
         return courseService.rejectExam(examId,id, reason);
     }
     @GetMapping("/{id}/exams/{examId}/reject/view")
-    public ExamDTO viewDeniedExam(@PathVariable Long examId,@PathVariable Long id) throws Exception {
+    public ExamResponse viewDeniedExam(@PathVariable Long examId,@PathVariable Long id) throws Exception {
         return courseService.viewDeniedExam(examId,id);
     }
     @PutMapping("/{id}/exams/{examId}/reject/modify")
-    public ExamDTO modifyWrongExam(@PathVariable Long examId,@PathVariable Long id,@RequestBody List<Question>newQuestions) throws Exception {
+    public ExamResponse modifyWrongExam(@PathVariable Long examId,@PathVariable Long id,@RequestBody List<QuestionEntity>newQuestions) throws Exception {
         return courseService.modifyWrongExam(examId,id, newQuestions);
     }
 }

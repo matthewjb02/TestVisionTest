@@ -4,8 +4,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.Getter;
 
 @Entity
+@Getter
 public class Statistics {
 
     @Id
@@ -25,7 +27,7 @@ public class Statistics {
         this.averageScore = averageScore;
     }
 
-    public Statistics() {
+    protected Statistics() {
     }
 
     public static Statistics createStatistics(int submissionCount, int passCount, int failCount, double averageScore) {
@@ -33,20 +35,4 @@ public class Statistics {
     }
 
 
-    public int getSubmissionCount() {
-        return submissionCount;
-    }
-
-    public int getPassCount() {
-        return passCount;
-    }
-
-
-    public int getFailCount() {
-        return failCount;
-    }
-
-    public double getAverageScore() {
-        return averageScore;
-    }
 }

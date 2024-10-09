@@ -8,7 +8,10 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.exception.PasswordIncorrectExc
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
+
+import java.util.List;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Entity
@@ -17,6 +20,8 @@ public class ExamSession {
     @Id
     @GeneratedValue
     private Long id;
+
+    private Long examinationId;
 
     @OneToOne
     private Student student;
@@ -38,6 +43,7 @@ public class ExamSession {
 
     public ExamSession(Examination context, Student student) {
         this.state = ExamState.Published;
+        this.examinationId = context.getId();
         this.duration = context.totalDuration(student.isExtraTimeRight());
         this.exam = context.getExam();
         //this.securedPassword = hashPassword(context.getPassword());
@@ -56,11 +62,11 @@ public class ExamSession {
     }
 
     public ExamSession answerQuestion(int questionNr, Object answer) {
-        Question question = seeQuestion(questionNr);
+        QuestionEntity question = seeQuestion(questionNr);
 
         if (question.getClass().equals(MultipleChoiceQuestion.class)){
             MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion)question;
-            mcQuestion.setAnswer((int)answer);
+            mcQuestion.setGivenAnswers((List<Integer>)answer);
         } else {
             OpenQuestion openQuestion = (OpenQuestion)question;
             openQuestion.setAnswer((String) answer);
@@ -69,7 +75,7 @@ public class ExamSession {
         return this;
     }
 
-    public Question seeQuestion(int questionNr) {
+    public QuestionEntity seeQuestion(int questionNr) {
         return exam.getQuestions().get(questionNr - 1);
     }
 
@@ -91,9 +97,5 @@ public class ExamSession {
 
     public void changeState(ExamState state) {
         this.state = state;
-    }
-
-    public Long getStudentId() {
-        return student.getId();
     }
 }

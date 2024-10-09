@@ -1,18 +1,17 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain.submission;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamSession;
-import nl.hu.inno.hulp.monoliet.testvision.domain.examination.Examination;
-
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
-
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
-
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.GradingCriteria;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
 
 
+@Getter
 @Entity
 public class Submission {
 
@@ -32,33 +31,18 @@ public class Submission {
     public Submission(ExamSession examSession) {
         this.examSession = examSession;
         this.status = SubmissionStatus.SUBMITTED;
+        this.grading = new Grading();
     }
 
-    public Submission() {
+    protected Submission() {
     }
 
     public static Submission createSubmission(ExamSession examSession) {
         return new Submission(examSession);
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public SubmissionStatus getStatus() {
-        return status;
-    }
-
-    public ExamSession getExamSession() {
-        return examSession;
-    }
-
-    public Grading getGrading() {
-        return grading;
-    }
-
     public void updateGradingForQuestion(int questionNr, int givenPoints, String feedback) {
-        Question question = examSession.seeQuestion(questionNr);
+        QuestionEntity question = examSession.seeQuestion(questionNr);
         if (question != null) {
             if(givenPoints > question.getPoints() || givenPoints < 0) {
                 throw new IllegalArgumentException("Given points must be between 0 and the maximum points of the question");
@@ -67,7 +51,7 @@ public class Submission {
 
             if (question.getClass().equals(OpenQuestion.class)){
                 OpenQuestion openQuestion = (OpenQuestion)question;
-                openQuestion.setTeacherFeedback(feedback);
+                openQuestion.addTeacherFeedback(feedback);
             }
         }
 
@@ -104,7 +88,7 @@ public class Submission {
 
     public int calculateTotalOpenGivenPoints() {
         int totalOpenGivenPoints = 0;
-        for (Question question : examSession.getExam().getQuestions()) {
+        for (QuestionEntity question : examSession.getExam().getQuestions()) {
             if (question instanceof OpenQuestion) {
                 totalOpenGivenPoints += question.getGivenPoints();
             }
@@ -114,10 +98,10 @@ public class Submission {
 
     public int calculateTotalMultipleChoiceGivenPoints() {
         int totalMultipleChoiceGivenPoints = 0;
-        for (Question question : examSession.getExam().getQuestions()) {
+        for (QuestionEntity question : examSession.getExam().getQuestions()) {
             if (question instanceof MultipleChoiceQuestion) {
                 MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion) question;
-                if (mcQuestion.getCorrectAnswerIndex() == mcQuestion.getAnswer()) {
+                if (mcQuestion.getCorrectAnswerIndexes().equals(mcQuestion.getGivenAnswers())) {
                     totalMultipleChoiceGivenPoints += mcQuestion.getPoints();
                 }
             }
@@ -130,16 +114,6 @@ public class Submission {
     }
 
 
-
-    public Student getStudentFromExamSubmission() {
-        return examSession.getStudent();
-
-    }
-
-    public Long getStudentIDtFromExamSubmission() {
-        return examSession.getStudentId();
-
-    }
 
     public void addGrading(Grading grading) {
         this.grading = grading;

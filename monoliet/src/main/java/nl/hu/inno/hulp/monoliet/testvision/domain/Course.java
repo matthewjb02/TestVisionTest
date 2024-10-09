@@ -1,9 +1,11 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.ValidationStatus;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
 
 import java.util.ArrayList;
@@ -11,6 +13,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
+@Getter
 public class Course {
     @Id
     @GeneratedValue
@@ -27,7 +30,7 @@ public class Course {
     @OneToMany
     private List<Exam> rejectedExams =new ArrayList<>();
 
-    public Course(){
+    protected Course(){
 
     }
 
@@ -48,16 +51,16 @@ public class Course {
     }
     private boolean doesTeacherTeachCourse(Exam exam) throws Exception {
 
-        if (this.getTeachers().contains(exam.getMakerMail())&&exam.getMakerMail()!=exam.getExamValidatorMail()||this.getTeachers().contains(exam.getExamValidatorMail())&&exam.getExamValidatorMail()!=exam.getMakerMail()) {
+        if (this.getTeachers().contains(exam.getExamMaker())&&exam.getExamMaker()!=exam.getExamValidator()||this.getTeachers().contains(exam.getExamValidator())&&exam.getExamValidator()!=exam.getExamMaker()) {
             return true;
         } else throw new Exception("The Teacher does not teach this course");
     }
 
     private boolean canIApproveThisExam(Teacher examValidator,Exam exam) throws Exception {
-        if (this.getValidatingExams().contains(exam)&&exam.getExamValidatorMail() ==examValidator){
+        if (this.getValidatingExams().contains(exam)&&exam.getExamValidator() ==examValidator){
             return true;
         }
-        else if(exam.getExamValidatorMail() !=examValidator&&this.getValidatingExams().contains(exam)){
+        else if(exam.getExamValidator() !=examValidator&&this.getValidatingExams().contains(exam)){
             throw new Exception("The Teacher is not assigned as validator, but the exam needs to be Validated");
         }
         else throw new Exception("The exam cannot be validated");
@@ -86,7 +89,7 @@ public class Course {
         }
         else throw new Exception("This exam was not rejected");
     }
-    public void modifyQuestions(Exam exam,List<Question> oldQuestions, List<Question> newQuestion) {
+    public void modifyQuestions(Exam exam, List<QuestionEntity> oldQuestions, List<QuestionEntity> newQuestion) {
         if (this.getRejectedExams().contains(exam)){
             exam.removeQuestions(oldQuestions);
             exam.addQuestions(newQuestion);
@@ -97,27 +100,5 @@ public class Course {
         }
     }
 
-    public List<Exam> getApprovedExams(){
-        return approvedExams;
-    }
-
-    public List<Teacher> getTeachers() {
-        return teachers;
-    }
-
-    public List<Exam> getValidatingExams() {
-        return validatingExams;
-    }
-    public List<Exam> getRejectedExams(){
-        return rejectedExams;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
 
 }

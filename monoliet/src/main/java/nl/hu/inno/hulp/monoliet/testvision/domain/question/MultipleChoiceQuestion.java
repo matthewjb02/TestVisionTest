@@ -1,39 +1,40 @@
 package nl.hu.inno.hulp.monoliet.testvision.domain.question;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
+import lombok.Getter;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Entity
-public class MultipleChoiceQuestion extends Question {
+@Getter
+public class MultipleChoiceQuestion extends QuestionEntity {
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @ElementCollection
     private List<String> answers;
-    private int correctAnswerIndex;
-    private int answer;
+    @ElementCollection
+    private List<Integer> correctAnswerIndexes;
+    @ElementCollection
+    private List<Integer> givenAnswers;
 
-    protected MultipleChoiceQuestion(){
+    protected MultipleChoiceQuestion() {
     }
 
-    public MultipleChoiceQuestion(int points, String question, int correctAnswerIndex, String... answers) {
-        this.setPoints(points);
-        this.setQuestion(question);
-        this.answers = Arrays.asList(answers);
-        this.correctAnswerIndex = correctAnswerIndex;
+    public MultipleChoiceQuestion(int points, String question, List<Integer> correctAnswerIndexes, List<String> answers) {
+        this.points = points;
+        this.question = question;
+        this.answers = answers;
+        this.correctAnswerIndexes = correctAnswerIndexes;
     }
 
-    public void setAnswer(int answer){
-        this.answer = answer;
+    @Override
+    public void addGivenPoints(int points) {
+        throw new IllegalArgumentException("Points for multiple choice questions are automatically calculated.");
     }
 
-    public List<String> getAnswers() {
-        return answers;
-    }
-
-    public int getCorrectAnswerIndex() {
-        return correctAnswerIndex;
-    }
-
-    public int getAnswer() {
-        return answer;
+    public void setGivenAnswers(List<Integer> givenAnswers){
+        this.givenAnswers = givenAnswers;
     }
 }
