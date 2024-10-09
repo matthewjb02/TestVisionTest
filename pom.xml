@@ -19,7 +19,12 @@
 	</properties>
 	
 	<modules>
+		<module>commons</module>
 		<module>monoliet</module>
+		<module>users</module>
+		<module>exam</module>
+		<module>examination</module>
+		<module>grading</module>
 
 	</modules>
 	

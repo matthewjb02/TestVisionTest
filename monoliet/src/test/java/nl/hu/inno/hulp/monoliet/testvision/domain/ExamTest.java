@@ -1,7 +1,7 @@
 //package nl.hu.inno.hulp.monoliet.testvision.domain;
 //
-//import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
-//import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
+//import nl.hu.inno.hulp.exam.domain.question.Question;
+//import nl.hu.inno.hulp.grading.Submission;
 //import nl.hu.inno.hulp.monoliet.testvision.domain.exam.*;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.DisplayName;
