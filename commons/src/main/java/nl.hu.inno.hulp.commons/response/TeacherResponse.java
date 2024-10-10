@@ -18,5 +18,4 @@ public class TeacherResponse {
         this.lastName = lastName;
         this.email = email;
     }
-
 }

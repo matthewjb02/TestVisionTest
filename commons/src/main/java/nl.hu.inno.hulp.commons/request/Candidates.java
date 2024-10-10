@@ -4,5 +4,5 @@ import java.util.List;
 
 public class Candidates {
     public Long examinationId;
-    public List<StudentRequest> students;
+    public List<Long> studentIds;
 }
