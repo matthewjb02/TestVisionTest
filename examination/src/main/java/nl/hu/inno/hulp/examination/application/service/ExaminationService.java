@@ -1,13 +1,14 @@
 package nl.hu.inno.hulp.examination.application.service;
 
-import nl.hu.inno.hulp.monoliet.testvision.data.ExaminationRepository;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
-import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamDate;
-import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamSession;
-import nl.hu.inno.hulp.monoliet.testvision.domain.examination.Examination;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exception.NoExaminationFoundException;
-import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.*;
+import nl.hu.inno.hulp.commons.exception.NoExaminationFoundException;
+import nl.hu.inno.hulp.commons.request.Candidate;
+import nl.hu.inno.hulp.commons.request.Candidates;
+import nl.hu.inno.hulp.commons.request.CreateExamination;
+import nl.hu.inno.hulp.commons.request.StartExamSession;
+import nl.hu.inno.hulp.examination.data.ExaminationRepository;
+import nl.hu.inno.hulp.examination.domain.ExamDate;
+import nl.hu.inno.hulp.examination.domain.ExamSession;
+import nl.hu.inno.hulp.examination.domain.Examination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

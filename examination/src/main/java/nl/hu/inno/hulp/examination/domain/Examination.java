@@ -2,8 +2,6 @@ package nl.hu.inno.hulp.examination.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
-import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
 
 import java.util.List;
 
@@ -14,14 +12,14 @@ public class Examination {
     @GeneratedValue
     private Long id;
 
-    @OneToMany
-    private List<Student> candidates;
+    @Transient
+    private List<Long> candidates;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<ExamSession> examSessions;
 
-    @OneToOne
-    private Exam exam;
+    @Transient
+    private Long examId;
 
     private String name;
     private String password;
@@ -35,9 +33,9 @@ public class Examination {
     protected Examination() {
     }
 
-    public Examination(String name, Exam exam, String password, ExamDate examDate, int duration, int extraTime) {
+    public Examination(String name, Long examId, String password, ExamDate examDate, int duration, int extraTime) {
         this.name = name;
-        this.exam = exam;
+        this.examId = examId;
         this.password = password;
         this.examDate = examDate;
         this.duration = duration;
@@ -52,21 +50,21 @@ public class Examination {
         return duration;
     }
 
-    public Examination selectCandidates(List<Student> candidates) {
+    public Examination selectCandidates(List<Long> candidates) {
         this.candidates.addAll(candidates);
         return this;
     }
-    public Examination selectCandidate(Student student) {
-        this.candidates.add(student);
+    public Examination selectCandidate(Long studentId) {
+        this.candidates.add(studentId);
         return this;
     }
 
-    public Examination removeCandidates(List<Student> candidates) {
+    public Examination removeCandidates(List<Long> candidates) {
         this.candidates.removeAll(candidates);
         return this;
     }
-    public Examination removeCandidate(Student student) {
-        this.candidates.remove(student);
+    public Examination removeCandidate(Long studentId) {
+        this.candidates.remove(studentId);
         return this;
     }
 
@@ -74,7 +72,7 @@ public class Examination {
         return examSessions.add(examSession);
     }
 
-    public boolean validateStudent(Student student) {
-        return candidates.contains(student);
+    public boolean validateStudent(Long studentId) {
+        return candidates.contains(studentId);
     }
 }

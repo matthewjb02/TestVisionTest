@@ -1,19 +1,16 @@
 package nl.hu.inno.hulp.examination.application.service;
 
-import nl.hu.inno.hulp.monoliet.testvision.data.ExamSessionRepository;
-import nl.hu.inno.hulp.monoliet.testvision.data.SubmissionRepository;
-import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamSession;
-import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamState;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exception.ExamSessionNotStored;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exception.ExaminationInactiveException;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exception.NoExamSessionFoundException;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exception.NotAllowedException;
-import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
-import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.AnswerRequest;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.ExamSessionRequest;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.SeeQuestion;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.StartExamSession;
+import nl.hu.inno.hulp.commons.enums.ExamState;
+import nl.hu.inno.hulp.commons.exception.ExamSessionNotStored;
+import nl.hu.inno.hulp.commons.exception.ExaminationInactiveException;
+import nl.hu.inno.hulp.commons.exception.NoExamSessionFoundException;
+import nl.hu.inno.hulp.commons.exception.NotAllowedException;
+import nl.hu.inno.hulp.commons.request.AnswerRequest;
+import nl.hu.inno.hulp.commons.request.ExamSessionRequest;
+import nl.hu.inno.hulp.commons.request.SeeQuestion;
+import nl.hu.inno.hulp.commons.request.StartExamSession;
+import nl.hu.inno.hulp.examination.data.ExamSessionRepository;
+import nl.hu.inno.hulp.examination.domain.ExamSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,15 +21,13 @@ public class ExamSessionService {
     private final ExamSessionRepository examSessionRepository;
     private final StudentService studentService;
     private final ExaminationService examinationService;
-    private final SubmissionRepository submissionRepository;
 
     @Autowired
-    public ExamSessionService(ExamSessionRepository examSessionRepository, StudentService studentService, ExaminationService examinationService,
-                              SubmissionRepository submissionRepository) {
+    public ExamSessionService(ExamSessionRepository examSessionRepository, StudentService studentService,
+                              ExaminationService examinationService,) {
         this.examSessionRepository = examSessionRepository;
         this.studentService = studentService;
         this.examinationService = examinationService;
-        this.submissionRepository = submissionRepository;
     }
 
     public ExamSession startExamSession(StartExamSession request) {
@@ -76,10 +71,6 @@ public class ExamSessionService {
 
         if (examSession.getState() == ExamState.Active) {
             examSession.endSession();
-
-            Submission submission = Submission.createSubmission(examSession);
-            examSession.getExam().addSubmission(submission);
-            submissionRepository.save(submission);
 
             if (!examinationService.storeExamSession(examSession)) {
                 throw new ExamSessionNotStored("Exam session can't be stored in examination.");

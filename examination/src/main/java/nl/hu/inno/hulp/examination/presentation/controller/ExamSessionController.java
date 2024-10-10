@@ -1,16 +1,16 @@
 package nl.hu.inno.hulp.examination.presentation.controller;
 
-import nl.hu.inno.hulp.monoliet.testvision.application.service.ExamSessionService;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exception.ExaminationInactiveException;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exception.NoExamSessionFoundException;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exception.NotAllowedException;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exception.PasswordIncorrectException;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.AnswerRequest;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.ExamSessionRequest;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.SeeQuestion;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.StartExamSession;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.ExamSessionResponse;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.QuestionResponse;
+import nl.hu.inno.hulp.commons.exception.ExaminationInactiveException;
+import nl.hu.inno.hulp.commons.exception.NoExamSessionFoundException;
+import nl.hu.inno.hulp.commons.exception.NotAllowedException;
+import nl.hu.inno.hulp.commons.exception.PasswordIncorrectException;
+import nl.hu.inno.hulp.commons.request.AnswerRequest;
+import nl.hu.inno.hulp.commons.request.ExamSessionRequest;
+import nl.hu.inno.hulp.commons.request.SeeQuestion;
+import nl.hu.inno.hulp.commons.request.StartExamSession;
+import nl.hu.inno.hulp.commons.response.ExamSessionResponse;
+import nl.hu.inno.hulp.commons.response.QuestionResponse;
+import nl.hu.inno.hulp.examination.application.service.ExamSessionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
