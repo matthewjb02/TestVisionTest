@@ -1,60 +1,36 @@
-package nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response;
+package nl.hu.inno.hulp.commons.response;
 
-import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
-import nl.hu.inno.hulp.monoliet.testvision.domain.examination.Examination;
-import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
-import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
-import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
+import nl.hu.inno.hulp.commons.request.ExamDateDTO;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ExaminationResponse {
-    private final ExamResponse exam;
+    private Long id;
 
-    public ExaminationResponse(Examination examination) {
-        GradingCriteriaDTO gradingCriteriaDTO = null;
-        Exam exam = examination.getExam();
-        if (exam.getGradingCriteria() != null) {
-            gradingCriteriaDTO = new GradingCriteriaDTO(
-                    exam.getGradingCriteria().getOpenQuestionWeight(),
-                    exam.getGradingCriteria().getClosedQuestionWeight()
-            );
-        }
+    private List<StudentResponse> candidates;
 
-        List<SubmissionDTO> submissionDTOs = exam.getSubmissions().stream()
-                .map(submission -> new SubmissionDTO(submission.getId(), submission.getStatus()))
-                .collect(Collectors.toList());
+    private List<ExamSessionResponse> examSessions;
 
-        StatisticsDTO statisticsDTO = null;
-        if (exam.getStatistics() != null) {
-            statisticsDTO = new StatisticsDTO(
-                    exam.getStatistics().getSubmissionCount(),
-                    exam.getStatistics().getPassCount(),
-                    exam.getStatistics().getFailCount(),
-                    exam.getStatistics().getAverageScore()
-            );
-        }
+    private ExamResponse exam;
 
-        this.exam = new ExamResponse(exam);
-    }
+    private String name;
+    private String password;
 
-    private List<QuestionResponse> getQuestionResponses(List<QuestionEntity> questions) {
-        List<QuestionResponse> responses = new ArrayList<>();
+    private ExamDateDTO examDate;
 
-        for (QuestionEntity question : questions){
-            if (question.getClass().equals(MultipleChoiceQuestion.class)){
-                MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion)question;
+    private int duration;
+    private int extraTime;
 
-                responses.add(new MultipleChoiceQuestionResponse(mcQuestion));
-            } else {
-                OpenQuestion openQuestion = (OpenQuestion)question;
-
-                responses.add(new OpenQuestionResponse(openQuestion));
-            }
-        }
-        return responses;
+    public ExaminationResponse(Long id, List<StudentResponse> candidates, List<ExamSessionResponse> examSessions, ExamResponse exam, String name, String password, ExamDateDTO examDate, int duration, int extraTime) {
+        this.id = id;
+        this.candidates = candidates;
+        this.examSessions = examSessions;
+        this.exam = exam;
+        this.name = name;
+        this.password = password;
+        this.examDate = examDate;
+        this.duration = duration;
+        this.extraTime = extraTime;
     }
 
     public ExamResponse getExam() {

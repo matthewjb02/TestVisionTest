@@ -1,7 +1,7 @@
 // In de SubmissionDTO klasse
-package nl.hu.inno.hulp.monoliet.testvision.application.dto;
+package nl.hu.inno.hulp.commons.dto;
 
-import nl.hu.inno.hulp.monoliet.testvision.domain.submission.SubmissionStatus;
+import nl.hu.inno.hulp.commons.enums.SubmissionStatus;
 
 public record SubmissionDTO(Long id, SubmissionStatus status) {
 

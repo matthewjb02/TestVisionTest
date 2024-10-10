@@ -1,4 +1,4 @@
-package nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request;
+package nl.hu.inno.hulp.commons.request;
 
 public class UpdateQuestionGradingRequest {
     private int givenPoints;

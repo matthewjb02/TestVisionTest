@@ -1,7 +1,7 @@
-package nl.hu.inno.hulp.monoliet.testvision.application.dto;
+package nl.hu.inno.hulp.commons.dto;
 
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.ExamResponse;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.TeacherResponse;
+import nl.hu.inno.hulp.commons.response.ExamResponse;
+import nl.hu.inno.hulp.commons.response.TeacherResponse;
 
 import java.util.List;
 

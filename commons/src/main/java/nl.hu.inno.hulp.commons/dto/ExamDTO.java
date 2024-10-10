@@ -1,17 +1,17 @@
 // In de TestDTO klasse
-package nl.hu.inno.hulp.monoliet.testvision.application.dto;
+package nl.hu.inno.hulp.commons.dto;
 
-import nl.hu.inno.hulp.monoliet.testvision.domain.exam.ValidationStatus;
-import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.QuestionResponse;
+import nl.hu.inno.hulp.commons.enums.ValidationStatus;
+import nl.hu.inno.hulp.commons.response.QuestionResponse;
+import nl.hu.inno.hulp.commons.response.TeacherResponse;
 
 import java.util.List;
 public class ExamDTO {
 
     private Long id;
     private List<QuestionResponse> questions;
-    private Teacher examMaker;
-    private Teacher examValidator;
+    private TeacherResponse examMaker;
+    private TeacherResponse examValidator;
     private ValidationStatus validationStatus;
     private String reason;
     private int totalPoints;
@@ -22,7 +22,7 @@ public class ExamDTO {
     public ExamDTO() {
     }
 
-    public ExamDTO(Long id, List<QuestionResponse> questions, int totalPoints, Teacher examMaker, Teacher examValidator, ValidationStatus validationStatus, String reason, GradingCriteriaDTO gradingCriteria, List<SubmissionDTO> submissions, StatisticsDTO statistics) {
+    public ExamDTO(Long id, List<QuestionResponse> questions, int totalPoints, TeacherResponse examMaker, TeacherResponse examValidator, ValidationStatus validationStatus, String reason, GradingCriteriaDTO gradingCriteria, List<SubmissionDTO> submissions, StatisticsDTO statistics) {
         this.id = id;
         this.questions = questions;
         this.totalPoints = totalPoints;
@@ -59,11 +59,11 @@ public class ExamDTO {
         return statistics;
     }
   
-    public Teacher getExamMaker() {
+    public TeacherResponse getExamMaker() {
         return examMaker;
     }
 
-    public Teacher getExamValidator() {
+    public TeacherResponse getExamValidator() {
         return examValidator;
     }
 
