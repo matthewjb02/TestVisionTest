@@ -1,10 +1,12 @@
 package nl.hu.inno.hulp.examination.presentation.controller;
 
-import nl.hu.inno.hulp.monoliet.testvision.application.service.ExaminationService;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exception.NoExaminationFoundException;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.*;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.CandidatesResponse;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.ExaminationResponse;
+import nl.hu.inno.hulp.commons.exception.NoExaminationFoundException;
+import nl.hu.inno.hulp.commons.request.Candidate;
+import nl.hu.inno.hulp.commons.request.Candidates;
+import nl.hu.inno.hulp.commons.request.CreateExamination;
+import nl.hu.inno.hulp.commons.response.CandidatesResponse;
+import nl.hu.inno.hulp.commons.response.ExaminationResponse;
+import nl.hu.inno.hulp.examination.application.service.ExaminationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;

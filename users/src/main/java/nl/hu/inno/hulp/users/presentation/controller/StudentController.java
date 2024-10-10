@@ -1,9 +1,9 @@
 package nl.hu.inno.hulp.users.presentation.controller;
 
-import nl.hu.inno.hulp.monoliet.testvision.application.service.StudentService;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.ExtraTimeRequest;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.StudentRequest;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.StudentResponse;
+import nl.hu.inno.hulp.commons.request.ExtraTimeRequest;
+import nl.hu.inno.hulp.commons.request.StudentRequest;
+import nl.hu.inno.hulp.commons.response.StudentResponse;
+import nl.hu.inno.hulp.users.application.service.StudentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,17 +18,17 @@ public class StudentController {
 
     @GetMapping("/{id}")
     public StudentResponse getStudent(@PathVariable Long id) {
-        return new StudentResponse(studentService.getStudent(id));
+        return studentService.getStudentResponse(id);
     }
 
     @PostMapping("/add")
     public StudentResponse addStudent(@RequestBody StudentRequest studentRequest) {
-        return new StudentResponse(studentService.addStudent(studentRequest));
+        return studentService.addStudent(studentRequest);
     }
 
     @PatchMapping("/extratime")
     public StudentResponse changeExtraTimeRight(@RequestBody ExtraTimeRequest studentRequest) {
-        return new StudentResponse(studentService.changeExtraTimeRight(studentRequest));
+        return studentService.changeExtraTimeRight(studentRequest);
     }
 
     @DeleteMapping("/delete/{id}")
