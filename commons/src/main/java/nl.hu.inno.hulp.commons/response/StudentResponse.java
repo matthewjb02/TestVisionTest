@@ -2,14 +2,16 @@ package nl.hu.inno.hulp.commons.response;
 
 public class StudentResponse {
     private final Long id;
-    private final String voornaam;
-    private final String achternaam;
+    private final String firstName;
+    private final String lastName;
+    private final boolean extraTimeRight;
     private final String email;
 
-    public StudentResponse(Long id, String voornaam, String achternaam, String email) {
+    public StudentResponse(Long id, String firstName, String lastName, boolean extraTimeRight, String email) {
         this.id = id;
-        this.voornaam = voornaam;
-        this.achternaam = achternaam;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.extraTimeRight = extraTimeRight;
         this.email = email;
     }
 
@@ -17,11 +19,19 @@ public class StudentResponse {
         return id;
     }
 
-    public String getVoornaam() {
-        return voornaam;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public String getAchternaam() {
-        return achternaam;
+    public String getLastName() {
+        return lastName;
+    }
+
+    public boolean isExtraTimeRight() {
+        return extraTimeRight;
+    }
+
+    public String getEmail() {
+        return email;
     }
 }
