@@ -1,7 +1,7 @@
-package nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response;
+package nl.hu.inno.hulp.commons.response;
 
 import lombok.Getter;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Statistics;
+
 @Getter
 public class StatisticsResponse {
     private int submissionCount;
@@ -9,10 +9,10 @@ public class StatisticsResponse {
     private int failCount;
     private double averageScore;
 
-    public StatisticsResponse(Statistics statistics) {
-        this.submissionCount = statistics.getSubmissionCount();
-        this.passCount = statistics.getPassCount();
-        this.failCount = statistics.getFailCount();
-        this.averageScore = statistics.getAverageScore();
+    public StatisticsResponse(int submissionCount, int passCount, int failCount, double averageScore) {
+        this.submissionCount = submissionCount;
+        this.passCount = passCount;
+        this.failCount = failCount;
+        this.averageScore = averageScore;
     }
 }

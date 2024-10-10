@@ -1,14 +1,9 @@
-package nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response;
+package nl.hu.inno.hulp.commons.response;
 
 import lombok.Getter;
-import nl.hu.inno.hulp.monoliet.testvision.domain.Course;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
-import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
-import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
+import nl.hu.inno.hulp.commons.dto.ExamDTO;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 public class CourseResponse {
@@ -22,81 +17,36 @@ public class CourseResponse {
         protected CourseResponse() {
         }
 
-        public CourseResponse(Course course) {
-            this.teachers=new ArrayList<>();
-            this.approvedTests=new ArrayList<>();
-            this.rejectedTests=new ArrayList<>();
-            this.validatingTests=new ArrayList<>();
-
-            this.id = course.getId();
-            this.name = course.getName();
-            if (course.getTeachers() != null) {
-                 for (Teacher t:course.getTeachers()){
-                     this.teachers.add(new TeacherResponse(t));}
-            }
-            if(course.getValidatingExams()!=null){
-                for (Exam exam:course.getValidatingExams()){
-                    this.validatingTests.add(toDTO(exam));
-                }
-            }
-            if(course.getRejectedExams()!=null){
-                for (Exam exam:course.getRejectedExams()){
-                    this.rejectedTests.add(toDTO(exam));
-                }
-            }
-            if(course.getApprovedExams()!=null){
-                for (Exam exam:course.getApprovedExams()){
-                    this.approvedTests.add(toDTO(exam));
-                }
-            }
-
-        }
-    private ExamDTO toDTO(Exam exam) {
-
-        GradingCriteriaDTO gradingCriteriaDTO = new GradingCriteriaDTO(0, 0);
-        if (exam.getGradingCriteria() != null) {
-            gradingCriteriaDTO = new GradingCriteriaDTO(
-                    exam.getGradingCriteria().getOpenQuestionWeight(),
-                    exam.getGradingCriteria().getClosedQuestionWeight()
-            );
-        }
-
-        List<SubmissionDTO> submissionDTOs = exam.getSubmissions().stream()
-                .map(submission -> new SubmissionDTO(submission.getId(), submission.getStatus()))
-                .collect(Collectors.toList());
-
-
-        StatisticsDTO statisticsDTO = new StatisticsDTO(0, 0, 0, 0);
-        if (exam.getStatistics() != null) {
-            statisticsDTO = new StatisticsDTO(
-                    exam.getStatistics().getSubmissionCount(),
-                    exam.getStatistics().getPassCount(),
-                    exam.getStatistics().getFailCount(),
-                    exam.getStatistics().getAverageScore()
-            );
-        }
-
-
-        return new ExamDTO(
-                exam.getId(),
-                getQuestionDTOs(exam.getQuestions()),
-                exam.getTotalPoints(),
-                exam.getExamMaker(),
-                exam.getExamValidator(),
-                exam.getValidationStatus(),
-                exam.getReason(),
-                gradingCriteriaDTO,
-                submissionDTOs,
-                statisticsDTO
-
-        );
+    public CourseResponse(Long id, String name, List<TeacherResponse> teachers, List<ExamDTO> approvedTests, List<ExamDTO> rejectedTests, List<ExamDTO> validatingTests) {
+        this.id = id;
+        this.name = name;
+        this.teachers = teachers;
+        this.approvedTests = approvedTests;
+        this.rejectedTests = rejectedTests;
+        this.validatingTests = validatingTests;
     }
-    private List<QuestionResponse> getQuestionDTOs(List<QuestionEntity> questions) {
-        List<QuestionResponse> dtos = new ArrayList<>();
 
-        for (QuestionEntity question : questions) {
-            dtos.add(new QuestionResponse(question));
-        }
-        return dtos;
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<TeacherResponse> getTeachers() {
+        return teachers;
+    }
+
+    public List<ExamDTO> getApprovedTests() {
+        return approvedTests;
+    }
+
+    public List<ExamDTO> getRejectedTests() {
+        return rejectedTests;
+    }
+
+    public List<ExamDTO> getValidatingTests() {
+        return validatingTests;
     }
 }

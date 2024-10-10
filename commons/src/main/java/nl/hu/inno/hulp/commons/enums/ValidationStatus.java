@@ -1,4 +1,4 @@
-package nl.hu.inno.hulp.exam.domain;
+package nl.hu.inno.hulp.commons.enums;
 
 public enum ValidationStatus {
     WAITING,

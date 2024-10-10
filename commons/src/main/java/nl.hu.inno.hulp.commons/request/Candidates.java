@@ -1,10 +1,8 @@
-package nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request;
-
-import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
+package nl.hu.inno.hulp.commons.request;
 
 import java.util.List;
 
 public class Candidates {
     public Long examinationId;
-    public List<Student> students;
+    public List<StudentRequest> students;
 }
