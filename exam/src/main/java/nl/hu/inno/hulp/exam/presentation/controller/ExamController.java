@@ -1,9 +1,8 @@
 package nl.hu.inno.hulp.exam.presentation.controller;
 
-import nl.hu.inno.hulp.monoliet.testvision.application.service.ExamService;
-import nl.hu.inno.hulp.monoliet.testvision.application.dto.GradingCriteriaDTO;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.ExamResponse;
+import nl.hu.inno.hulp.commons.dto.GradingCriteriaDTO;
+import nl.hu.inno.hulp.commons.response.ExamResponse;
+import nl.hu.inno.hulp.exam.application.service.ExamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
