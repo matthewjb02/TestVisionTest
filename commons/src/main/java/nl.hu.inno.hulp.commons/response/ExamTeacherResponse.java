@@ -31,6 +31,4 @@ public class ExamTeacherResponse {
         this.submissions = submissions;
         this.statistics = statistics;
     }
-
-
 }

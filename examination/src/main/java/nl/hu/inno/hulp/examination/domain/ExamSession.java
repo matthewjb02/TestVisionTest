@@ -56,7 +56,7 @@ public class ExamSession {
         throw new PasswordIncorrectException("This password is incorrect.");
     }
 
-    public ExamSession answerQuestion(int questionNr, Object answer) {
+    /*public ExamSession answerQuestion(int questionNr, Object answer) {
         QuestionEntity question = seeQuestion(questionNr);
 
         if (question.getClass().equals(MultipleChoiceQuestion.class)){
@@ -68,11 +68,7 @@ public class ExamSession {
         }
 
         return this;
-    }
-
-    public QuestionEntity seeQuestion(int questionNr) {
-        return exam.getQuestions().get(questionNr - 1);
-    }
+    }*/
 
     public ExamSession endSession() {
         changeState(ExamState.Completed);

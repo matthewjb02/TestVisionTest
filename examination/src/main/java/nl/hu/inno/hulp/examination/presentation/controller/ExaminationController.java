@@ -23,7 +23,7 @@ public class ExaminationController {
     @GetMapping("{id}")
     public ExaminationResponse getExamination(@PathVariable Long id) {
         try {
-            return new ExaminationResponse(examinationService.getExaminationById(id));
+            return examinationService.getExaminationResponse(id);
         } catch (NoExaminationFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
@@ -32,7 +32,7 @@ public class ExaminationController {
     @PostMapping("/create")
     public ExaminationResponse createExamination(@RequestBody CreateExamination createExamination) {
         try {
-            return new ExaminationResponse(examinationService.createExamination(createExamination));
+            return examinationService.createExamination(createExamination);
         } catch (NoExaminationFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
@@ -41,7 +41,7 @@ public class ExaminationController {
     @PatchMapping("/candidates")
     public CandidatesResponse selectCandidates(@RequestBody Candidates candidates) {
         try {
-            return new CandidatesResponse(examinationService.selectCandidates(candidates));
+            return examinationService.selectCandidates(candidates);
         } catch (NoExaminationFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
@@ -50,7 +50,7 @@ public class ExaminationController {
     @PatchMapping("/candidate")
     public CandidatesResponse selectCandidate(@RequestBody Candidate candidate) {
         try {
-            return new CandidatesResponse(examinationService.selectCandidate(candidate));
+            return examinationService.selectCandidate(candidate);
         } catch (NoExaminationFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
@@ -59,7 +59,7 @@ public class ExaminationController {
     @DeleteMapping("/candidates")
     public CandidatesResponse removeCandidates(@RequestBody Candidates candidates) {
         try {
-            return new CandidatesResponse(examinationService.removeCandidates(candidates));
+            return examinationService.removeCandidates(candidates);
         } catch (NoExaminationFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
@@ -68,7 +68,7 @@ public class ExaminationController {
     @DeleteMapping("/candidate")
     public CandidatesResponse removeCandidate(@RequestBody Candidate candidate) {
         try {
-            return new CandidatesResponse(examinationService.removeCandidate(candidate));
+            return examinationService.removeCandidate(candidate);
         } catch (NoExaminationFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }

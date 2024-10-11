@@ -7,12 +7,15 @@ import java.util.List;
 
 @Getter
 public class ExamResponse {
-    private final Long id;
-    private final int totalPoints;
-    private final List<QuestionResponse> questions;
-    private final List<SubmissionResponse> submissions;
-    private final GradingCriteriaDTO gradingCriteria;
-    private final StatisticsResponse statisticsResponse;
+    private Long id;
+    private int totalPoints;
+    private List<QuestionResponse> questions;
+    private List<SubmissionResponse> submissions;
+    private GradingCriteriaDTO gradingCriteria;
+    private StatisticsResponse statisticsResponse;
+
+    public ExamResponse() {
+    }
 
     public ExamResponse(Long id, int totalPoints, List<QuestionResponse> questions, List<SubmissionResponse> submissions, GradingCriteriaDTO gradingCriteria, StatisticsResponse statisticsResponse) {
         this.id = id;

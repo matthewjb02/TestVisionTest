@@ -17,5 +17,4 @@ public class ExamSessionResponse {
         this.duration = duration;
         this.student = student;
     }
-
 }

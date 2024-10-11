@@ -50,22 +50,22 @@ public class Examination {
         return duration;
     }
 
-    public Examination selectCandidates(List<Long> candidates) {
+    public List<Long> selectCandidates(List<Long> candidates) {
         this.candidates.addAll(candidates);
-        return this;
+        return this.candidates;
     }
-    public Examination selectCandidate(Long studentId) {
+    public List<Long> selectCandidate(Long studentId) {
         this.candidates.add(studentId);
-        return this;
+        return this.candidates;
     }
 
-    public Examination removeCandidates(List<Long> candidates) {
+    public List<Long> removeCandidates(List<Long> candidates) {
         this.candidates.removeAll(candidates);
-        return this;
+        return this.candidates;
     }
-    public Examination removeCandidate(Long studentId) {
+    public List<Long> removeCandidate(Long studentId) {
         this.candidates.remove(studentId);
-        return this;
+        return this.candidates;
     }
 
     public boolean storeExamSession(ExamSession examSession) {
