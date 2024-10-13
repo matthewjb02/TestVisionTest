@@ -3,6 +3,7 @@ package nl.hu.inno.hulp.examination.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -13,7 +14,7 @@ public class Examination {
     private Long id;
 
     @Transient
-    private List<Long> candidates;
+    private List<Long> candidates = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<ExamSession> examSessions;

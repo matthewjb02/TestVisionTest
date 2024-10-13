@@ -8,6 +8,7 @@ import nl.hu.inno.hulp.commons.exception.NotAllowedException;
 import nl.hu.inno.hulp.commons.request.AnswerRequest;
 import nl.hu.inno.hulp.commons.request.ExamSessionRequest;
 import nl.hu.inno.hulp.commons.request.StartExamSession;
+import nl.hu.inno.hulp.commons.response.ExamResponse;
 import nl.hu.inno.hulp.commons.response.ExamSessionResponse;
 import nl.hu.inno.hulp.commons.response.QuestionResponse;
 import nl.hu.inno.hulp.commons.response.StudentResponse;
@@ -16,17 +17,20 @@ import nl.hu.inno.hulp.examination.domain.ExamSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 @Transactional
 @Service
 public class ExamSessionService {
     private final ExamSessionRepository examSessionRepository;
     private final ExaminationService examinationService;
+    private final RestTemplate restTemplate;
 
     @Autowired
-    public ExamSessionService(ExamSessionRepository examSessionRepository, ExaminationService examinationService) {
+    public ExamSessionService(ExamSessionRepository examSessionRepository, ExaminationService examinationService, RestTemplate restTemplate) {
         this.examSessionRepository = examSessionRepository;
         this.examinationService = examinationService;
+        this.restTemplate = restTemplate;
     }
 
     public ExamSessionResponse startExamSession(StartExamSession request) {
@@ -89,9 +93,14 @@ public class ExamSessionService {
                 .orElseThrow(() -> new NoExamSessionFoundException("No exam session with id: " + id + " found!"));
     }
 
+    public StudentResponse getStudentResponse(Long id) {
+        String url = "http://localhost:8081/student/" + id;
+        return restTemplate.getForObject(url, StudentResponse.class);
+    }
+
     public ExamSessionResponse getExamSessionResponse(Long id) {
         ExamSession examSession = getExamSessionById(id);
-        StudentResponse studentResponse = new StudentResponse(examSession.getStudentId());
+        StudentResponse studentResponse = getStudentResponse(examSession.getStudentId());
 
         return new ExamSessionResponse(examSession.getId(), examSession.getState(), examSession.getDuration(), studentResponse);
     }

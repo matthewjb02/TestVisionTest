@@ -1,11 +1,11 @@
-package nl.hu.inno.hulp.examination;
+package nl.hu.inno.hulp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ExaminationApplication {
+public class UsersApplication {
     public static void main(String[] args) {
-        SpringApplication.run(ExaminationApplication.class, args);
+        SpringApplication.run(UsersApplication.class, args);
     }
 }
