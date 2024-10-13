@@ -13,7 +13,10 @@ import nl.hu.inno.hulp.exam.domain.question.MultipleChoiceQuestion;
 import nl.hu.inno.hulp.exam.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.exam.domain.question.QuestionEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
@@ -217,11 +220,24 @@ public class CourseService {
 
     public SubmissionResponse getSubmissionById(Long id) {
         String url = "http://localhost:8080/submission/" + id;
-        return restTemplate.getForObject(url, SubmissionResponse.class);
+        ResponseEntity<SubmissionResponse> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<>() {});
+
+        return response.getBody();
     }
 
     public TeacherResponse getTeacherById(Long id) {
         String url = "http://localhost:8080/teacher/" + id;
-        return restTemplate.getForObject(url, TeacherResponse.class);
+
+        ResponseEntity<TeacherResponse> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<>() {});
+
+        return response.getBody();
     }
 }
