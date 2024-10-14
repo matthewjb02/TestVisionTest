@@ -1,13 +1,13 @@
-package nl.hu.inno.hulp.users;
+package nl.hu.inno.hulp.insight;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class UsersApplication {
+public class InsightApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(UsersApplication.class, args);
+        SpringApplication.run(InsightApplication.class, args);
     }
 
 }
