@@ -3,7 +3,6 @@ package nl.hu.inno.hulp.examination.application.service;
 import nl.hu.inno.hulp.commons.exception.NoExaminationFoundException;
 import nl.hu.inno.hulp.commons.request.*;
 import nl.hu.inno.hulp.commons.response.*;
-import nl.hu.inno.hulp.consumer.ExaminationConsumer;
 import nl.hu.inno.hulp.examination.data.ExaminationRepository;
 import nl.hu.inno.hulp.examination.domain.ExamDate;
 import nl.hu.inno.hulp.examination.domain.ExamSession;
@@ -109,8 +108,7 @@ public class ExaminationService {
         System.out.println(examination.getCandidates());
 
         List<ExamSessionResponse> examSessionResponses = new ArrayList<>();
-        //ExamResponse examResponse = getExamById(examination.getExamId());
-        ExamResponse examResponse = new ExamResponse();
+        ExamResponse examResponse = getExamById(examination.getExamId());
         ExamDateDTO examDateDTO = new ExamDateDTO();
 
         return new ExaminationResponse(examination.getId(), studentResponses, examSessionResponses,
