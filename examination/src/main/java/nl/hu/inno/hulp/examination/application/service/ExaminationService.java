@@ -8,6 +8,7 @@ import nl.hu.inno.hulp.examination.data.ExaminationRepository;
 import nl.hu.inno.hulp.examination.domain.ExamDate;
 import nl.hu.inno.hulp.examination.domain.ExamSession;
 import nl.hu.inno.hulp.examination.domain.Examination;
+import nl.hu.inno.hulp.publisher.ExaminationProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,12 +23,15 @@ import java.util.stream.Collectors;
 public class ExaminationService {
     private final ExaminationRepository examinationRepository;
     private final RestTemplate restTemplate;
-    private final ExaminationConsumer examinationConsumer;
+    private final ExaminationProducer examinationProducer;
+    private ExaminationConsumer examinationConsumer;
 
     @Autowired
-    public ExaminationService(ExaminationRepository examinationRepository, RestTemplate restTemplate, ExaminationConsumer examinationConsumer) {
+    public ExaminationService(ExaminationRepository examinationRepository, RestTemplate restTemplate,
+                              ExaminationProducer examinationProducer, ExaminationConsumer examinationConsumer) {
         this.examinationRepository = examinationRepository;
         this.restTemplate = restTemplate;
+        this.examinationProducer = examinationProducer;
         this.examinationConsumer = examinationConsumer;
     }
 
@@ -80,14 +84,14 @@ public class ExaminationService {
     }
 
     public StudentResponse getCandidateById(Long id) {
-        String url = "http://localhost:8081/student/" + id;
-        return restTemplate.getForObject(url, StudentResponse.class);
+        examinationProducer.sendStudentRequest(id);
+        return examinationConsumer.receiveStudentRequest();
     }
 
-    public ExamResponse getExamById(Long id) {
+    /*public ExamResponse getExamById(Long id) {
         String url = "http://localhost:8082/exam/" + id;
         return restTemplate.getForObject(url, ExamResponse.class);
-    }
+    }*/
 
     public CandidatesResponse getCandidatesResponse(Long id, List<Long> candidates) {
         Examination examination = getExaminationById(id);
@@ -105,7 +109,8 @@ public class ExaminationService {
                 .collect(Collectors.toList());
 
         List<ExamSessionResponse> examSessionResponses = new ArrayList<>();
-        ExamResponse examResponse = getExamById(examination.getExamId());
+        //ExamResponse examResponse = getExamById(examination.getExamId());
+        ExamResponse examResponse = new ExamResponse();
         ExamDateDTO examDateDTO = new ExamDateDTO();
 
         return new ExaminationResponse(examination.getId(), studentResponses, examSessionResponses,

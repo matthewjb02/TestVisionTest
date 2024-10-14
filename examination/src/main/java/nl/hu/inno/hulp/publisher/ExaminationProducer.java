@@ -23,8 +23,8 @@ public class ExaminationProducer {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public void sendMessage(String message) {
-        LOGGER.info(String.format("Message sent -> %s", message));
-        rabbitTemplate.convertAndSend(exchange, routingKey, message);
+    public void sendStudentRequest(Long studentId) {
+        LOGGER.info(String.format("Message sent -> %s", studentId));
+        rabbitTemplate.convertAndSend(exchange, routingKey, studentId);
     }
 }
