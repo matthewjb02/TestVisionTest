@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/courses/{courseId}/exams")
+@RequestMapping("/exams")
 public class ExamController {
 
     private final ExamService examService;

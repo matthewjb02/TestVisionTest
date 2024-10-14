@@ -3,11 +3,12 @@ package nl.hu.inno.hulp.exam.domain.question;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Getter
-public class MultipleChoiceQuestion extends QuestionEntity {
+public class MultipleChoiceQuestion extends QuestionEntity implements Serializable {
     @Id
     @GeneratedValue
     private Long id;

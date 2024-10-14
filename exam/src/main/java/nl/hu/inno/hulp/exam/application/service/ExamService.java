@@ -1,8 +1,7 @@
 package nl.hu.inno.hulp.exam.application.service;
 
 import nl.hu.inno.hulp.commons.dto.GradingCriteriaDTO;
-import nl.hu.inno.hulp.commons.dto.StatisticsDTO;
-import nl.hu.inno.hulp.commons.dto.SubmissionDTO;
+import nl.hu.inno.hulp.exam.ExamProducer;
 import nl.hu.inno.hulp.commons.response.*;
 import nl.hu.inno.hulp.exam.data.ExamRepository;
 import nl.hu.inno.hulp.exam.data.QuestionRepository;
@@ -31,12 +30,15 @@ public class ExamService {
     private final ExamRepository examRepository;
     private final QuestionRepository questionRepository;
     private final RestTemplate restTemplate;
+    private final ExamProducer examProducer;
 
     @Autowired
-    public ExamService(ExamRepository examRepository, QuestionRepository questionRepository, RestTemplate restTemplate) {
+    public ExamService(ExamRepository examRepository, QuestionRepository questionRepository,
+                       RestTemplate restTemplate, ExamProducer examProducer) {
         this.examRepository = examRepository;
         this.questionRepository = questionRepository;
         this.restTemplate = restTemplate;
+        this.examProducer = examProducer;
     }
 
     public ExamResponse addExam(long examMakerId, long examValidatorId) {
@@ -57,6 +59,7 @@ public class ExamService {
 
     public List<ExamResponse> getAllExams() {
         List<Exam> allExams = examRepository.findAll();
+
         List<ExamResponse> examDTOS = new ArrayList<>();
         for (Exam exam : allExams) {
             examDTOS.add(toExamResponse(exam));
@@ -69,7 +72,9 @@ public class ExamService {
         Exam exam = examRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No exam with id: " + id + " found!"));
 
-        return toExamResponse(exam);
+        ExamResponse response = toExamResponse(exam);
+        examProducer.sendExam(response.getQuestions().get(1).getQuestion());
+        return response;
     }
 
     public Exam getExam(Long id) {
