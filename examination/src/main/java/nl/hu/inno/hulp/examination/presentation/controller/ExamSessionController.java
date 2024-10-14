@@ -1,9 +1,6 @@
 package nl.hu.inno.hulp.examination.presentation.controller;
 
-import nl.hu.inno.hulp.commons.exception.ExaminationInactiveException;
-import nl.hu.inno.hulp.commons.exception.NoExamSessionFoundException;
-import nl.hu.inno.hulp.commons.exception.NotAllowedException;
-import nl.hu.inno.hulp.commons.exception.PasswordIncorrectException;
+import nl.hu.inno.hulp.commons.exception.*;
 import nl.hu.inno.hulp.commons.request.AnswerRequest;
 import nl.hu.inno.hulp.commons.request.ExamSessionRequest;
 import nl.hu.inno.hulp.commons.request.StartExamSession;
@@ -27,7 +24,7 @@ public class ExamSessionController {
     public ExamSessionResponse startExamSession(@RequestBody StartExamSession examRequest) {
         try {
             return examSessionService.startExamSession(examRequest);
-        } catch(NotAllowedException | PasswordIncorrectException e) {
+        } catch(NotAllowedException | ExamDateException | PasswordIncorrectException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch(NoExamSessionFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -45,7 +42,7 @@ public class ExamSessionController {
     }*/
 
     @GetMapping("/seeQuestion/{questionId}/{examId}")
-    public QuestionResponse seeQuestion(@PathVariable Long examId, @PathVariable int questionId) {
+    public QuestionResponse seeQuestion(@PathVariable Long examId, @PathVariable Long questionId) {
         try {
             return examSessionService.seeQuestion(examId, questionId);
         } catch(ExaminationInactiveException e) {

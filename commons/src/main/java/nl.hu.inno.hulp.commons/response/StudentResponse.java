@@ -2,14 +2,10 @@ package nl.hu.inno.hulp.commons.response;
 
 public class StudentResponse {
     private final Long id;
-    private String firstName;
-    private String lastName;
-    private boolean extraTimeRight;
-    private String email;
-
-    public StudentResponse(Long id) {
-        this.id = id;
-    }
+    private final String firstName;
+    private final String lastName;
+    private final boolean extraTimeRight;
+    private final String email;
 
     public StudentResponse(Long id, String firstName, String lastName, boolean extraTimeRight, String email) {
         this.id = id;

@@ -1,17 +1,16 @@
 package nl.hu.inno.hulp.exam.application.service;
 
 import jakarta.transaction.Transactional;
-import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
-import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
-import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
-import nl.hu.inno.hulp.monoliet.testvision.data.QuestionRepository;
-import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.MultipleChoiceQuestionRequest;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.OpenQuestionRequest;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.QuestionRequest;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.MultipleChoiceQuestionResponse;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.OpenQuestionResponse;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.QuestionResponse;
+import nl.hu.inno.hulp.commons.request.MultipleChoiceQuestionRequest;
+import nl.hu.inno.hulp.commons.request.OpenQuestionRequest;
+import nl.hu.inno.hulp.commons.request.QuestionRequest;
+import nl.hu.inno.hulp.commons.response.MultipleChoiceQuestionResponse;
+import nl.hu.inno.hulp.commons.response.OpenQuestionResponse;
+import nl.hu.inno.hulp.commons.response.QuestionResponse;
+import nl.hu.inno.hulp.exam.data.QuestionRepository;
+import nl.hu.inno.hulp.exam.domain.question.MultipleChoiceQuestion;
+import nl.hu.inno.hulp.exam.domain.question.OpenQuestion;
+import nl.hu.inno.hulp.exam.domain.question.QuestionEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -35,7 +34,7 @@ public class QuestionService {
         List<QuestionEntity> allQuestions = questionRepository.findAll();
         List<QuestionResponse> questionResponses = new ArrayList<>();
         for (QuestionEntity question : allQuestions) {
-            questionResponses.add(new QuestionResponse(question));
+            questionResponses.add(getQuestionResponse(question));
         }
 
         return questionResponses;
@@ -45,11 +44,7 @@ public class QuestionService {
         QuestionEntity question = questionRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No question with id: " + id + " found!"));
 
-        if (question instanceof MultipleChoiceQuestion){
-            return new MultipleChoiceQuestionResponse((MultipleChoiceQuestion) question);
-        } else {
-            return new OpenQuestionResponse((OpenQuestion) question);
-        }
+        return getQuestionResponse(question);
     }
 
     public QuestionResponse addQuestion(QuestionRequest question) {
@@ -66,12 +61,6 @@ public class QuestionService {
 
         QuestionEntity savedEntity = questionRepository.save(entity);
 
-//        if (entity instanceof MultipleChoiceQuestion){
-//            return new MultipleChoiceQuestionResponse((MultipleChoiceQuestion) savedEntity);
-//        } else {
-//            return new OpenQuestionResponse((OpenQuestion) savedEntity);
-//        }
-
         return getQuestionById(savedEntity.getId());
     }
 
@@ -79,5 +68,18 @@ public class QuestionService {
         QuestionResponse oldResponse = getQuestionById(id);
         questionRepository.deleteById(id);
         return oldResponse;
+    }
+
+    public QuestionResponse getQuestionResponse(QuestionEntity question){
+        if (question instanceof MultipleChoiceQuestion){
+            MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion)question;
+            return new MultipleChoiceQuestionResponse(mcQuestion.getPoints(), mcQuestion.getQuestion(),
+                    mcQuestion.getAnswers(),
+                    mcQuestion.getCorrectAnswerIndexes(), mcQuestion.getGivenAnswers());
+        } else {
+            OpenQuestion openQuestion = (OpenQuestion) question;
+            return new OpenQuestionResponse(openQuestion.getPoints(), openQuestion.getQuestion(), openQuestion.getCorrectAnswer(),
+                    openQuestion.getAnswer(), openQuestion.getTeacherFeedback());
+        }
     }
 }

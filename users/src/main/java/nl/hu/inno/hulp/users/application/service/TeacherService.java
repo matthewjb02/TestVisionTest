@@ -1,13 +1,11 @@
 package nl.hu.inno.hulp.users.application.service;
 
-import jakarta.transaction.Transactional;
 import nl.hu.inno.hulp.commons.request.TeacherRequest;
 import nl.hu.inno.hulp.commons.response.TeacherResponse;
 import nl.hu.inno.hulp.users.data.TeacherRepository;
 import nl.hu.inno.hulp.users.domain.Teacher;
 import org.springframework.stereotype.Service;
 
-@Transactional
 @Service
 public class TeacherService {
     private final TeacherRepository teacherRepository;
