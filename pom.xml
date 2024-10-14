@@ -25,6 +25,7 @@
 		<module>exam</module>
 		<module>examination</module>
 		<module>grading</module>
+		<module>insight</module>
 
 	</modules>
 	
