@@ -8,10 +8,8 @@ import nl.hu.inno.hulp.users.data.StudentRepository;
 import nl.hu.inno.hulp.users.domain.Student;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-@Transactional
 @Service
 public class StudentService {
     private final StudentRepository studentRepository;
