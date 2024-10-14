@@ -3,6 +3,7 @@ package nl.hu.inno.hulp.examination.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -12,8 +13,8 @@ public class Examination {
     @GeneratedValue
     private Long id;
 
-    @Transient
-    private List<Long> candidates;
+    @ElementCollection
+    private List<Long> candidates = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<ExamSession> examSessions;
@@ -55,7 +56,9 @@ public class Examination {
         return this.candidates;
     }
     public List<Long> selectCandidate(Long studentId) {
-        this.candidates.add(studentId);
+        if (!candidates.contains(studentId)) {
+            this.candidates.add(studentId);
+        }
         return this.candidates;
     }
 
@@ -64,7 +67,9 @@ public class Examination {
         return this.candidates;
     }
     public List<Long> removeCandidate(Long studentId) {
-        this.candidates.remove(studentId);
+        if (!candidates.contains(studentId)) {
+            this.candidates.remove(studentId);
+        }
         return this.candidates;
     }
 

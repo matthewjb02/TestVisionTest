@@ -3,20 +3,21 @@ package nl.hu.inno.hulp.users.application.service;
 import nl.hu.inno.hulp.commons.request.ExtraTimeRequest;
 import nl.hu.inno.hulp.commons.request.StudentRequest;
 import nl.hu.inno.hulp.commons.response.StudentResponse;
+import nl.hu.inno.hulp.publisher.UsersProducer;
 import nl.hu.inno.hulp.users.data.StudentRepository;
 import nl.hu.inno.hulp.users.domain.Student;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-@Transactional
 @Service
 public class StudentService {
     private final StudentRepository studentRepository;
+    private final UsersProducer usersProducer;
 
-    public StudentService(StudentRepository studentRepository) {
+    public StudentService(StudentRepository studentRepository, UsersProducer usersProducer) {
         this.studentRepository = studentRepository;
+        this.usersProducer = usersProducer;
     }
 
     public Student getStudentById(Long id) {
@@ -28,6 +29,10 @@ public class StudentService {
         Student student = getStudentById(id);
         return new StudentResponse(student.getId(), student.getFirstName(), student.getLastName(),
                 student.isExtraTimeRight(), student.getEmail().getEmailString());
+    }
+
+    public void processAndSendStudentResponse(Long id) {
+        usersProducer.sendStudentResponse(getStudentResponse(id));
     }
 
     public StudentResponse addStudent(StudentRequest studentRequest) {

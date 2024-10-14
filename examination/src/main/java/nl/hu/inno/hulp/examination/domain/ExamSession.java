@@ -4,10 +4,12 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import nl.hu.inno.hulp.commons.enums.ExamState;
+import nl.hu.inno.hulp.commons.exception.ExamDateException;
 import nl.hu.inno.hulp.commons.exception.PasswordIncorrectException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.util.List;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -16,6 +18,7 @@ public class ExamSession {
     @GeneratedValue
     private Long id;
 
+    @Transient
     private Long examinationId;
 
     @Transient
@@ -41,13 +44,16 @@ public class ExamSession {
         this.examinationId = context.getId();
         this.duration = context.totalDuration(extraTimeRight);
         this.examId = context.getExamId();
-        //this.securedPassword = hashPassword(context.getPassword());
-        this.securedPassword = context.getPassword();
+        this.securedPassword = hashPassword(context.getPassword());
         this.examDate = context.getExamDate();
         this.studentId = studentId;
     }
 
     public ExamSession startSession(String password) {
+        if (!examDate.checkDate()) {
+            throw new ExamDateException("Session cannot be started because your to soon or to late");
+        }
+
         if (verifyPassword(password)) {
             changeState(ExamState.Active);
             return this;
@@ -75,15 +81,14 @@ public class ExamSession {
         return this;
     }
 
-    /*public String hashPassword(String password) {
+    public String hashPassword(String password) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return passwordEncoder.encode(password);
-    }*/
+    }
 
     public boolean verifyPassword(String inputPassword) {
-        //BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        //return encoder.matches(inputPassword, securedPassword);
-        return securedPassword.equals(inputPassword); //security will be implemented after splitting up in smaller applications
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        return encoder.matches(inputPassword, securedPassword);
     }
 
     public void changeState(ExamState state) {

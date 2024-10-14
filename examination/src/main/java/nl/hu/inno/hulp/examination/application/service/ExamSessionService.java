@@ -13,20 +13,25 @@ import nl.hu.inno.hulp.commons.response.QuestionResponse;
 import nl.hu.inno.hulp.commons.response.StudentResponse;
 import nl.hu.inno.hulp.examination.data.ExamSessionRepository;
 import nl.hu.inno.hulp.examination.domain.ExamSession;
+import nl.hu.inno.hulp.publisher.ExaminationProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
-@Transactional
 @Service
 public class ExamSessionService {
     private final ExamSessionRepository examSessionRepository;
     private final ExaminationService examinationService;
+    private final RestTemplate restTemplate;
+    private final ExaminationProducer examinationProducer;
 
     @Autowired
-    public ExamSessionService(ExamSessionRepository examSessionRepository, ExaminationService examinationService) {
+    public ExamSessionService(ExamSessionRepository examSessionRepository, ExaminationService examinationService, RestTemplate restTemplate,
+                              ExaminationProducer examinationProducer) {
         this.examSessionRepository = examSessionRepository;
         this.examinationService = examinationService;
+        this.restTemplate = restTemplate;
+        this.examinationProducer = examinationProducer;
     }
 
     public ExamSessionResponse startExamSession(StartExamSession request) {
@@ -43,12 +48,11 @@ public class ExamSessionService {
         throw new NotAllowedException("Student is not allowed to start session because student is not a candidate.");
     }
 
-    public QuestionResponse seeQuestion(Long examId, int questionId)  {
-        ExamSession examSession = getExamSessionById(examId);
+    public QuestionResponse seeQuestion(Long id, Long questionId)  {
+        ExamSession examSession = getExamSessionById(id);
 
         if (examSession.getState() == ExamState.Active) {
-            //Long examId = examSession.getExamId();
-            //rpc question response
+            examinationProducer.sendQuestionRequest(examSession.getId(), examSession.getExamId(), questionId);
             return new QuestionResponse(10, "hello world");
         } else {
             throw new ExaminationInactiveException("This exam is inactive");
@@ -59,7 +63,7 @@ public class ExamSessionService {
         ExamSession examSession = getExamSessionById(request.examSessionId());
 
         if (examSession.getState() == ExamState.Active) {
-            //examSession.answerQuestion(request.questionNr(), request.answer());
+            examinationProducer.sendAnswerRequest(request);
             examSessionRepository.save(examSession);
             return getExamSessionResponse(examSession.getId());
         } else {
@@ -77,7 +81,9 @@ public class ExamSessionService {
                 throw new ExamSessionNotStored("Exam session can't be stored in examination.");
             }
 
-            return getExamSessionResponse(examSession.getId());
+            ExamSessionResponse examSessionResponse = getExamSessionResponse(examSession.getId());
+            examinationProducer.endingSessionRequest(examSessionResponse);
+            return examSessionResponse;
 
         } else {
             throw new ExaminationInactiveException("This exam is already completed");
@@ -89,9 +95,15 @@ public class ExamSessionService {
                 .orElseThrow(() -> new NoExamSessionFoundException("No exam session with id: " + id + " found!"));
     }
 
+    public StudentResponse getStudentResponse(Long id) {
+        String url = "http://localhost:8081/student/" + id;
+        examinationProducer.sendStudentRequest(id);
+        return restTemplate.getForObject(url, StudentResponse.class);
+    }
+
     public ExamSessionResponse getExamSessionResponse(Long id) {
         ExamSession examSession = getExamSessionById(id);
-        StudentResponse studentResponse = new StudentResponse(examSession.getStudentId());
+        StudentResponse studentResponse = getStudentResponse(examSession.getStudentId());
 
         return new ExamSessionResponse(examSession.getId(), examSession.getState(), examSession.getDuration(), studentResponse);
     }
