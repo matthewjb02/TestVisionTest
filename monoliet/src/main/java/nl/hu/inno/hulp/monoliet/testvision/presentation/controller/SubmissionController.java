@@ -1,6 +1,7 @@
 // SubmissionController.java
-package nl.hu.inno.hulp.grading.presentation.controller;
+package nl.hu.inno.hulp.monoliet.testvision.presentation.controller;
 
+import nl.hu.inno.hulp.monoliet.testvision.application.service.SubmissionService;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.GradingRequest;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.UpdateQuestionGradingRequest;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.SubmissionResponse;

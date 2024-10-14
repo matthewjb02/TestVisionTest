@@ -1,6 +1,12 @@
-package nl.hu.inno.hulp.grading.application.service;
+package nl.hu.inno.hulp.monoliet.testvision.application.service;
 
 import jakarta.transaction.Transactional;
+import nl.hu.inno.hulp.monoliet.testvision.data.SubmissionRepository;
+import nl.hu.inno.hulp.monoliet.testvision.domain.Course;
+import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
+import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Grading;
+import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
+import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.GradingRequest;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.UpdateQuestionGradingRequest;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.SubmissionResponse;
@@ -80,6 +86,10 @@ public class SubmissionService {
         exam.updateStatistics();
         examService.saveExam(exam);
 
+        submissionRepository.save(submission);
+    }
+
+    public void add(Submission submission) {
         submissionRepository.save(submission);
     }
 }

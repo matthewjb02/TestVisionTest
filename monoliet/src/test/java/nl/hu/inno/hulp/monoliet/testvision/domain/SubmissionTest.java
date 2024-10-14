@@ -1,15 +1,15 @@
 //package nl.hu.inno.hulp.monoliet.testvision.domain;
 //
-//import nl.hu.inno.hulp.exam.Exam;
-//import nl.hu.inno.hulp.examination.ExamSession;
-//import nl.hu.inno.hulp.examination.Examination;
-//import nl.hu.inno.hulp.exam.domain.question.MultipleChoiceQuestion;
-//import nl.hu.inno.hulp.exam.domain.question.OpenQuestion;
-//import nl.hu.inno.hulp.grading.Grading;
-//import nl.hu.inno.hulp.grading.Submission;
-//import nl.hu.inno.hulp.grading.SubmissionStatus;
-//import nl.hu.inno.hulp.exam.GradingCriteria;
 //
+//
+//import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
+//import nl.hu.inno.hulp.monoliet.testvision.domain.exam.GradingCriteria;
+//import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamSession;
+//import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
+//import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
+//import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Grading;
+//import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
+//import nl.hu.inno.hulp.monoliet.testvision.domain.submission.SubmissionStatus;
 //import org.junit.jupiter.api.DisplayName;
 //import org.junit.jupiter.params.ParameterizedTest;
 //import org.junit.jupiter.params.provider.Arguments;
@@ -45,8 +45,6 @@
 //
 //        Submission submission = new Submission(examSession);
 //
-//        when(submission.calculateTotalOpenGivenPoints()).thenReturn(givenPointsOpen);
-//        when(submission.calculateTotalMultipleChoiceGivenPoints()).thenReturn(givenPointsMC);
 //
 //
 //        double grade = submission.calculateGrade();
