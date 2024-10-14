@@ -25,16 +25,15 @@ public class ExamSessionService {
     private final ExamSessionRepository examSessionRepository;
     private final StudentService studentService;
     private final ExaminationService examinationService;
-    private final SubmissionRepository submissionRepository;
+    private final SubmissionService submissionService;
 
-    @Autowired
-    public ExamSessionService(ExamSessionRepository examSessionRepository, StudentService studentService, ExaminationService examinationService,
-                              SubmissionRepository submissionRepository) {
+    public ExamSessionService(ExamSessionRepository examSessionRepository, StudentService studentService, ExaminationService examinationService, SubmissionService submissionService) {
         this.examSessionRepository = examSessionRepository;
         this.studentService = studentService;
         this.examinationService = examinationService;
-        this.submissionRepository = submissionRepository;
+        this.submissionService = submissionService;
     }
+
 
     public ExamSession startExamSession(StartExamSession request) {
         if (examinationService.validatingStudent(request)) {
@@ -80,7 +79,7 @@ public class ExamSessionService {
 
             Submission submission = Submission.createSubmission(examSession);
             examSession.getExam().addSubmission(submission);
-            submissionRepository.save(submission);
+            submissionService.add(submission);
 
             if (!examinationService.storeExamSession(examSession)) {
                 throw new ExamSessionNotStored("Exam session can't be stored in examination.");

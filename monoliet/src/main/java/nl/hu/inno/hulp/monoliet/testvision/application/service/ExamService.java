@@ -14,10 +14,7 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.exam.GradingCriteria;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Statistics;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.ExamResponse;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.MultipleChoiceQuestionResponse;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.OpenQuestionResponse;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.QuestionResponse;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -160,4 +157,16 @@ public class ExamService {
         examRepository.save(exam);
     }
 
+    public List<SubmissionResponse> getSubmissionsByExamId(Long examId) {
+
+        Exam exam = getExam(examId);
+        return exam.getSubmissions().stream()
+                .map(submission -> new SubmissionResponse(
+                        submission.getExamSession(),
+                        submission.getId(),
+                        submission.getStatus(),
+                        submission.getGrading()
+                ))
+                .collect(Collectors.toList());
+    }
 }

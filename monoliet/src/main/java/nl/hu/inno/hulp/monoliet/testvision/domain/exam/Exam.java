@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import nl.hu.inno.hulp.monoliet.testvision.domain.Course;
+import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamSession;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
@@ -57,6 +58,72 @@ public class Exam {
 
         totalPoints = questions.stream().mapToInt(QuestionEntity::getPoints).sum();
     }
+
+
+    public void updateGradingForQuestion(ExamSession examSession, int questionNr, int givenPoints, String feedback) {
+        QuestionEntity question = examSession.seeQuestion(questionNr);
+        if (question != null) {
+            if (givenPoints > question.getPoints() || givenPoints < 0) {
+                throw new IllegalArgumentException("Given points must be between 0 and the maximum points of the question");
+            }
+            question.addGivenPoints(givenPoints);
+
+            if (question.getClass().equals(OpenQuestion.class)) {
+                OpenQuestion openQuestion = (OpenQuestion) question;
+                openQuestion.addTeacherFeedback(feedback);
+            }
+        }
+    }
+
+
+    public double calculateGrade() {
+        if (questions.isEmpty() || totalPoints == 0) {
+            return 1.0;
+        }
+
+        int totalOpenPoints = getTotalOpenQuestionPoints();
+        int totalMultipleChoicePoints = getTotalMultipleChoiceQuestionPoints();
+
+        double openQuestionWeight = gradingCriteria.getOpenQuestionWeight();
+        double multipleChoiceWeight = gradingCriteria.getClosedQuestionWeight();
+
+        int totalOpenGivenPoints = calculateTotalOpenGivenPoints();
+        int totalMultipleChoiceGivenPoints = calculateTotalMultipleChoiceGivenPoints();
+
+        double weightedOpenPoints = calculateWeightedPoints(totalOpenGivenPoints, openQuestionWeight);
+        double weightedMultipleChoicePoints = calculateWeightedPoints(totalMultipleChoiceGivenPoints, multipleChoiceWeight);
+
+        double grade = (weightedOpenPoints + weightedMultipleChoicePoints) / (totalOpenPoints + totalMultipleChoicePoints) * 10 * 2;
+        return Math.round(grade * 10.0) / 10.0;
+    }
+
+    private int calculateTotalOpenGivenPoints() {
+        int totalOpenGivenPoints = 0;
+        for (QuestionEntity question : questions) {
+            if (question instanceof OpenQuestion) {
+                totalOpenGivenPoints += question.getGivenPoints();
+            }
+        }
+        return totalOpenGivenPoints;
+    }
+
+    private int calculateTotalMultipleChoiceGivenPoints() {
+        int totalMultipleChoiceGivenPoints = 0;
+        for (QuestionEntity question : questions) {
+            if (question instanceof MultipleChoiceQuestion) {
+                MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion) question;
+                if (mcQuestion.getCorrectAnswerIndexes().equals(mcQuestion.getGivenAnswers())) {
+                    totalMultipleChoiceGivenPoints += mcQuestion.getPoints();
+                }
+            }
+        }
+        return totalMultipleChoiceGivenPoints;
+    }
+
+    private double calculateWeightedPoints(int totalGivenPoints, double weight) {
+        return totalGivenPoints * weight;
+    }
+
 
     public void removeQuestions(List<QuestionEntity> questions){
         this.questions.removeAll(questions);

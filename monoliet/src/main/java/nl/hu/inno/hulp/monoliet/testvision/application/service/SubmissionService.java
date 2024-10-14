@@ -88,4 +88,8 @@ public class SubmissionService {
 
         submissionRepository.save(submission);
     }
+
+    public void add(Submission submission) {
+        submissionRepository.save(submission);
+    }
 }

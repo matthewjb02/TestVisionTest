@@ -26,12 +26,6 @@ import java.util.stream.Collectors;
 public class TeacherService {
     @Autowired
     TeacherRepository teacherRepository;
-    @Autowired
-    CourseRepository courseRepository;
-    @Autowired
-    ExamRepository examRepository;
-    @Autowired
-    QuestionRepository questionRepository;
 
     public TeacherService() {
     }
@@ -52,5 +46,7 @@ public class TeacherService {
     }
 
 
-
+    public Teacher findById(Long teacherId) {
+        return teacherRepository.findById(teacherId).orElseThrow();
+    }
 }

@@ -21,6 +21,20 @@ Na opstarten kun je alvast kijken op
 
   (als het goed is kloppen de defaults, anders moet je de url/username even uit de application.properties vissen)
 
+# README Messaging
+
+## README Pasquinel
+ Ik heb refactoring gedaan voor de Exam module en voor bijna alle dto's en een nieuwe module gemaakt voor insight, wat de inzage van een toets is.
+ dit was een usecase uit de handleiding van testvision.
+een docent haalt beoordeelde submisisons op en zet ze als individual insight open, dan kan de student commentaar geven,
+als diegene het niet eens is met de uitslag van de toets. 
+Een leraar zou dit dan opnieuw moeten kunnen beoordelen, maar zover was het nog niet af.
+Messaging is naar gekeken, maar heb het ivm tijdsgebrek niet kunnen implementeren. Alle foreign klassen wordt via id's 
+ doorgegeven het doet voor nu alleen niet veel nuttigs. 
+de module draait op eigen poort en is via de lokale swaggerlink te bereiken.
+
+## README Rik
+Ik heb geprobeerd om messaging voor een exam toe te passen. Dit is helaas niet helemaal gelukt. Ik kreeg het niet voor elkaar om dto's te versturen en op te halen. Wel heb ik iets geprobeerd met een string. Als je een exam ophaalt met id print hij in de console de 2e vraag uit(via rabbit).
 
 # README RPC:
 

@@ -1,0 +1,78 @@
+//package nl.hu.inno.hulp.grading.application;
+//
+//
+//import jakarta.transaction.Transactional;
+//import nl.hu.inno.hulp.commons.messaging.;
+//import nl.hu.inno.hulp.commons.response.ExamResponse;
+//import nl.hu.inno.hulp.commons.response.SubmissionResponse;
+//import nl.hu.inno.hulp.grading.data.SubmissionRepository;
+//import nl.hu.inno.hulp.grading.domain.Grading;
+//import nl.hu.inno.hulp.grading.domain.Submission;
+//import nl.hu.inno.hulp.grading.rabbitmq.RabbitMQProducer;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.http.HttpStatus;
+//import org.springframework.stereotype.Service;
+//import org.springframework.web.server.ResponseStatusException;
+//
+//import java.util.List;
+//import java.util.stream.Collectors;
+//
+//@Transactional
+//@Service
+//public class SubmissionService {
+//
+//
+//    private final RabbitMQProducer rabbitMQProducer;
+//    private static final Logger LOGGER = LoggerFactory.getLogger(RabbitMQProducer.class);
+//
+//    public SubmissionService(RabbitMQProducer rabbitMQProducer) {
+//        this.rabbitMQProducer = rabbitMQProducer;
+//    }
+//
+//    private ExamResponse findExamById(Long examId) {
+//        LOGGER.info("Sending request for getting exam by examId: {}", examId);
+//        return rabbitMQProducer.requestExamById(examId);
+//    }
+//
+//
+//
+//    public List<SubmissionResponse> getSubmissionsByExamId(Long examId) {
+//        // also here use messagin as the above method
+//        LOGGER.info("Sending request for getting submissions by examId: {}", examId);
+//        return rabbitMQProducer.requestSubmissionsByExamId(examId);
+//
+//    }
+//
+//
+//    public void updateOpenQuestionGrading(Long examId, Long studentId, int questionNr, UpdateQuestionGradingRequest request) {
+//        Exam exam = findExamById(examId);
+//        Submission submission = findSubmissionByExamAndStudentId(exam, studentId);
+//        submission.updateGradingForQuestion(questionNr, request.getGivenPoints(), request.getFeedback());
+//        submissionRepository.save(submission);
+//    }
+//
+//    public void addGrading(Long examId, Long studentId, GradingRequest request) {
+//        Exam exam = findExamById(examId);
+//        Submission submission = findSubmissionByExamAndStudentId(exam, studentId);
+//        Teacher teacher = teacherService.getTeacherById(request.getTeacherId());
+//
+//        // teacher can only grade the submission if the teacher teaches the course
+//        Course examCourse = courseService.findCourseByExamId(examId);
+//        if (!examCourse.getTeachers().contains(teacher)) {
+//            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Teacher is not allowed to grade this submission because he does not teach the course");
+//        }
+//
+//
+//        Grading grading = Grading.createGrading(submission.calculateGrade(), request.getComments());
+//        grading.addGrader(teacher);
+//        submission.addGrading(grading);
+//
+//        // after the final grade we update the exam statistics
+//        exam.updateStatistics();
+//        examService.saveExam(exam);
+//
+//        submissionRepository.save(submission);
+//    }
+//}

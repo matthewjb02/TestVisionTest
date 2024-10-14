@@ -33,14 +33,14 @@ public class CourseService {
 
     private final CourseRepository courseRepository;
     private final ExamRepository examRepository;
-    private final TeacherRepository teacherRepository;
+    private final TeacherService teacherService;
     private final QuestionRepository questionRepository;
 
     @Autowired
-    public CourseService(CourseRepository courseRepository, ExamRepository examRepository, TeacherRepository teacherRepository, QuestionRepository questionRepository) {
+    public CourseService(CourseRepository courseRepository, ExamRepository examRepository, TeacherService teacherService,  QuestionRepository questionRepository) {
         this.courseRepository = courseRepository;
         this.examRepository = examRepository;
-        this.teacherRepository = teacherRepository;
+        this.teacherService = teacherService;
         this.questionRepository = questionRepository;
     }
 
@@ -74,7 +74,7 @@ public class CourseService {
     }
     public CourseResponse addTeacherToCourse(Long courseId, Long teacherId) {
         Course course=courseRepository.findById(courseId).orElseThrow();
-        Teacher teacher= teacherRepository.findById(teacherId).orElseThrow();
+        Teacher teacher = teacherService.findById(teacherId);
         course.addTeacher(teacher);
         courseRepository.save(course);
         return getDTO(course);

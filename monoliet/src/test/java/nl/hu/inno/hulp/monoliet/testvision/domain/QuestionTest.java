@@ -1,6 +1,6 @@
 //package nl.hu.inno.hulp.monoliet.testvision.domain;
 //
-//import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
+//import nl.hu.inno.hulp.exam.domain.question.OpenQuestion;
 //import org.junit.jupiter.api.DisplayName;
 //import org.junit.jupiter.api.Test;
 //
