@@ -4,6 +4,8 @@ import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
 import jakarta.persistence.Embeddable;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Objects;
 
@@ -27,6 +29,11 @@ public class ExamDate {
 
         if (!Objects.equals(beginDate, examDate.beginDate)) return false;
         return Objects.equals(endDate, examDate.endDate);
+    }
+
+    public boolean checkDate() {
+        Date currentDate = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        return currentDate.before(endDate) && currentDate.after(beginDate);
     }
 
     @Access(AccessType.FIELD)

@@ -4,8 +4,12 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import nl.hu.inno.hulp.commons.enums.ExamState;
+import nl.hu.inno.hulp.commons.exception.ExamDateException;
 import nl.hu.inno.hulp.commons.exception.PasswordIncorrectException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -46,6 +50,10 @@ public class ExamSession {
     }
 
     public ExamSession startSession(String password) {
+        if (!examDate.checkDate()) {
+            throw new ExamDateException("Session cannot be started because your to soon or to late");
+        }
+
         if (verifyPassword(password)) {
             changeState(ExamState.Active);
             return this;

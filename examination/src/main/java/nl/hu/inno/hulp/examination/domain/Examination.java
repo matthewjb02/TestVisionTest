@@ -13,7 +13,7 @@ public class Examination {
     @GeneratedValue
     private Long id;
 
-    @Transient
+    @ElementCollection
     private List<Long> candidates = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -56,7 +56,9 @@ public class Examination {
         return this.candidates;
     }
     public List<Long> selectCandidate(Long studentId) {
-        this.candidates.add(studentId);
+        if (!candidates.contains(studentId)) {
+            this.candidates.add(studentId);
+        }
         return this.candidates;
     }
 
@@ -65,7 +67,9 @@ public class Examination {
         return this.candidates;
     }
     public List<Long> removeCandidate(Long studentId) {
-        this.candidates.remove(studentId);
+        if (!candidates.contains(studentId)) {
+            this.candidates.remove(studentId);
+        }
         return this.candidates;
     }
 

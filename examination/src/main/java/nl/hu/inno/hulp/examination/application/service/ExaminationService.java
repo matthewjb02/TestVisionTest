@@ -11,28 +11,24 @@ import nl.hu.inno.hulp.examination.domain.Examination;
 import nl.hu.inno.hulp.publisher.ExaminationProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Transactional
 @Service
 public class ExaminationService {
     private final ExaminationRepository examinationRepository;
     private final RestTemplate restTemplate;
     private final ExaminationProducer examinationProducer;
-    private ExaminationConsumer examinationConsumer;
 
     @Autowired
     public ExaminationService(ExaminationRepository examinationRepository, RestTemplate restTemplate,
-                              ExaminationProducer examinationProducer, ExaminationConsumer examinationConsumer) {
+                              ExaminationProducer examinationProducer) {
         this.examinationRepository = examinationRepository;
         this.restTemplate = restTemplate;
         this.examinationProducer = examinationProducer;
-        this.examinationConsumer = examinationConsumer;
     }
 
     public ExaminationResponse createExamination(CreateExamination request) {
@@ -84,14 +80,16 @@ public class ExaminationService {
     }
 
     public StudentResponse getCandidateById(Long id) {
+        String url = "http://localhost:8081/student/" + id;
         examinationProducer.sendStudentRequest(id);
-        return examinationConsumer.receiveStudentRequest();
+        return restTemplate.getForObject(url, StudentResponse.class);
     }
 
-    /*public ExamResponse getExamById(Long id) {
+    public ExamResponse getExamById(Long id) {
         String url = "http://localhost:8082/exam/" + id;
+        examinationProducer.sendExamRequest(id);
         return restTemplate.getForObject(url, ExamResponse.class);
-    }*/
+    }
 
     public CandidatesResponse getCandidatesResponse(Long id, List<Long> candidates) {
         Examination examination = getExaminationById(id);
@@ -107,6 +105,8 @@ public class ExaminationService {
         List<StudentResponse> studentResponses = examination.getCandidates().stream()
                 .map(this::getCandidateById)
                 .collect(Collectors.toList());
+
+        System.out.println(examination.getCandidates());
 
         List<ExamSessionResponse> examSessionResponses = new ArrayList<>();
         //ExamResponse examResponse = getExamById(examination.getExamId());

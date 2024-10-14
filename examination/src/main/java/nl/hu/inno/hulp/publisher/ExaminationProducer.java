@@ -1,5 +1,6 @@
 package nl.hu.inno.hulp.publisher;
 
+import nl.hu.inno.hulp.commons.request.AnswerRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -26,5 +27,20 @@ public class ExaminationProducer {
     public void sendStudentRequest(Long studentId) {
         LOGGER.info(String.format("Message sent -> %s", studentId));
         rabbitTemplate.convertAndSend(exchange, routingKey, studentId);
+    }
+
+    public void sendExamRequest(Long examId) {
+        LOGGER.info(String.format("Message sent -> %s", examId));
+        rabbitTemplate.convertAndSend(exchange, routingKey, examId);
+    }
+
+    public void sendQuestionRequest(Long questionId) {
+        LOGGER.info(String.format("Message sent -> %s", questionId));
+        rabbitTemplate.convertAndSend(exchange, routingKey, questionId);
+    }
+
+    public void sendAnswerRequest(AnswerRequest answerRequest) {
+        LOGGER.info(String.format("Message sent -> %s", answerRequest));
+        rabbitTemplate.convertAndSend(exchange, routingKey, answerRequest);
     }
 }
