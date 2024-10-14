@@ -1,19 +1,18 @@
 package nl.hu.inno.hulp.examination.application.service;
 
-import nl.hu.inno.hulp.monoliet.testvision.data.ExamSessionRepository;
-import nl.hu.inno.hulp.monoliet.testvision.data.SubmissionRepository;
-import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamSession;
-import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamState;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exception.ExamSessionNotStored;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exception.ExaminationInactiveException;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exception.NoExamSessionFoundException;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exception.NotAllowedException;
-import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
-import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.AnswerRequest;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.ExamSessionRequest;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.SeeQuestion;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.StartExamSession;
+import nl.hu.inno.hulp.commons.enums.ExamState;
+import nl.hu.inno.hulp.commons.exception.ExamSessionNotStored;
+import nl.hu.inno.hulp.commons.exception.ExaminationInactiveException;
+import nl.hu.inno.hulp.commons.exception.NoExamSessionFoundException;
+import nl.hu.inno.hulp.commons.exception.NotAllowedException;
+import nl.hu.inno.hulp.commons.request.AnswerRequest;
+import nl.hu.inno.hulp.commons.request.ExamSessionRequest;
+import nl.hu.inno.hulp.commons.request.StartExamSession;
+import nl.hu.inno.hulp.commons.response.ExamSessionResponse;
+import nl.hu.inno.hulp.commons.response.QuestionResponse;
+import nl.hu.inno.hulp.commons.response.StudentResponse;
+import nl.hu.inno.hulp.examination.data.ExamSessionRepository;
+import nl.hu.inno.hulp.examination.domain.ExamSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,70 +21,63 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ExamSessionService {
     private final ExamSessionRepository examSessionRepository;
-    private final StudentService studentService;
     private final ExaminationService examinationService;
-    private final SubmissionRepository submissionRepository;
 
     @Autowired
-    public ExamSessionService(ExamSessionRepository examSessionRepository, StudentService studentService, ExaminationService examinationService,
-                              SubmissionRepository submissionRepository) {
+    public ExamSessionService(ExamSessionRepository examSessionRepository, ExaminationService examinationService) {
         this.examSessionRepository = examSessionRepository;
-        this.studentService = studentService;
         this.examinationService = examinationService;
-        this.submissionRepository = submissionRepository;
     }
 
-    public ExamSession startExamSession(StartExamSession request) {
+    public ExamSessionResponse startExamSession(StartExamSession request) {
         if (examinationService.validatingStudent(request)) {
             ExamSession examSession = new ExamSession(examinationService.getExaminationById(request.examinationId()),
-                    studentService.getStudent(request.studentId()));
+                    request.studentId(), true);
 
             examSession.startSession(request.password());
             examSessionRepository.save(examSession);
 
-            return examSession;
+            return getExamSessionResponse(examSession.getId());
         }
 
         throw new NotAllowedException("Student is not allowed to start session because student is not a candidate.");
     }
 
-    public QuestionEntity seeQuestion(SeeQuestion examRequest)  {
-        ExamSession examSession = getExamSessionById(examRequest.examSessionId());
+    public QuestionResponse seeQuestion(Long examId, int questionId)  {
+        ExamSession examSession = getExamSessionById(examId);
 
         if (examSession.getState() == ExamState.Active) {
-            return examSession.seeQuestion(examRequest.questionNr());
+            //Long examId = examSession.getExamId();
+            //rpc question response
+            return new QuestionResponse(10, "hello world");
         } else {
             throw new ExaminationInactiveException("This exam is inactive");
         }
     }
 
-    public ExamSession enterAnswer(AnswerRequest request) {
+    public ExamSessionResponse enterAnswer(AnswerRequest request) {
         ExamSession examSession = getExamSessionById(request.examSessionId());
 
         if (examSession.getState() == ExamState.Active) {
-            examSession.answerQuestion(request.questionNr(), request.answer());
+            //examSession.answerQuestion(request.questionNr(), request.answer());
             examSessionRepository.save(examSession);
-            return examSession;
+            return getExamSessionResponse(examSession.getId());
         } else {
             throw new ExaminationInactiveException("This exam is inactive");
         }
     }
 
-    public ExamSession endExamSession(ExamSessionRequest request) {
+    public ExamSessionResponse endExamSession(ExamSessionRequest request) {
         ExamSession examSession = getExamSessionById(request.examSessionId());
 
         if (examSession.getState() == ExamState.Active) {
             examSession.endSession();
 
-            Submission submission = Submission.createSubmission(examSession);
-            examSession.getExam().addSubmission(submission);
-            submissionRepository.save(submission);
-
             if (!examinationService.storeExamSession(examSession)) {
                 throw new ExamSessionNotStored("Exam session can't be stored in examination.");
             }
 
-            return examSession;
+            return getExamSessionResponse(examSession.getId());
 
         } else {
             throw new ExaminationInactiveException("This exam is already completed");
@@ -95,5 +87,12 @@ public class ExamSessionService {
     public ExamSession getExamSessionById(Long id) {
         return examSessionRepository.findById(id)
                 .orElseThrow(() -> new NoExamSessionFoundException("No exam session with id: " + id + " found!"));
+    }
+
+    public ExamSessionResponse getExamSessionResponse(Long id) {
+        ExamSession examSession = getExamSessionById(id);
+        StudentResponse studentResponse = new StudentResponse(examSession.getStudentId());
+
+        return new ExamSessionResponse(examSession.getId(), examSession.getState(), examSession.getDuration(), studentResponse);
     }
 }

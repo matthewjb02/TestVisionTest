@@ -1,4 +1,4 @@
-package nl.hu.inno.hulp.monoliet.testvision.domain.exception;
+package nl.hu.inno.hulp.commons.exception;
 
 public class NoExaminationFoundException extends RuntimeException {
     public NoExaminationFoundException(String message) {

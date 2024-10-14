@@ -1,7 +1,7 @@
-package nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response;
+package nl.hu.inno.hulp.commons.response;
 
 import lombok.Getter;
-import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
+
 @Getter
 public class TeacherResponse {
     private long id;
@@ -12,11 +12,10 @@ public class TeacherResponse {
     protected TeacherResponse() {
 
     }
-    public TeacherResponse(Teacher teacher) {
-        this.id = teacher.getId();
-        this.firstName = teacher.getFirstName();
-        this.lastName = teacher.getLastName();
-        this.email = teacher.getEmail().getEmailString();
+    public TeacherResponse(Long id, String firstName, String lastName, String email) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
     }
-
 }

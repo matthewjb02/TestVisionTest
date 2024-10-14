@@ -1,4 +1,4 @@
-package nl.hu.inno.hulp.monoliet.testvision.application.dto;
+package nl.hu.inno.hulp.commons.dto;
 
 public class OpenQuestionDTO extends QuestionDTO{
 

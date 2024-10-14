@@ -1,29 +1,41 @@
-package nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response;
-
-import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
+package nl.hu.inno.hulp.commons.response;
 
 public class StudentResponse {
     private final Long id;
-    private final String voornaam;
-    private final String achternaam;
-    private final String email;
+    private String firstName;
+    private String lastName;
+    private boolean extraTimeRight;
+    private String email;
 
-    public StudentResponse(Student student) {
-        this.id = student.getId();
-        this.voornaam = student.getFirstName();
-        this.achternaam = student.getLastName();
-        this.email = student.getEmail().getEmailString();
+    public StudentResponse(Long id) {
+        this.id = id;
+    }
+
+    public StudentResponse(Long id, String firstName, String lastName, boolean extraTimeRight, String email) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.extraTimeRight = extraTimeRight;
+        this.email = email;
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getVoornaam() {
-        return voornaam;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public String getAchternaam() {
-        return achternaam;
+    public String getLastName() {
+        return lastName;
+    }
+
+    public boolean isExtraTimeRight() {
+        return extraTimeRight;
+    }
+
+    public String getEmail() {
+        return email;
     }
 }

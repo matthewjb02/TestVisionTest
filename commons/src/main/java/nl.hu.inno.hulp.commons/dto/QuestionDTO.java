@@ -1,4 +1,4 @@
-package nl.hu.inno.hulp.monoliet.testvision.application.dto;
+package nl.hu.inno.hulp.commons.dto;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;

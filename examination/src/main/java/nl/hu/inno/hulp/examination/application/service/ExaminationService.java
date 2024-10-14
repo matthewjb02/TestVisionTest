@@ -1,68 +1,61 @@
 package nl.hu.inno.hulp.examination.application.service;
 
-import nl.hu.inno.hulp.monoliet.testvision.data.ExaminationRepository;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
-import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamDate;
-import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamSession;
-import nl.hu.inno.hulp.monoliet.testvision.domain.examination.Examination;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exception.NoExaminationFoundException;
-import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.*;
+import nl.hu.inno.hulp.commons.exception.NoExaminationFoundException;
+import nl.hu.inno.hulp.commons.request.*;
+import nl.hu.inno.hulp.commons.response.*;
+import nl.hu.inno.hulp.examination.data.ExaminationRepository;
+import nl.hu.inno.hulp.examination.domain.ExamDate;
+import nl.hu.inno.hulp.examination.domain.ExamSession;
+import nl.hu.inno.hulp.examination.domain.Examination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Transactional
 @Service
 public class ExaminationService {
     private final ExaminationRepository examinationRepository;
-    private final StudentService studentService;
-    private final ExamService examService;
-
 
     @Autowired
-    public ExaminationService(ExaminationRepository examinationRepository, StudentService studentService,
-                              ExamService examService) {
+    public ExaminationService(ExaminationRepository examinationRepository) {
         this.examinationRepository = examinationRepository;
-        this.studentService = studentService;
-        this.examService = examService;
     }
 
-    public Examination createExamination(CreateExamination request) {
-        Exam exam = examService.getExam(request.examId());
+    public ExaminationResponse createExamination(CreateExamination request) {
         ExamDate examDate = new ExamDate(request.examDate().startDate, request.examDate().endDate);
-        Examination examination = new Examination(request.name(), exam, request.password(), examDate,
+        Examination examination = new Examination(request.name(), request.examId(), request.password(), examDate,
                 request.duration(), request.extraTime());
         examinationRepository.save(examination);
 
-        return examination;
+        return getExaminationResponse(examination.getId());
     }
 
-    public Examination selectCandidates(Candidates candidates) {
+    public CandidatesResponse selectCandidates(Candidates candidates) {
         Examination examination = getExaminationById(candidates.examinationId);
-        return examination.selectCandidates(candidates.students);
+        return getCandidatesResponse(examination.getId(), examination.selectCandidates(candidates.studentIds));
     }
 
-    public Examination selectCandidate(Candidate candidate) {
+    public CandidatesResponse selectCandidate(Candidate candidate) {
         Examination examination = getExaminationById(candidate.examinationId);
-        return examination.selectCandidate(candidate.student);
+        return getCandidatesResponse(examination.getId(), examination.selectCandidate(candidate.studentId));
     }
 
-    public Examination removeCandidates(Candidates candidates) {
+    public CandidatesResponse removeCandidates(Candidates candidates) {
         Examination examination = getExaminationById(candidates.examinationId);
-        return examination.removeCandidates(candidates.students);
+        return getCandidatesResponse(examination.getId(), examination.removeCandidates(candidates.studentIds));
     }
 
-    public Examination removeCandidate(Candidate candidate) {
+    public CandidatesResponse removeCandidate(Candidate candidate) {
         Examination examination = getExaminationById(candidate.examinationId);
-        return examination.removeCandidate(candidate.student);
+        return getCandidatesResponse(examination.getId(), examination.removeCandidate(candidate.studentId));
     }
 
     public boolean validatingStudent(StartExamSession request) {
         Examination examination = getExaminationById(request.examinationId());
-        Student student = studentService.getStudent(request.studentId());
-
-        return examination.validateStudent(student);
+        return examination.validateStudent(request.studentId());
     }
 
     public boolean storeExamSession(ExamSession examSession) {
@@ -77,5 +70,24 @@ public class ExaminationService {
     public Examination getExaminationById(Long id) {
         return examinationRepository.findById(id)
                 .orElseThrow(() -> new NoExaminationFoundException("No examination with id: " + id + " found!"));
+    }
+
+    public CandidatesResponse getCandidatesResponse(Long id, List<Long> candidates) {
+        Examination examination = getExaminationById(id);
+        List<StudentResponse> studentResponses = new ArrayList<>();
+
+        return new CandidatesResponse(examination.getId(), examination.getName(), studentResponses);
+    }
+
+    public ExaminationResponse getExaminationResponse(Long id) {
+        Examination examination = getExaminationById(id);
+        List<StudentResponse> studentResponses = new ArrayList<>();
+        List<ExamSessionResponse> examSessionResponses = new ArrayList<>();
+        ExamResponse examResponse = new ExamResponse();
+        ExamDateDTO examDateDTO = new ExamDateDTO();
+
+        return new ExaminationResponse(examination.getId(), studentResponses, examSessionResponses,
+                examResponse, examination.getName(), examination.getPassword(), examDateDTO, examination.getDuration(),
+                examination.getExtraTime());
     }
 }

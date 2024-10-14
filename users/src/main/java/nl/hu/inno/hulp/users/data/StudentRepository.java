@@ -1,6 +1,6 @@
-package nl.hu.inno.hulp.monoliet.testvision.data;
+package nl.hu.inno.hulp.users.data;
 
-import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
+import nl.hu.inno.hulp.users.domain.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

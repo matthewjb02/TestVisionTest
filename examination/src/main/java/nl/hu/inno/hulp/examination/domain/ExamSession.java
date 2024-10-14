@@ -3,12 +3,8 @@ package nl.hu.inno.hulp.examination.domain;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exception.PasswordIncorrectException;
-import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
-import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
-import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
-import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
+import nl.hu.inno.hulp.commons.enums.ExamState;
+import nl.hu.inno.hulp.commons.exception.PasswordIncorrectException;
 
 import java.util.List;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,11 +18,11 @@ public class ExamSession {
 
     private Long examinationId;
 
-    @OneToOne
-    private Student student;
+    @Transient
+    private Long studentId;
 
-    @OneToOne
-    private Exam exam;
+    @Transient
+    private Long examId;
 
     @Embedded
     private ExamDate examDate;
@@ -40,15 +36,15 @@ public class ExamSession {
     protected ExamSession() {
     }
 
-    public ExamSession(Examination context, Student student) {
+    public ExamSession(Examination context, Long studentId, boolean extraTimeRight) {
         this.state = ExamState.Published;
         this.examinationId = context.getId();
-        this.duration = context.totalDuration(student.isExtraTimeRight());
-        this.exam = context.getExam();
+        this.duration = context.totalDuration(extraTimeRight);
+        this.examId = context.getExamId();
         //this.securedPassword = hashPassword(context.getPassword());
         this.securedPassword = context.getPassword();
         this.examDate = context.getExamDate();
-        this.student = student;
+        this.studentId = studentId;
     }
 
     public ExamSession startSession(String password) {
@@ -60,7 +56,7 @@ public class ExamSession {
         throw new PasswordIncorrectException("This password is incorrect.");
     }
 
-    public ExamSession answerQuestion(int questionNr, Object answer) {
+    /*public ExamSession answerQuestion(int questionNr, Object answer) {
         QuestionEntity question = seeQuestion(questionNr);
 
         if (question.getClass().equals(MultipleChoiceQuestion.class)){
@@ -72,11 +68,7 @@ public class ExamSession {
         }
 
         return this;
-    }
-
-    public QuestionEntity seeQuestion(int questionNr) {
-        return exam.getQuestions().get(questionNr - 1);
-    }
+    }*/
 
     public ExamSession endSession() {
         changeState(ExamState.Completed);

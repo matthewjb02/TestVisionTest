@@ -1,22 +1,21 @@
-package nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response;
+package nl.hu.inno.hulp.commons.response;
 
 import lombok.Getter;
-import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamSession;
-import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Grading;
-import nl.hu.inno.hulp.monoliet.testvision.domain.submission.SubmissionStatus;
+import nl.hu.inno.hulp.commons.enums.ExamState;
+import nl.hu.inno.hulp.commons.enums.SubmissionStatus;
 
 
 @Getter
 public class SubmissionResponse extends ExamSessionResponse {
     private Long submissionId;
-    private SubmissionStatus submissionStatus;
+    private ExamState submissionStatus;
     private GradingResponse grading;
 
-    public SubmissionResponse(ExamSession examSession, Long submissionId, SubmissionStatus status, Grading grading) {
-        super(examSession);
+    public SubmissionResponse(ExamSessionResponse examSession, Long submissionId, ExamState status, GradingResponse grading) {
+        super(examSession.getId(),status, examSession.getDuration(), examSession.getStudent());
         this.submissionId = submissionId;
         this.submissionStatus = status;
-        this.grading = new GradingResponse(grading);
+        this.grading = new GradingResponse(grading.getId(),grading.getGrade(), grading.getComments());
     }
 
 //    public SubmissionResponse(Submission submission){

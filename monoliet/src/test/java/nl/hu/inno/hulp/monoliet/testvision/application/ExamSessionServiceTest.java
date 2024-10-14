@@ -4,8 +4,8 @@
 //import nl.hu.inno.hulp.examination.application.service.ExaminationService;
 //import nl.hu.inno.hulp.users.application.service.StudentService;
 //import nl.hu.inno.hulp.exam.application.service.ExamService;
-//import nl.hu.inno.hulp.monoliet.testvision.data.ExamSessionRepository;
-//import nl.hu.inno.hulp.monoliet.testvision.data.ExaminationRepository;
+//import nl.hu.inno.hulp.examination.data.ExamSessionRepository;
+//import nl.hu.inno.hulp.examination.data.ExaminationRepository;
 //import nl.hu.inno.hulp.monoliet.testvision.data.SubmissionRepository;
 //import nl.hu.inno.hulp.exam.Exam;
 //import nl.hu.inno.hulp.examination.ExamSession;

@@ -1,21 +1,16 @@
 package nl.hu.inno.hulp.users.presentation.controller;
 
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.TeacherResponse;
-import nl.hu.inno.hulp.monoliet.testvision.application.service.TeacherService;
-import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.TeacherRequest;
-import org.springframework.beans.factory.annotation.Autowired;
+import nl.hu.inno.hulp.commons.request.TeacherRequest;
+import nl.hu.inno.hulp.commons.response.TeacherResponse;
+import nl.hu.inno.hulp.users.application.service.TeacherService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/teacher")
 public class TeacherController {
 
-    @Autowired
-    private TeacherService teacherService;
+    private final TeacherService teacherService;
 
     public TeacherController(TeacherService teacherService) {
         this.teacherService = teacherService;
@@ -24,22 +19,17 @@ public class TeacherController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TeacherResponse saveTeacher(@RequestBody TeacherRequest teacher) {
-       return new TeacherResponse(this.teacherService.saveTeacher(teacher));
+       return teacherService.saveTeacher(teacher);
     }
+
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.FOUND)
-    public TeacherResponse getTeacher(@PathVariable long id) {
-        return new TeacherResponse(teacherService.getTeacherById(id));
+    public TeacherResponse getTeacher(@PathVariable Long id) {
+        return teacherService.getTeacherResponse(id);
     }
-    @GetMapping("/all")
-    @ResponseStatus(HttpStatus.FOUND)
-    public List<Teacher> getAllTeachers() {
-        return teacherService.getAllTeachers();
-    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void deleteTeacher(@PathVariable long id) {
+    public void deleteTeacher(@PathVariable Long id) {
         teacherService.removeTeacher(id);}
-
 }
-

@@ -1,7 +1,6 @@
-package nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response;
+package nl.hu.inno.hulp.commons.response;
 
 import lombok.Getter;
-import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 
 @Getter
 public class OpenQuestionResponse extends QuestionResponse{
@@ -9,10 +8,10 @@ public class OpenQuestionResponse extends QuestionResponse{
     private String answer;
     private String teacherFeedback;
 
-    public OpenQuestionResponse(OpenQuestion question) {
-        super(question);
-        this.correctAnswer = question.getCorrectAnswer();
-        this.answer = question.getAnswer();
-        this.teacherFeedback = question.getTeacherFeedback();
+    public OpenQuestionResponse(int points,String question,String correctAnswer, String answer, String teacherFeedback) {
+        super(points,question);
+        this.correctAnswer = correctAnswer;
+        this.answer = answer;
+        this.teacherFeedback = teacherFeedback;
     }
 }

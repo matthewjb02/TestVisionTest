@@ -1,4 +1,4 @@
-package nl.hu.inno.hulp.examination.domain;
+package nl.hu.inno.hulp.commons.enums;
 
 public enum ExamState {
     Published,
