@@ -52,8 +52,7 @@ public class ExamSessionService {
         ExamSession examSession = getExamSessionById(id);
 
         if (examSession.getState() == ExamState.Active) {
-            Long examId = examSession.getExamId();
-            examinationProducer.sendQuestionRequest(questionId);
+            examinationProducer.sendQuestionRequest(examSession.getId(), examSession.getExamId(), questionId);
             return new QuestionResponse(10, "hello world");
         } else {
             throw new ExaminationInactiveException("This exam is inactive");
@@ -78,13 +77,13 @@ public class ExamSessionService {
         if (examSession.getState() == ExamState.Active) {
             examSession.endSession();
 
-            //messaging to grading module
-
             if (!examinationService.storeExamSession(examSession)) {
                 throw new ExamSessionNotStored("Exam session can't be stored in examination.");
             }
 
-            return getExamSessionResponse(examSession.getId());
+            ExamSessionResponse examSessionResponse = getExamSessionResponse(examSession.getId());
+            examinationProducer.endingSessionRequest(examSessionResponse);
+            return examSessionResponse;
 
         } else {
             throw new ExaminationInactiveException("This exam is already completed");

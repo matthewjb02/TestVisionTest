@@ -1,6 +1,8 @@
 package nl.hu.inno.hulp.publisher;
 
 import nl.hu.inno.hulp.commons.request.AnswerRequest;
+import nl.hu.inno.hulp.commons.request.SeeQuestion;
+import nl.hu.inno.hulp.commons.response.ExamSessionResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -34,13 +36,19 @@ public class ExaminationProducer {
         rabbitTemplate.convertAndSend(exchange, routingKey, examId);
     }
 
-    public void sendQuestionRequest(Long questionId) {
-        LOGGER.info(String.format("Message sent -> %s", questionId));
-        rabbitTemplate.convertAndSend(exchange, routingKey, questionId);
+    public void sendQuestionRequest(Long examSessionId, Long examId, Long questionId) {
+        LOGGER.info(String.format("Message sent -> exam-session id: %s exam id: %s, question id: %s", examSessionId, examId, questionId));
+        SeeQuestion seeQuestion = new SeeQuestion(examSessionId, examId, questionId);
+        rabbitTemplate.convertAndSend(exchange, routingKey, seeQuestion);
     }
 
     public void sendAnswerRequest(AnswerRequest answerRequest) {
         LOGGER.info(String.format("Message sent -> %s", answerRequest));
         rabbitTemplate.convertAndSend(exchange, routingKey, answerRequest);
+    }
+
+    public void endingSessionRequest(ExamSessionResponse examSessionResponse) {
+        LOGGER.info(String.format("Message sent -> %s", examSessionResponse));
+        rabbitTemplate.convertAndSend(exchange, routingKey, examSessionResponse);
     }
 }
