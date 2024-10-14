@@ -32,6 +32,10 @@ Een leraar zou dit dan opnieuw moeten kunnen beoordelen, maar zover was het nog 
 Messaging is naar gekeken, maar heb het ivm tijdsgebrek niet kunnen implementeren. Alle foreign klassen wordt via id's 
  doorgegeven het doet voor nu alleen niet veel nuttigs. 
 de module draait op eigen poort en is via de lokale swaggerlink te bereiken.
+
+## README Rik
+Ik heb geprobeerd om messaging voor een exam toe te passen. Dit is helaas niet helemaal gelukt. Ik kreeg het niet voor elkaar om dto's te versturen en op te halen. Wel heb ik iets geprobeerd met een string. Als je een exam ophaalt met id print hij in de console de 2e vraag uit(via rabbit).
+
 # README RPC:
 
 ## RPC Rik:
