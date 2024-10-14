@@ -1,6 +1,7 @@
 package nl.hu.inno.hulp.consumer;
 
 import nl.hu.inno.hulp.commons.response.ExamResponse;
+import nl.hu.inno.hulp.commons.response.QuestionResponse;
 import nl.hu.inno.hulp.commons.response.StudentResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,11 +15,16 @@ public class ExaminationConsumer {
 
     @RabbitListener(queues = {"${rabbitmq.queue.name}"})
     public void consumeStudentResponse(@Payload StudentResponse studentResponse) {
-        LOGGER.info(String.format("Received JSON message -> %s", studentResponse));
+        LOGGER.info(String.format("Received JSON message -> student-response: %s", studentResponse));
     }
 
     @RabbitListener(queues = {"${rabbitmq.queue.name}"})
     public void consumeExamResponse(@Payload ExamResponse examResponse) {
-        LOGGER.info(String.format("Received JSON message -> %s", examResponse));
+        LOGGER.info(String.format("Received JSON message -> exam-response: %s", examResponse));
+    }
+
+    @RabbitListener(queues = {"${rabbitmq.queue.name}"})
+    public void consumeQuestionResponse(@Payload QuestionResponse questionResponse) {
+        LOGGER.info(String.format("Received JSON message -> question-response: %s", questionResponse));
     }
 }

@@ -27,12 +27,12 @@ public class ExaminationProducer {
     }
 
     public void sendStudentRequest(Long studentId) {
-        LOGGER.info(String.format("Message sent -> %s", studentId));
+        LOGGER.info(String.format("Message sent -> student id: %s", studentId));
         rabbitTemplate.convertAndSend(exchange, routingKey, studentId);
     }
 
     public void sendExamRequest(Long examId) {
-        LOGGER.info(String.format("Message sent -> %s", examId));
+        LOGGER.info(String.format("Message sent -> exam id: %s", examId));
         rabbitTemplate.convertAndSend(exchange, routingKey, examId);
     }
 
@@ -43,12 +43,12 @@ public class ExaminationProducer {
     }
 
     public void sendAnswerRequest(AnswerRequest answerRequest) {
-        LOGGER.info(String.format("Message sent -> %s", answerRequest));
+        LOGGER.info(String.format("Message sent -> answer-request %s", answerRequest));
         rabbitTemplate.convertAndSend(exchange, routingKey, answerRequest);
     }
 
     public void endingSessionRequest(ExamSessionResponse examSessionResponse) {
-        LOGGER.info(String.format("Message sent -> %s", examSessionResponse));
+        LOGGER.info(String.format("Message sent -> exam-session-response: %s", examSessionResponse));
         rabbitTemplate.convertAndSend(exchange, routingKey, examSessionResponse);
     }
 }

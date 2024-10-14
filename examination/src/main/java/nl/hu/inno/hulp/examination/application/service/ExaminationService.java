@@ -105,8 +105,6 @@ public class ExaminationService {
                 .map(this::getCandidateById)
                 .collect(Collectors.toList());
 
-        System.out.println(examination.getCandidates());
-
         List<ExamSessionResponse> examSessionResponses = new ArrayList<>();
         ExamResponse examResponse = getExamById(examination.getExamId());
         ExamDateDTO examDateDTO = new ExamDateDTO();
