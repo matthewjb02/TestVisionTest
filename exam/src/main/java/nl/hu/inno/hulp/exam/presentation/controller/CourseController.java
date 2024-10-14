@@ -1,11 +1,10 @@
 package nl.hu.inno.hulp.exam.presentation.controller;
 
-import nl.hu.inno.hulp.monoliet.testvision.application.service.CourseService;
-import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.ExamResponse;
-import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.CourseRequest;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.CourseResponse;
+import nl.hu.inno.hulp.commons.request.CourseRequest;
+import nl.hu.inno.hulp.commons.response.CourseResponse;
+import nl.hu.inno.hulp.commons.response.ExamResponse;
+import nl.hu.inno.hulp.exam.application.service.CourseService;
+import nl.hu.inno.hulp.exam.domain.question.QuestionEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

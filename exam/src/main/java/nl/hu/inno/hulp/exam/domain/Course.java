@@ -2,10 +2,8 @@ package nl.hu.inno.hulp.exam.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exam.ValidationStatus;
-import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
-import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
+import nl.hu.inno.hulp.commons.enums.ValidationStatus;
+import nl.hu.inno.hulp.exam.domain.question.QuestionEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +17,8 @@ public class Course {
 
     private String name;
 
-    @ManyToMany
-    private List<Teacher> teachers=new ArrayList<>();
+    @Lob
+    private List<Long> teacherIds =new ArrayList<>();
     @OneToMany
     private List<Exam> approvedExams =new ArrayList<>();
     @OneToMany
@@ -35,9 +33,11 @@ public class Course {
     public Course(String name){
         this.name = name;
     }
-    public void addTeacher(Teacher teacher){
-        teachers.add(teacher);
+
+    public void addTeacher(Long teacherId){
+        teacherIds.add(teacherId);
     }
+
     public void addExam(Exam exam){
         if (exam.getValidationStatus().equals(ValidationStatus.APPROVED)){
         approvedExams.add(exam);}
@@ -47,46 +47,49 @@ public class Course {
             rejectedExams.add(exam);
         }
     }
+
     private boolean doesTeacherTeachCourse(Exam exam) throws Exception {
 
-        if (this.getTeachers().contains(exam.getExamMaker())&&exam.getExamMaker()!=exam.getExamValidator()||this.getTeachers().contains(exam.getExamValidator())&&exam.getExamValidator()!=exam.getExamMaker()) {
+        if (this.getTeacherIds().contains(exam.getExamMakerId()) && exam.getExamMakerId()!=exam.getExamValidatorId() ||
+                this.getTeacherIds().contains(exam.getExamValidatorId())&&exam.getExamValidatorId() != exam.getExamMakerId()) {
             return true;
         } else throw new Exception("The Teacher does not teach this course");
     }
 
-    private boolean canIApproveThisExam(Teacher examValidator,Exam exam) throws Exception {
-        if (this.getValidatingExams().contains(exam)&&exam.getExamValidator() ==examValidator){
+    private boolean canIApproveThisExam(Long examValidatorId, Exam exam) throws Exception {
+        if (getValidatingExams().contains(exam) && exam.getExamValidatorId() == examValidatorId){
             return true;
         }
-        else if(exam.getExamValidator() !=examValidator&&this.getValidatingExams().contains(exam)){
+        else if(exam.getExamValidatorId() != examValidatorId && getValidatingExams().contains(exam)){
             throw new Exception("The Teacher is not assigned as validator, but the exam needs to be Validated");
         }
         else throw new Exception("The exam cannot be validated");
     }
 
-
-
-    public void approveExam(Exam exam,Teacher examValidator) throws Exception {
-        if (doesTeacherTeachCourse(exam)&& canIApproveThisExam(examValidator,exam)){
+    public void approveExam(Exam exam, Long examValidatorId) throws Exception {
+        if (doesTeacherTeachCourse(exam)&& canIApproveThisExam(examValidatorId,exam)){
             exam.setValidationStatus(ValidationStatus.APPROVED);
             this.getValidatingExams().remove(exam);
             this.getApprovedExams().add(exam);
         }
     }
-    public void rejectExam(Exam exam,Teacher examValidator,String reason) throws Exception {
-        if (doesTeacherTeachCourse(exam)&& canIApproveThisExam(examValidator,exam)){
+
+    public void rejectExam(Exam exam, Long examValidatorId, String reason) throws Exception {
+        if (doesTeacherTeachCourse(exam)&& canIApproveThisExam(examValidatorId, exam)){
             exam.setValidationStatus(ValidationStatus.DENIED);
             this.getValidatingExams().remove(exam);
             this.getRejectedExams().add(exam);
             exam.setReason(reason);
         }
     }
+
     public void viewWrongExam(Exam exam) throws Exception {
         if (this.getRejectedExams().contains(exam)){
             System.out.println(exam.getReason());
         }
         else throw new Exception("This exam was not rejected");
     }
+
     public void modifyQuestions(Exam exam, List<QuestionEntity> oldQuestions, List<QuestionEntity> newQuestion) {
         if (this.getRejectedExams().contains(exam)){
             exam.removeQuestions(oldQuestions);
@@ -97,6 +100,4 @@ public class Course {
             exam.setReason("");
         }
     }
-
-
 }

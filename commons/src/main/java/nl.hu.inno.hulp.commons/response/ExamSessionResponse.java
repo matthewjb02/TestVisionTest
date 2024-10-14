@@ -4,8 +4,12 @@ import lombok.Getter;
 import nl.hu.inno.hulp.commons.enums.ExamState;
 import nl.hu.inno.hulp.commons.enums.SubmissionStatus;
 
+import java.io.Serializable;
+
 @Getter
-public class ExamSessionResponse {
+public class ExamSessionResponse implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private final Long id;
     private final ExamState status;
     private final int duration;

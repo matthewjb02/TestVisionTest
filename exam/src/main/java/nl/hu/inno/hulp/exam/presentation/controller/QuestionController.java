@@ -1,9 +1,8 @@
 package nl.hu.inno.hulp.exam.presentation.controller;
 
-import nl.hu.inno.hulp.monoliet.testvision.application.service.QuestionService;
-import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.QuestionRequest;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.QuestionResponse;
+import nl.hu.inno.hulp.commons.request.QuestionRequest;
+import nl.hu.inno.hulp.commons.response.QuestionResponse;
+import nl.hu.inno.hulp.exam.application.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

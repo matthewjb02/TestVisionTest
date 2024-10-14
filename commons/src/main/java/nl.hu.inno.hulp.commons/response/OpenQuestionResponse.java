@@ -2,8 +2,12 @@ package nl.hu.inno.hulp.commons.response;
 
 import lombok.Getter;
 
+import java.io.Serializable;
+
 @Getter
-public class OpenQuestionResponse extends QuestionResponse{
+public class OpenQuestionResponse extends QuestionResponse implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private String correctAnswer;
     private String answer;
     private String teacherFeedback;
