@@ -2,7 +2,7 @@ package nl.hu.inno.hulp.grading.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
+
 
 @Entity
 @Getter
