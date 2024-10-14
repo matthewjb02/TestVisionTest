@@ -1,5 +1,8 @@
 package nl.hu.inno.hulp.grading.rabbitmq;
 
+import nl.hu.inno.hulp.commons.messaging.ExamDTO;
+import nl.hu.inno.hulp.commons.response.ExamResponse;
+import nl.hu.inno.hulp.commons.response.SubmissionResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -35,5 +38,14 @@ public class RabbitMQProducer {
     }
 
 
+    public ExamResponse requestExamById(Long examId) {
+        LOGGER.info("Sending request for getting exam by examId: {}", examId);
+        return (ExamResponse) rabbitTemplate.convertSendAndReceive(exchangeName, routingKey, examId);
+    }
+
+    public List<SubmissionResponse> requestSubmissionsByExamId(Long examId) {
+        LOGGER.info("Sending request for getting submissions by examId: {}", examId);
+        return (List<SubmissionResponse>) rabbitTemplate.convertSendAndReceive(exchangeName, routingKey, examId);
+    }
 
 }
