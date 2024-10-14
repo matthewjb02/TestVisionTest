@@ -3,6 +3,7 @@ package nl.hu.inno.hulp.examination.application.service;
 import nl.hu.inno.hulp.commons.exception.NoExaminationFoundException;
 import nl.hu.inno.hulp.commons.request.*;
 import nl.hu.inno.hulp.commons.response.*;
+import nl.hu.inno.hulp.consumer.ExaminationConsumer;
 import nl.hu.inno.hulp.examination.data.ExaminationRepository;
 import nl.hu.inno.hulp.examination.domain.ExamDate;
 import nl.hu.inno.hulp.examination.domain.ExamSession;
@@ -21,11 +22,13 @@ import java.util.stream.Collectors;
 public class ExaminationService {
     private final ExaminationRepository examinationRepository;
     private final RestTemplate restTemplate;
+    private final ExaminationConsumer examinationConsumer;
 
     @Autowired
-    public ExaminationService(ExaminationRepository examinationRepository, RestTemplate restTemplate) {
+    public ExaminationService(ExaminationRepository examinationRepository, RestTemplate restTemplate, ExaminationConsumer examinationConsumer) {
         this.examinationRepository = examinationRepository;
         this.restTemplate = restTemplate;
+        this.examinationConsumer = examinationConsumer;
     }
 
     public ExaminationResponse createExamination(CreateExamination request) {

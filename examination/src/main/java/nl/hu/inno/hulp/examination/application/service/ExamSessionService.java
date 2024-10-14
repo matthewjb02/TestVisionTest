@@ -8,7 +8,6 @@ import nl.hu.inno.hulp.commons.exception.NotAllowedException;
 import nl.hu.inno.hulp.commons.request.AnswerRequest;
 import nl.hu.inno.hulp.commons.request.ExamSessionRequest;
 import nl.hu.inno.hulp.commons.request.StartExamSession;
-import nl.hu.inno.hulp.commons.response.ExamResponse;
 import nl.hu.inno.hulp.commons.response.ExamSessionResponse;
 import nl.hu.inno.hulp.commons.response.QuestionResponse;
 import nl.hu.inno.hulp.commons.response.StudentResponse;
