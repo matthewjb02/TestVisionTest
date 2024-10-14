@@ -1,15 +1,13 @@
-package nl.hu.inno.hulp;
+package nl.hu.inno.hulp.insight;
 
-import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@EnableRabbit
 @SpringBootApplication
-public class UsersApplication {
+public class InsightApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(UsersApplication.class, args);
+        SpringApplication.run(InsightApplication.class, args);
     }
 
 }
