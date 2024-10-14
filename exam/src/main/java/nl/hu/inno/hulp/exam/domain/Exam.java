@@ -3,11 +3,10 @@ package nl.hu.inno.hulp.exam.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
-import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
-import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
-import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
-import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
+import nl.hu.inno.hulp.commons.enums.ValidationStatus;
+import nl.hu.inno.hulp.exam.domain.question.MultipleChoiceQuestion;
+import nl.hu.inno.hulp.exam.domain.question.OpenQuestion;
+import nl.hu.inno.hulp.exam.domain.question.QuestionEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,29 +21,29 @@ public class Exam {
     @Embedded
     private GradingCriteria gradingCriteria;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Submission> submissions = new ArrayList<>();
+    @Lob
+    private List<Long> submissionIds = new ArrayList<>();
 
     private ValidationStatus validationStatus= ValidationStatus.WAITING;
     private String reason;
 
     @OneToMany
     private List<QuestionEntity> questions;
-    @OneToOne
-    private Teacher examValidator;
+
+    private Long examValidatorId;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Statistics statistics;
-    @OneToOne
-    private Teacher examMaker;
+
+    private Long examMakerId;
     private int totalPoints;
     protected Exam(){
 
     }
 
-    public Exam(Teacher examMaker, Teacher examValidator){
-            this.examMaker = examMaker;
-            this.examValidator = examValidator;
+    public Exam(Long examMakerId, Long examValidatorId){
+            this.examMakerId = examMakerId;
+            this.examValidatorId = examValidatorId;
             this.questions = new ArrayList<>();
             calculateTotalPoints();
 
@@ -64,22 +63,22 @@ public class Exam {
     }
 
     public void updateStatistics() {
-        double passGrade = 5.5;
-
-        int submissionCount = submissions.size();
-
-        int passCount = (int) submissions.stream()
-                .filter(submission -> submission.calculateGrade() >= passGrade)
-                .count();
-
-        int failCount = submissionCount - passCount;
-
-        double averageScore = submissions.stream()
-                .mapToDouble(Submission::calculateGrade)
-                .average()
-                .orElse(0);
-
-        statistics = new Statistics(submissionCount, passCount, failCount, averageScore);
+//        double passGrade = 5.5;
+//
+//        int submissionCount = submissionIds.size();
+//
+//        int passCount = (int) submissionIds.stream()
+//                .filter(submission -> submission.calculateGrade() >= passGrade)
+//                .count();
+//
+//        int failCount = submissionCount - passCount;
+//
+//        double averageScore = submissionIds.stream()
+//                .mapToDouble(Submission::calculateGrade)
+//                .average()
+//                .orElse(0);
+//
+//        statistics = new Statistics(submissionCount, passCount, failCount, averageScore);
     }
 
     public int getTotalOpenQuestionPoints(){
@@ -96,21 +95,7 @@ public class Exam {
                 .sum();
     }
 
-    public void addExamMaker(Teacher examMaker) {
-        this.examMaker = examMaker;
-    }
-    public void addExamValidator(Teacher examValidator) {
-        this.examValidator = examValidator;
-    }
-    public void addGradingCriteria(GradingCriteria gradingCriteria) {
-        this.gradingCriteria = gradingCriteria;
-    }
-
-    public void addSubmission(Submission submission) {
-        this.submissions.add(submission);
-    }
-
-    public void addStatistics(Statistics statistics) {
-        this.statistics = statistics;
+    public void addSubmissionId(Long submissionId) {
+        this.submissionIds.add(submissionId);
     }
 }
