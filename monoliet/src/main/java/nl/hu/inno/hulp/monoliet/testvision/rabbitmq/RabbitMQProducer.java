@@ -4,9 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-@Service
+@Component
 public class RabbitMQProducer {
 
     @Value("${rabbit.exchange.name}")
@@ -24,9 +25,10 @@ public class RabbitMQProducer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RabbitMQProducer.class);
 
-    public void sendUserMessage(String string) {
+    public void sendMessage(String string) {
 
         LOGGER.info("Sending message: {}", string);
         rabbitTemplate.convertAndSend(exchangeName, routingKey, string);
     }
+
 }

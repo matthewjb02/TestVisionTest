@@ -1,15 +1,15 @@
-package nl.hu.inno.hulp.grading.presentation;
+package nl.hu.inno.hulp.monoliet.testvision.presentation.controller;
 
-import nl.hu.inno.hulp.grading.rabbitmq.RabbitMQProducer;
+
+import nl.hu.inno.hulp.monoliet.testvision.rabbitmq.RabbitMQProducer;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
-@RequestMapping("/grading")
+@RequestMapping("/monoliet")
 public class RabbitMQContoller {
 
     private final RabbitMQProducer rabbitMQProducer;
