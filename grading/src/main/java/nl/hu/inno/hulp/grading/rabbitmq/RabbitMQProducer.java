@@ -7,11 +7,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
+@Component
 public class RabbitMQProducer {
 
     @Value("${rabbit.exchange.name}")
@@ -37,7 +38,6 @@ public class RabbitMQProducer {
         rabbitTemplate.convertAndSend(exchangeName, routingKey, string);
     }
 
-
     public ExamResponse requestExamById(Long examId) {
         LOGGER.info("Sending request for getting exam by examId: {}", examId);
         return (ExamResponse) rabbitTemplate.convertSendAndReceive(exchangeName, routingKey, examId);
@@ -47,5 +47,6 @@ public class RabbitMQProducer {
         LOGGER.info("Sending request for getting submissions by examId: {}", examId);
         return (List<SubmissionResponse>) rabbitTemplate.convertSendAndReceive(exchangeName, routingKey, examId);
     }
+
 
 }
