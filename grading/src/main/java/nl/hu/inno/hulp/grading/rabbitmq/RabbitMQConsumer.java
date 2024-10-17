@@ -13,7 +13,7 @@ public class RabbitMQConsumer {
 
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(RabbitMQConsumer.class);
 
-    @RabbitListener(queues = "${rabbit.monoliet.queue}")
+    @RabbitListener(queues = "${rabbit.monoliet.demo.queue}")
     public void consumeNoteMessage(String string) {
         LOGGER.info("Message received: {}", string);
     }

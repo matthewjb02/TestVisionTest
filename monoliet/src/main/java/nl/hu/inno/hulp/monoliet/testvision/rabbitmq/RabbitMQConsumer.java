@@ -25,7 +25,7 @@ public class RabbitMQConsumer {
 
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(RabbitMQConsumer.class);
 
-    @RabbitListener(queues = "${rabbit.grading.queue}")
+    @RabbitListener(queues = "${rabbit.grading.demo.queue}")
     public void consumeMessage(String string) {
         LOGGER.info("Message received: {}", string);
     }
