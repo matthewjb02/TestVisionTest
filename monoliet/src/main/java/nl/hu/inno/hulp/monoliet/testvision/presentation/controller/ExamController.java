@@ -3,6 +3,7 @@ package nl.hu.inno.hulp.monoliet.testvision.presentation.controller;
 import nl.hu.inno.hulp.monoliet.testvision.application.service.ExamService;
 import nl.hu.inno.hulp.monoliet.testvision.application.dto.GradingCriteriaDTO;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
+import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.ExamResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -48,5 +49,10 @@ public class ExamController {
     @PostMapping("/{examId}/grading-criteria")
     public ExamResponse addGradingCriteriaToExam(@PathVariable Long examId, @RequestBody GradingCriteriaDTO gradingCriteriaDTO) {
         return examService.addGradingCriteriaToExam(examId, gradingCriteriaDTO);
+    }
+
+    @GetMapping("/{examId}/{studentId}")
+    public Submission getSubmissionByExamAndStudentId(@PathVariable Long examId, @PathVariable Long studentId) {
+        return examService.getSubmissionByExamAndStudentId(examId, studentId);
     }
 }

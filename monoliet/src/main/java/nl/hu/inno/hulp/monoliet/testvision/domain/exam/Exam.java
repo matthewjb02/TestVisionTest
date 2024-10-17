@@ -60,21 +60,6 @@ public class Exam {
     }
 
 
-    public void updateGradingForQuestion(ExamSession examSession, int questionNr, int givenPoints, String feedback) {
-        QuestionEntity question = examSession.seeQuestion(questionNr);
-        if (question != null) {
-            if (givenPoints > question.getPoints() || givenPoints < 0) {
-                throw new IllegalArgumentException("Given points must be between 0 and the maximum points of the question");
-            }
-            question.addGivenPoints(givenPoints);
-
-            if (question.getClass().equals(OpenQuestion.class)) {
-                OpenQuestion openQuestion = (OpenQuestion) question;
-                openQuestion.addTeacherFeedback(feedback);
-            }
-        }
-    }
-
 
     public double calculateGrade() {
         if (questions.isEmpty() || totalPoints == 0) {
@@ -139,13 +124,13 @@ public class Exam {
         int submissionCount = submissions.size();
 
         int passCount = (int) submissions.stream()
-                .filter(submission -> submission.calculateGrade() >= passGrade)
+                .filter(submission -> this.calculateGrade() >= passGrade)
                 .count();
 
         int failCount = submissionCount - passCount;
 
         double averageScore = submissions.stream()
-                .mapToDouble(Submission::calculateGrade)
+                .mapToDouble(submission -> this.calculateGrade())
                 .average()
                 .orElse(0);
 

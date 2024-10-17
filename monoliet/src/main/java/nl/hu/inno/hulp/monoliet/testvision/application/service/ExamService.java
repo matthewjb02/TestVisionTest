@@ -13,6 +13,7 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.GradingCriteria;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Statistics;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
+import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,10 +38,11 @@ public class ExamService {
         this.questionRepository = questionRepository;
         this.teacherRepository = teacherRepository;
     }
-    public ExamResponse addExam( long examMakerId, long examValidatorId) {
-        Teacher  maker=teacherRepository.findById(examMakerId).orElseThrow();
-        Teacher examValidator=teacherRepository.findById(examValidatorId).orElseThrow();
-        Exam exam=new Exam(maker, examValidator);
+
+    public ExamResponse addExam(long examMakerId, long examValidatorId) {
+        Teacher maker = teacherRepository.findById(examMakerId).orElseThrow();
+        Teacher examValidator = teacherRepository.findById(examValidatorId).orElseThrow();
+        Exam exam = new Exam(maker, examValidator);
         exam.addExamValidator(examValidator);
         exam.addExamMaker(maker);
 
@@ -56,6 +58,7 @@ public class ExamService {
         examRepository.deleteById(id);
         return oldExamDTO;
     }
+
     public List<ExamResponse> getAllExams() {
         List<Exam> allExams = examRepository.findAll();
         List<ExamResponse> examDTOS = new ArrayList<>();
@@ -78,7 +81,6 @@ public class ExamService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No exam with id: " + id + " found!"));
         return exam;
     }
-
 
 
     public ExamResponse addQuestionsByIdsToExam(Long examId, List<Long> questionIds) {
@@ -108,7 +110,7 @@ public class ExamService {
 
     private ExamResponse toDTO(Exam exam) {
 
-        GradingCriteriaDTO gradingCriteriaDTO = new  GradingCriteriaDTO(0,0);
+        GradingCriteriaDTO gradingCriteriaDTO = new GradingCriteriaDTO(0, 0);
         if (exam.getGradingCriteria() != null) {
             gradingCriteriaDTO = new GradingCriteriaDTO(
                     exam.getGradingCriteria().getOpenQuestionWeight(),
@@ -131,20 +133,20 @@ public class ExamService {
             );
         }
 
-       
-      return new ExamResponse(exam);
+
+        return new ExamResponse(exam);
     }
 
     private List<QuestionResponse> getQuestionResponses(List<QuestionEntity> questions) {
         List<QuestionResponse> responses = new ArrayList<>();
 
-        for (QuestionEntity question : questions){
-            if (question.getClass().equals(MultipleChoiceQuestion.class)){
-                MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion)question;
+        for (QuestionEntity question : questions) {
+            if (question.getClass().equals(MultipleChoiceQuestion.class)) {
+                MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion) question;
 
                 responses.add(new MultipleChoiceQuestionResponse(mcQuestion));
             } else {
-                OpenQuestion openQuestion = (OpenQuestion)question;
+                OpenQuestion openQuestion = (OpenQuestion) question;
 
                 responses.add(new OpenQuestionResponse(openQuestion));
             }
@@ -168,5 +170,13 @@ public class ExamService {
                         submission.getGrading()
                 ))
                 .collect(Collectors.toList());
+    }
+
+    public Submission getSubmissionByExamAndStudentId(Long examId, Long studentId){
+        Exam exam = getExam(examId);
+        return exam.getSubmissions().stream()
+                .filter(submission -> submission.getExamSession().getStudent().getId().equals(studentId))
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Submission not found for the given student and exam"));
     }
 }

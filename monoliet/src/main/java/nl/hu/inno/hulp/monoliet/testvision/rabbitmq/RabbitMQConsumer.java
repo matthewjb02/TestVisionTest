@@ -30,7 +30,7 @@ public class RabbitMQConsumer {
         LOGGER.info("Message received: {}", string);
     }
 
-//    @RabbitListener(queues = "${rabbit.grading.queue.name}")
+//    @RabbitListener(queues = "${rabbit.grading..name}")
 //    public ExamResponse consumeExamById(Long examId) {
 //        LOGGER.info("Received request for exam by examId: {}", examId);
 //

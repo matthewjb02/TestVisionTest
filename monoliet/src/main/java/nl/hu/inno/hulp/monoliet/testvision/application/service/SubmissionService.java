@@ -4,6 +4,9 @@ import jakarta.transaction.Transactional;
 import nl.hu.inno.hulp.monoliet.testvision.data.SubmissionRepository;
 import nl.hu.inno.hulp.monoliet.testvision.domain.Course;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
+import nl.hu.inno.hulp.monoliet.testvision.domain.examination.ExamSession;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Grading;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
@@ -60,9 +63,23 @@ public class SubmissionService {
 
 
     public void updateOpenQuestionGrading(Long examId, Long studentId, int questionNr, UpdateQuestionGradingRequest request) {
+
         Exam exam = findExamById(examId);
         Submission submission = findSubmissionByExamAndStudentId(exam, studentId);
-        submission.updateGradingForQuestion(questionNr, request.getGivenPoints(), request.getFeedback());
+
+        ExamSession examSession = submission.getExamSession();
+        QuestionEntity question = examSession.seeQuestion(questionNr);
+        if (question != null) {
+            if (request.getGivenPoints() > question.getPoints() || request.getGivenPoints() < 0) {
+                throw new IllegalArgumentException("Given points must be between 0 and the maximum points of the question");
+            }
+            question.addGivenPoints(request.getGivenPoints());
+
+            if (question.getClass().equals(OpenQuestion.class)) {
+                OpenQuestion openQuestion = (OpenQuestion) question;
+                openQuestion.addTeacherFeedback(request.getFeedback());
+            }
+        }
         submissionRepository.save(submission);
     }
 
@@ -78,7 +95,7 @@ public class SubmissionService {
         }
 
 
-        Grading grading = Grading.createGrading(submission.calculateGrade(), request.getComments());
+        Grading grading = Grading.createGrading(submission.getExamSession().getExam().calculateGrade(), request.getComments());
         grading.addGrader(teacher);
         submission.addGrading(grading);
 
