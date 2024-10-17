@@ -13,8 +13,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
-    @Value("${rabbit.queue.name}")
-    private String queueName;
+    @Value("${rabbit.demo.queue}")
+    private String demoQueue;
 
     @Value("${rabbit.exchange.name}")
     private String exchangeName;
@@ -23,8 +23,8 @@ public class RabbitMQConfig {
     private String routingKey;
 
     @Bean
-    public Queue queue() {
-        return new Queue(queueName);
+    public Queue demoQueue() {
+        return new Queue(demoQueue);
     }
 
     @Bean
@@ -33,8 +33,8 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Binding binding(Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(routingKey);
+    public Binding binding(Queue demoQueue, TopicExchange exchange) {
+        return BindingBuilder.bind(demoQueue).to(exchange).with(routingKey);
     }
 
     @Bean
