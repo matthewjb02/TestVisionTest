@@ -15,6 +15,7 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Statistics;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.UpdateQuestionGradingRequest;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -159,24 +160,42 @@ public class ExamService {
         examRepository.save(exam);
     }
 
-    public List<SubmissionResponse> getSubmissionsByExamId(Long examId) {
 
-        Exam exam = getExam(examId);
-        return exam.getSubmissions().stream()
-                .map(submission -> new SubmissionResponse(
-                        submission.getExamSession(),
-                        submission.getId(),
-                        submission.getStatus(),
-                        submission.getGrading()
-                ))
-                .collect(Collectors.toList());
-    }
+    // messaging
 
-    public Submission getSubmissionByExamAndStudentId(Long examId, Long studentId){
+    public nl.hu.inno.hulp.commons.messaging.SubmissionDTO getSubmissionByExamAndStudentId(Long examId, Long studentId){
         Exam exam = getExam(examId);
-        return exam.getSubmissions().stream()
+        Submission sub = exam.getSubmissions().stream()
                 .filter(submission -> submission.getExamSession().getStudent().getId().equals(studentId))
                 .findFirst()
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Submission not found for the given student and exam"));
+
+        return new nl.hu.inno.hulp.commons.messaging.SubmissionDTO(sub.getId());
     }
+
+    public List<nl.hu.inno.hulp.commons.messaging.SubmissionDTO> getSubmissionsByExamId(Long examId) {
+
+        Exam exam = getExam(examId);
+        List<Submission> submissions = exam.getSubmissions();
+        List<nl.hu.inno.hulp.commons.messaging.SubmissionDTO> submissionDTOS = new ArrayList<>();
+        for (Submission submission : submissions) {
+            submissionDTOS.add(new nl.hu.inno.hulp.commons.messaging.SubmissionDTO(submission.getId()));
+        }
+
+        return submissionDTOS;
+    }
+
+    public double calculateGrade(Long examId) {
+        Exam exam = getExam(examId);
+        return exam.calculateGrade();
+
+    }
+
+    public void updateStatistics(Long examId) {
+        Exam exam = getExam(examId);
+        exam.updateStatistics();
+        this.saveExam(exam);
+    }
+
+
 }

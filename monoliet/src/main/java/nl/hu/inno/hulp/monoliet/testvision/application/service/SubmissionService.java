@@ -38,10 +38,6 @@ public class SubmissionService {
         this.courseService = courseService;
     }
 
-    private Exam findExamById(Long examId) {
-        return examService.getExam(examId);
-    }
-
     private Submission findSubmissionByExamAndStudentId(Exam exam, Long studentId) {
         return exam.getSubmissions().stream()
                 .filter(submission -> submission.getExamSession().getStudent().getId().equals(studentId))
@@ -50,7 +46,7 @@ public class SubmissionService {
     }
 
     public List<SubmissionResponse> getSubmissionsByExamId(Long examId) {
-        Exam exam = findExamById(examId);
+        Exam exam = examService.getExam(examId);
         return exam.getSubmissions().stream()
                 .map(submission -> new SubmissionResponse(
                         submission.getExamSession(),
@@ -64,7 +60,7 @@ public class SubmissionService {
 
     public void updateOpenQuestionGrading(Long examId, Long studentId, int questionNr, UpdateQuestionGradingRequest request) {
 
-        Exam exam = findExamById(examId);
+        Exam exam = examService.getExam(examId);
         Submission submission = findSubmissionByExamAndStudentId(exam, studentId);
 
         ExamSession examSession = submission.getExamSession();
@@ -84,7 +80,7 @@ public class SubmissionService {
     }
 
     public void addGrading(Long examId, Long studentId, GradingRequest request) {
-        Exam exam = findExamById(examId);
+        Exam exam = examService.getExam(examId);
         Submission submission = findSubmissionByExamAndStudentId(exam, studentId);
         Teacher teacher = teacherService.getTeacherById(request.getTeacherId());
 

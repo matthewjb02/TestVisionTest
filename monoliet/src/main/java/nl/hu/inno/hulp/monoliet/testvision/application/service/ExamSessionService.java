@@ -8,13 +8,13 @@ import nl.hu.inno.hulp.monoliet.testvision.domain.exception.ExamSessionNotStored
 import nl.hu.inno.hulp.monoliet.testvision.domain.exception.ExaminationInactiveException;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exception.NoExamSessionFoundException;
 import nl.hu.inno.hulp.monoliet.testvision.domain.exception.NotAllowedException;
+import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.Question;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
 import nl.hu.inno.hulp.monoliet.testvision.domain.submission.Submission;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.AnswerRequest;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.ExamSessionRequest;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.SeeQuestion;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.StartExamSession;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.*;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.ExamResponse;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.ExamSessionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -96,4 +96,24 @@ public class ExamSessionService {
         return examSessionRepository.findById(id)
                 .orElseThrow(() -> new NoExamSessionFoundException("No exam session with id: " + id + " found!"));
     }
+
+    public void updatePointsOpenQuestion(Long id, int questionNr, UpdateQuestionGradingRequest request) {
+
+        ExamSession examSession = getExamSessionById(id);
+
+        QuestionEntity question = examSession.seeQuestion(questionNr);
+        if (question != null) {
+            if (request.getGivenPoints() > question.getPoints() || request.getGivenPoints() < 0) {
+                throw new IllegalArgumentException("Given points must be between 0 and the maximum points of the question");
+            }
+            question.addGivenPoints(request.getGivenPoints());
+
+            if (question.getClass().equals(OpenQuestion.class)) {
+                OpenQuestion openQuestion = (OpenQuestion) question;
+                openQuestion.addTeacherFeedback(request.getFeedback());
+            }
+        }
+
+    }
+
 }
