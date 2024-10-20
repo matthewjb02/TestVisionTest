@@ -38,38 +38,37 @@ public class RabbitMQConsumer {
 
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(RabbitMQConsumer.class);
 
-//    @RabbitListener(queues = "${rabbit.grading.demo.queue}")
-//    public void consumeMessage(String string) {
-//        LOGGER.info("Message received: {}", string);
-//    }
-//
-//    @RabbitListener(queues = "${rabbit.grading.queue.name}")
-//    public List<SubmissionDTO> consumeSubmissionsByExamId(Long examId) {
-//        LOGGER.info("Received request for submissions by examId: {}", examId);
-//
-//        return examService.getSubmissionsByExamId(examId);
-//    }
-//
-//
-//    @RabbitListener(queues = "${rabbit.grading.queue.name}")
-//    public SubmissionDTO consumeSubmissionByExamAndStudentId(SubmissionRequest request) {
-//        LOGGER.info("Received request for submission by examId: {} and studentId: {}", request.getExamId(), request.getStudentId());
-//        return examService.getSubmissionByExamAndStudentId(request.getExamId(), request.getStudentId());
-//
-//
-//    }
-//
-//    @RabbitListener(queues = "${rabbit.grading.queue.name}")
-//    public void consumeUpdateOpenQuestionPoints(long examSessionId, int questionNr, UpdateQuestionGradingRequest request) {
-//        LOGGER.info("Received request for updating openQuestion points by submissionId: {} and openQuestionId: {}", examSessionId, questionNr, request);
-//        examSessionService.updatePointsOpenQuestion(examSessionId, questionNr, request);
-//    }
-//
-//    @RabbitListener(queues = "${rabbit.grading.queue.name}")
-//    public void consumeUpdateStatisticsForExam(long examId) {
-//        LOGGER.info("Received request for updating statistics for exam: {}", examId);
-//        examService.updateStatistics(examId);
-//    }
+    @RabbitListener(queues = "${rabbit.grading.demo.queue}")
+    public void consumeMessage(String string) {
+        LOGGER.info("Message received: {}", string);
+    }
+
+    @RabbitListener(queues = "${rabbit.grading.exam.queue}")
+    public SubmissionDTO consumeSubmissionByExamAndStudentId(SubmissionRequest request) {
+        LOGGER.info("Received request for submission by examId: {} and studentId: {}", request.getExamId(), request.getStudentId());
+        return examService.getSubmissionByExamAndStudentId(request.getExamId(), request.getStudentId());
+
+
+    }
+
+    @RabbitListener(queues = "${rabbit.grading.exam.queue}")
+    public List<SubmissionDTO> consumeSubmissionsByExamId(Long examId) {
+        LOGGER.info("Received request for submissions by examId: {}", examId);
+
+        return examService.getSubmissionsByExamId(examId);
+    }
+
+    @RabbitListener(queues = "${rabbit.grading.examsession.name}")
+    public void consumeUpdateOpenQuestionPoints(long examSessionId, int questionNr, UpdateQuestionGradingRequest request) {
+        LOGGER.info("Received request for updating openQuestion points by submissionId: {} and openQuestionId: {}", examSessionId, questionNr, request);
+        examSessionService.updatePointsOpenQuestion(examSessionId, questionNr, request);
+    }
+
+    @RabbitListener(queues = "${rabbit.grading.exam.queue}")
+    public void consumeUpdateStatisticsForExam(long examId) {
+        LOGGER.info("Received request for updating statistics for exam: {}", examId);
+        examService.updateStatistics(examId);
+    }
 
 
 }

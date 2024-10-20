@@ -2,8 +2,11 @@ package nl.hu.inno.hulp.grading.rabbitmq;
 
 
 
+import nl.hu.inno.hulp.commons.response.StudentResponse;
+import nl.hu.inno.hulp.commons.response.TeacherResponse;
 import org.slf4j.Logger;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -17,5 +20,6 @@ public class RabbitMQConsumer {
     public void consumeNoteMessage(String string) {
         LOGGER.info("Message received: {}", string);
     }
+
 
 }

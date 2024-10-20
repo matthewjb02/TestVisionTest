@@ -18,7 +18,7 @@ public class Grading {
     private String comments;
 
     @Transient
-    private TeacherDTO grader;
+    private Long graderId;
 
     public Grading(double grade, String comments) {
         this.grade = grade;
@@ -31,8 +31,8 @@ public class Grading {
         return new Grading(grade, comments);
     }
 
-    public void addGrader(TeacherDTO grader) {
-        this.grader = grader;
+    public void addGrader(Long grader) {
+        this.graderId = grader;
 
     }
 
