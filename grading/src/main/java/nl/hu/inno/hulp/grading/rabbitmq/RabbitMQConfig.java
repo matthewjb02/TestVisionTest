@@ -25,6 +25,9 @@ public class RabbitMQConfig {
     @Value("${rabbit.exam.queue}")
     private String examQueue;
 
+    @Value("${rabbit.examsession.queue}")
+    private String examSessionQueue;
+
     @Bean
     public Queue demoQueue() {
         return new Queue(demoQueue);
@@ -34,6 +37,12 @@ public class RabbitMQConfig {
     public Queue examQueue() {
         return new Queue(examQueue);
     }
+
+    @Bean
+    public Queue examSessionQueue() {
+        return new Queue(examSessionQueue);
+    }
+
 
     @Bean
     public TopicExchange exchange() {
@@ -47,8 +56,14 @@ public class RabbitMQConfig {
 
     @Bean
     public Binding examBinding(Queue examQueue, TopicExchange exchange) {
-        return BindingBuilder.bind(examQueue).to(exchange).with("exam");
+        return BindingBuilder.bind(examQueue).to(exchange).with(routingKey);
     }
+
+    @Bean
+    public Binding examSessionBinding(Queue examSessionQueue, TopicExchange exchange) {
+        return BindingBuilder.bind(examSessionQueue).to(exchange).with(routingKey);
+    }
+
 
     @Bean
     public MessageConverter converter() {

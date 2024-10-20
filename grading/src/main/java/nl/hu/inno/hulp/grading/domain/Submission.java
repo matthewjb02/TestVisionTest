@@ -19,7 +19,7 @@ public class Submission {
     private ExamSessionDTO examSession;
 
     @Transient
-    private GradingDTO grading;
+    private Grading grading;
 
     @Enumerated(EnumType.STRING)
     private SubmissionStatus status;
@@ -36,15 +36,8 @@ public class Submission {
         return new Submission(examSession);
     }
 
-//    public void updateGradingForQuestion(int questionNr, int givenPoints, String feedback) {
-//        examSession.getExam().updateGradingForQuestion(this.examSession, questionNr, givenPoints, feedback);
-//    }
-//
-//    public double calculateGrade() {
-//        return examSession.getExam().calculateGrade();
-//    }
 
-    public void addGrading(GradingDTO grading) {
+    public void addGrading(Grading grading) {
         this.grading = grading;
         this.status = SubmissionStatus.GRADED;
     }

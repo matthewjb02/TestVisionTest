@@ -1,24 +1,18 @@
 package nl.hu.inno.hulp.monoliet.testvision.application.service;
 
-import nl.hu.inno.hulp.monoliet.testvision.application.dto.*;
+import nl.hu.inno.hulp.commons.messaging.CourseDTO;
+import nl.hu.inno.hulp.commons.messaging.TeacherDTO;
+import nl.hu.inno.hulp.monoliet.testvision.data.CourseRepository;
 import nl.hu.inno.hulp.monoliet.testvision.data.ExamRepository;
 import nl.hu.inno.hulp.monoliet.testvision.data.QuestionRepository;
-import nl.hu.inno.hulp.monoliet.testvision.data.TeacherRepository;
 import nl.hu.inno.hulp.monoliet.testvision.domain.Course;
-import nl.hu.inno.hulp.monoliet.testvision.data.CourseRepository;
+import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.MultipleChoiceQuestion;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.OpenQuestion;
-import nl.hu.inno.hulp.monoliet.testvision.domain.exam.Exam;
 import nl.hu.inno.hulp.monoliet.testvision.domain.question.QuestionEntity;
 import nl.hu.inno.hulp.monoliet.testvision.domain.user.Teacher;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.QuestionRequest;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.ExamResponse;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.MultipleChoiceQuestionResponse;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.OpenQuestionResponse;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.QuestionResponse;
 import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request.CourseRequest;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.CourseResponse;
-import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.TeacherResponse;
+import nl.hu.inno.hulp.monoliet.testvision.presentation.dto.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -26,7 +20,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CourseService {
@@ -182,6 +175,20 @@ public class CourseService {
 
     public Course findCourseByExamId(Long examId) {
         return courseRepository.findByApprovedExamsId(examId);
+    }
+
+    // Messaging
+    public CourseDTO mFindCourseByExamId(Long examId) {
+        Course course = courseRepository.findByApprovedExamsId(examId);
+        List<TeacherDTO> teacherDTOs = new ArrayList<>();
+
+        for (Teacher teacher : course.getTeachers()) {
+            teacherDTOs.add(new TeacherDTO(teacher.getId()));
+        }
+
+        return new CourseDTO(course.getId(), teacherDTOs);
+
+
     }
 
 }

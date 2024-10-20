@@ -1,16 +1,11 @@
 package nl.hu.inno.hulp.commons.request;
 
+import lombok.Data;
+
+@Data
 public class UpdateQuestionGradingRequest {
-    private int givenPoints;
-    private String feedback;
+    public  int givenPoints;
+    public String feedback;
 
-    public int getGivenPoints() {
-        return givenPoints;
-    }
-
-
-    public String getFeedback() {
-        return feedback;
-    }
 
 }

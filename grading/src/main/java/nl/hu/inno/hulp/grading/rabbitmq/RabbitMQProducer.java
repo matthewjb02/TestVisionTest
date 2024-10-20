@@ -1,14 +1,17 @@
 package nl.hu.inno.hulp.grading.rabbitmq;
 
-import nl.hu.inno.hulp.commons.messaging.ExamDTO;
-import nl.hu.inno.hulp.commons.response.ExamResponse;
+import nl.hu.inno.hulp.commons.messaging.CourseDTO;
+import nl.hu.inno.hulp.commons.messaging.SubmissionDTO;
+import nl.hu.inno.hulp.commons.request.SubmissionRequest;
+import nl.hu.inno.hulp.commons.request.UpdateOpenQuestionPoints;
+import nl.hu.inno.hulp.commons.request.UpdateQuestionGradingRequest;
+import nl.hu.inno.hulp.commons.response.CourseResponse;
 import nl.hu.inno.hulp.commons.response.SubmissionResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -38,15 +41,32 @@ public class RabbitMQProducer {
         rabbitTemplate.convertAndSend(exchangeName, routingKey, string);
     }
 
-    public ExamResponse requestExamById(Long examId) {
-        LOGGER.info("Sending request for getting exam by examId: {}", examId);
-        return (ExamResponse) rabbitTemplate.convertSendAndReceive(exchangeName, routingKey, examId);
+    public SubmissionDTO requestSubmissionByExamAndStudentId(Long examId, Long studentId) {
+        LOGGER.info("Sending request for getting submission by examId: {} and studentId: {}", examId, studentId);
+        SubmissionRequest request = new SubmissionRequest(examId, studentId);
+        return (SubmissionDTO) rabbitTemplate.convertSendAndReceive(exchangeName, routingKey, request);
     }
-
-    public List<SubmissionResponse> requestSubmissionsByExamId(Long examId) {
+    public List<SubmissionDTO> requestSubmissionsByExamId(Long examId) {
         LOGGER.info("Sending request for getting submissions by examId: {}", examId);
-        return (List<SubmissionResponse>) rabbitTemplate.convertSendAndReceive(exchangeName, routingKey, examId);
+        return (List<SubmissionDTO>) rabbitTemplate.convertSendAndReceive(exchangeName, routingKey, examId);
     }
 
 
+    public void requestUpdateQuestionPoints(Long examId, int questionNr, UpdateQuestionGradingRequest request) {
+        LOGGER.info("Sending request for updating question points by examId: {} and questionNr: {}", examId, questionNr, request);
+        UpdateOpenQuestionPoints updateOpenQuestionPointsRequest = new UpdateOpenQuestionPoints(examId, questionNr, request);
+        rabbitTemplate.convertAndSend(exchangeName, routingKey, updateOpenQuestionPointsRequest);
+    }
+
+
+    public CourseDTO requestCourseByExamId(Long examId) {
+        LOGGER.info("Sending request for getting course by examId: {}", examId);
+        return (CourseDTO) rabbitTemplate.convertSendAndReceive(exchangeName, routingKey, examId);
+    }
+
+
+    public void requestUpdateStatistics(Long exam) {
+        LOGGER.info("Sending request for updating statistics by examId: {}", exam);
+        rabbitTemplate.convertAndSend(exchangeName, routingKey, exam);
+    }
 }
