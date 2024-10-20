@@ -34,7 +34,7 @@ Na opstarten kun je alvast kijken op
 ### Hello World Messaging
 
 Als eerste heb ik deze vorm van messaging toegepast tussen de `grading` en `monoliet` module, omdat andere teamleden nog
-niet klaar waren met hun messaging-gedeelte van hun module en ik moest testen of mijn messaging werkt. Voor beide
+niet helemaal klaar waren met hun messaging-gedeelte. Voor beide
 modules is er een RabbitMQ-package aangemaakt, waarin de benodigde bestanden staan (`config`, `consumer`, `producer`).
 De `grading` module is verantwoordelijk voor het sturen en ontvangen van berichten.
 Door gebruik te maken van verschillende queues met routing keys en een exchange, zoals geconfigureerd in
@@ -48,6 +48,9 @@ API's gemaakt via de `RabbitController`.
     - `http://localhost:8080/monoliet/publish?message=hello_world`
 
 Hiermee stuur je berichten tussen de `monoliet` en `grading` module.
+
+### Uitgaande messaging van `grading` naar `monoliet`
+Als tweede heb ik geprobeerd de  `SubmissionService` om te bouwen zodat alles met Messaging gebeurt via produceers en consumers. Dit heb ik voor nu gedaan door uitgaande berichten naar de `monoliet` te versturen, omdat andere teamleden nog niet helemaal klaar waren met hun messaging-gedeelte. 
 
 ## README Pasquinel
 
