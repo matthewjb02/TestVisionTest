@@ -15,7 +15,7 @@ public class ExamProducer {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public void sendExam(String examResponse){
+    public void sendExam(ExamResponse examResponse){
         rabbitTemplate.convertAndSend(ExamConfig.QUEUE_NAME, examResponse);
     }
 }

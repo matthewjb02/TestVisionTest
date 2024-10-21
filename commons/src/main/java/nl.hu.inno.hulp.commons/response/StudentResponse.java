@@ -1,6 +1,8 @@
 package nl.hu.inno.hulp.commons.response;
 
-public class StudentResponse {
+import java.io.Serializable;
+
+public class StudentResponse implements Serializable {
     private final Long id;
     private String firstName;
     private String lastName;

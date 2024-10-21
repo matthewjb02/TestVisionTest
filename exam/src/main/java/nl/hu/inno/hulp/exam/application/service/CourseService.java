@@ -230,7 +230,7 @@ public class CourseService {
     }
 
     public TeacherResponse getTeacherById(Long id) {
-        String url = "http://localhost:8080/teacher/" + id;
+        String url = "http://localhost:8081/teacher/" + id;
 
         ResponseEntity<TeacherResponse> response = restTemplate.exchange(
                 url,

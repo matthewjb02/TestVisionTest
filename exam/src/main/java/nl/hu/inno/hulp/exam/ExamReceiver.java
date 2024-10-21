@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class ExamReceiver {
 
     @RabbitListener(queues = ExamConfig.QUEUE_NAME)
-    public void receiveMessage(String examResponse){
-        System.out.println(examResponse);
+    public void receiveMessage(ExamResponse examResponse){
+        System.out.println(examResponse.getQuestions().get(1).getQuestion());
     }
 }
