@@ -2,8 +2,10 @@ package nl.hu.inno.hulp.commons.response;
 
 import lombok.Getter;
 
+import java.io.Serializable;
+
 @Getter
-public class GradingResponse {
+public class GradingResponse implements Serializable {
     private Long id;
     private double grade;
     private String comments;

@@ -1,6 +1,7 @@
 package nl.hu.inno.hulp.exam.application.service;
 
 import nl.hu.inno.hulp.commons.dto.GradingCriteriaDTO;
+import nl.hu.inno.hulp.commons.enums.ExamState;
 import nl.hu.inno.hulp.exam.ExamProducer;
 import nl.hu.inno.hulp.commons.response.*;
 import nl.hu.inno.hulp.exam.data.ExamRepository;
@@ -73,7 +74,7 @@ public class ExamService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No exam with id: " + id + " found!"));
 
         ExamResponse response = toExamResponse(exam);
-        examProducer.sendExam(response.getQuestions().get(1).getQuestion());
+        examProducer.sendExam(response);
         return response;
     }
 
@@ -122,7 +123,6 @@ public class ExamService {
                 .map(submissionId -> getSubmissionById(submissionId))
                 .collect(Collectors.toList());
 
-
         StatisticsResponse statisticsResponse = new StatisticsResponse(0, 0, 0, 0);
         if (exam.getStatistics() != null) {
             statisticsResponse = new StatisticsResponse(exam.getStatistics().getSubmissionCount(),
@@ -158,7 +158,7 @@ public class ExamService {
     }
 
     public SubmissionResponse getSubmissionById(Long id) {
-        String url = "http://localhost:8080/submission/" + id;
+        String url = "http://localhost:8084/submission/" + id;
 
         ResponseEntity<SubmissionResponse> response = restTemplate.exchange(
                 url,
