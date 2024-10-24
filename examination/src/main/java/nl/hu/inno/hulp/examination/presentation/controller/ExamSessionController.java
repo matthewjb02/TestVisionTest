@@ -73,4 +73,13 @@ public class ExamSessionController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
+
+    @GetMapping("/{id}")
+    public ExamSessionResponse getExamSession(@PathVariable Long id) {
+        try {
+            return examSessionService.getExamSessionResponse(id);
+        } catch (NoExamSessionFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+}
 }

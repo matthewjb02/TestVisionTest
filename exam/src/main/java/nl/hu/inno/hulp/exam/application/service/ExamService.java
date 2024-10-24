@@ -1,7 +1,6 @@
 package nl.hu.inno.hulp.exam.application.service;
 
 import nl.hu.inno.hulp.commons.dto.GradingCriteriaDTO;
-import nl.hu.inno.hulp.commons.enums.ExamState;
 import nl.hu.inno.hulp.exam.ExamProducer;
 import nl.hu.inno.hulp.commons.response.*;
 import nl.hu.inno.hulp.exam.data.ExamRepository;
@@ -13,10 +12,7 @@ import nl.hu.inno.hulp.exam.domain.question.MultipleChoiceQuestion;
 import nl.hu.inno.hulp.exam.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.exam.domain.question.QuestionEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
@@ -79,9 +75,8 @@ public class ExamService {
     }
 
     public Exam getExam(Long id) {
-        Exam exam = examRepository.findById(id)
+        return examRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No exam with id: " + id + " found!"));
-        return exam;
     }
 
     public ExamResponse addQuestionsByIdsToExam(Long examId, List<Long> questionIds) {
@@ -120,7 +115,7 @@ public class ExamService {
         }
 
         List<SubmissionResponse> submissionResponses = exam.getSubmissionIds().stream()
-                .map(submissionId -> getSubmissionById(submissionId))
+                .map(this::getSubmissionById)
                 .collect(Collectors.toList());
 
         StatisticsResponse statisticsResponse = new StatisticsResponse(0, 0, 0, 0);
@@ -157,15 +152,39 @@ public class ExamService {
         return responses;
     }
 
+
     public SubmissionResponse getSubmissionById(Long id) {
         String url = "http://localhost:8084/submission/" + id;
+        return restTemplate.getForObject(url, SubmissionResponse.class);
+    }
 
-        ResponseEntity<SubmissionResponse> response = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<>() {});
 
-        return response.getBody();
+    // rpc
+
+    public SubmissionResponse getSubmissionByExamAndStudentId(Long examId, Long studentId){
+        Exam exam = getExam(examId);
+        SubmissionResponse submissionResponse = exam.getSubmissionIds().stream()
+                .map(submissionId -> getSubmissionById(submissionId))
+                .filter(submission -> submission.getStudent().getId().equals(studentId))
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No submission found for exam with id: " + examId + " and student with id: " + studentId));
+
+
+
+        return submissionResponse;
+
+
+
+    }
+
+    public List<SubmissionResponse> getSubmissionsByExamId(Long examId) {
+
+        Exam exam = getExam(examId);
+        List<SubmissionResponse> submissionResponses = exam.getSubmissionIds().stream()
+                .map(submissionId -> getSubmissionById(submissionId))
+                .collect(Collectors.toList());
+
+        return submissionResponses;
+
     }
 }

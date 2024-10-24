@@ -28,21 +28,25 @@ public class SubmissionController {
     }
 
     @GetMapping("/{testId}")
-    public List<Submission> getSubmissionsByTestId(@PathVariable Long testId) {
+    public List<SubmissionResponse> getSubmissionsByTestId(@PathVariable Long testId) {
         return submissionService.getSubmissionsByExamId(testId);
     }
 
-
-    @PutMapping("/{testId}/{studentId}/question/{questionNr}")
-    public void updateQuestionGrading(@PathVariable Long testId, @PathVariable Long studentId, @PathVariable int questionNr, @RequestBody UpdateQuestionGradingRequest request) {
-
-        submissionService.updateOpenQuestionGrading(testId, studentId, questionNr, request);
+    @GetMapping("/{id}")
+    public SubmissionResponse getSubmissionById(@PathVariable Long id) {
+        return submissionService.getSubmissionResponseById(id);
     }
 
-    @PostMapping("/{testId}/{studentId}/grading")
-    public void addGrading(@PathVariable Long testId, @PathVariable Long studentId, @RequestBody GradingRequest request) {
-        submissionService.addGrading(testId, studentId, request);
-    }
+//    @PutMapping("/{testId}/{studentId}/question/{questionNr}")
+//    public void updateQuestionGrading(@PathVariable Long testId, @PathVariable Long studentId, @PathVariable int questionNr, @RequestBody UpdateQuestionGradingRequest request) {
+//
+//        submissionService.updateOpenQuestionGrading(testId, studentId, questionNr, request);
+//    }
+//
+//    @PostMapping("/{testId}/{studentId}/grading")
+//    public void addGrading(@PathVariable Long testId, @PathVariable Long studentId, @RequestBody GradingRequest request) {
+//        submissionService.addGrading(testId, studentId, request);
+//    }
 
 
 

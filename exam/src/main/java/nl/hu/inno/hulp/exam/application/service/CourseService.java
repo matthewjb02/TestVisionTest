@@ -180,7 +180,7 @@ public class CourseService {
         }
 
         List<SubmissionResponse> submissionResponses = exam.getSubmissionIds().stream()
-                .map(submissionId -> getSubmissionById(submissionId))
+                .map(this::getSubmissionById)
                 .collect(Collectors.toList());
 
 
