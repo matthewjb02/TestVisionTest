@@ -41,27 +41,16 @@ public class RabbitMQProducer {
         rabbitTemplate.convertAndSend(exchangeName, routingKey, string);
     }
 
-    public SubmissionDTO requestSubmissionByExamAndStudentId(Long examId, Long studentId) {
+    public void requestSubmissionByExamAndStudentId(Long examId, Long studentId) {
         LOGGER.info("Sending request for getting submission by examId: {} and studentId: {}", examId, studentId);
         SubmissionRequest request = new SubmissionRequest(examId, studentId);
-        return (SubmissionDTO) rabbitTemplate.convertSendAndReceive(exchangeName, routingKey, request);
+        rabbitTemplate.convertAndSend(exchangeName, routingKey, request);
     }
-    public List<SubmissionDTO> requestSubmissionsByExamId(Long examId) {
-        LOGGER.info("Sending request for getting submissions by examId: {}", examId);
-        return (List<SubmissionDTO>) rabbitTemplate.convertSendAndReceive(exchangeName, routingKey, examId);
-    }
-
 
     public void requestUpdateQuestionPoints(Long examId, int questionNr, UpdateQuestionGradingRequest request) {
         LOGGER.info("Sending request for updating question points by examId: {} and questionNr: {}", examId, questionNr, request);
         UpdateOpenQuestionPoints updateOpenQuestionPointsRequest = new UpdateOpenQuestionPoints(examId, questionNr, request);
         rabbitTemplate.convertAndSend(exchangeName, routingKey, updateOpenQuestionPointsRequest);
-    }
-
-
-    public CourseDTO requestCourseByExamId(Long examId) {
-        LOGGER.info("Sending request for getting course by examId: {}", examId);
-        return (CourseDTO) rabbitTemplate.convertSendAndReceive(exchangeName, routingKey, examId);
     }
 
 

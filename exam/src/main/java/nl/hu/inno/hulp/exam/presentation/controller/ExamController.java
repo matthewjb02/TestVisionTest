@@ -2,6 +2,7 @@ package nl.hu.inno.hulp.exam.presentation.controller;
 
 import nl.hu.inno.hulp.commons.dto.GradingCriteriaDTO;
 import nl.hu.inno.hulp.commons.response.ExamResponse;
+import nl.hu.inno.hulp.commons.response.SubmissionResponse;
 import nl.hu.inno.hulp.exam.application.service.ExamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -48,4 +49,16 @@ public class ExamController {
     public ExamResponse addGradingCriteriaToExam(@PathVariable Long examId, @RequestBody GradingCriteriaDTO gradingCriteriaDTO) {
         return examService.addGradingCriteriaToExam(examId, gradingCriteriaDTO);
     }
+
+    // rpc
+    @GetMapping("{examId}/students/{studentId}/submission")
+    public SubmissionResponse getSubmissionByExamAndStudentId(@PathVariable Long examId, @PathVariable Long studentId) {
+        return examService.getSubmissionByExamAndStudentId(examId, studentId);
+    }
+
+    @GetMapping("{examId}/submissions")
+    public List<SubmissionResponse> getSubmissionsByExamId(@PathVariable Long examId) {
+        return examService.getSubmissionsByExamId(examId);
+    }
+
 }
