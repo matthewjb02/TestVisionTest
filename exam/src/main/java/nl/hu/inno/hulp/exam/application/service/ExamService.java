@@ -1,8 +1,9 @@
 package nl.hu.inno.hulp.exam.application.service;
 
 import nl.hu.inno.hulp.commons.dto.GradingCriteriaDTO;
-import nl.hu.inno.hulp.exam.ExamProducer;
+import nl.hu.inno.hulp.commons.request.UpdateQuestionGradingRequest;
 import nl.hu.inno.hulp.commons.response.*;
+import nl.hu.inno.hulp.exam.ExamProducer;
 import nl.hu.inno.hulp.exam.data.ExamRepository;
 import nl.hu.inno.hulp.exam.data.QuestionRepository;
 import nl.hu.inno.hulp.exam.domain.Exam;
@@ -159,7 +160,7 @@ public class ExamService {
     }
 
 
-    // rpc
+    // used by other modules via rpc
 
     public SubmissionResponse getSubmissionByExamAndStudentId(Long examId, Long studentId){
         Exam exam = getExam(examId);
@@ -187,4 +188,41 @@ public class ExamService {
         return submissionResponses;
 
     }
+
+
+    public void updatePointsForOpenQuestion(Long examId, int questionNr, UpdateQuestionGradingRequest request) {
+        Exam exam = getExam(examId);
+        QuestionEntity question = exam.getQuestions().get(questionNr - 1);
+        if (question != null) {
+            if (request.getGivenPoints() > question.getPoints() || request.getGivenPoints() < 0) {
+                throw new IllegalArgumentException("Given points must be between 0 and the maximum points of the question");
+            }
+            question.addGivenPoints(request.getGivenPoints());
+
+            if (question.getClass().equals(OpenQuestion.class)) {
+                OpenQuestion openQuestion = (OpenQuestion) question;
+                openQuestion.addTeacherFeedback(request.getFeedback());
+            }
+        }
+    }
+
+    public double calculateGrade(Long examId) {
+        Exam exam = getExam(examId);
+        return exam.calculateGrade();
+
+    }
+
+    public void updateStatistics(Long examId) {
+        Exam exam = getExam(examId);
+        exam.updateStatistics();
+        this.saveExam(exam);
+    }
+
+
+// helper functions
+
+    public void saveExam(Exam exam) {
+        examRepository.save(exam);
+    }
+
 }

@@ -37,16 +37,16 @@ public class SubmissionController {
         return submissionService.getSubmissionResponseById(id);
     }
 
-//    @PutMapping("/{testId}/{studentId}/question/{questionNr}")
-//    public void updateQuestionGrading(@PathVariable Long testId, @PathVariable Long studentId, @PathVariable int questionNr, @RequestBody UpdateQuestionGradingRequest request) {
-//
-//        submissionService.updateOpenQuestionGrading(testId, studentId, questionNr, request);
-//    }
-//
-//    @PostMapping("/{testId}/{studentId}/grading")
-//    public void addGrading(@PathVariable Long testId, @PathVariable Long studentId, @RequestBody GradingRequest request) {
-//        submissionService.addGrading(testId, studentId, request);
-//    }
+    @PutMapping("/{testId}/{studentId}/question/{questionNr}")
+    public void updateQuestionGrading(@PathVariable Long examId, @PathVariable Long studentId, @PathVariable int questionNr, @RequestBody UpdateQuestionGradingRequest request) {
+
+        submissionService.updateOpenQuestionGrading(examId, studentId, questionNr, request);
+    }
+
+    @PostMapping("/{testId}/{studentId}/grading")
+    public void addGrading(@PathVariable Long testId, @PathVariable Long studentId, @RequestBody GradingRequest request) {
+        submissionService.addGrading(testId, studentId, request);
+    }
 
 
 
