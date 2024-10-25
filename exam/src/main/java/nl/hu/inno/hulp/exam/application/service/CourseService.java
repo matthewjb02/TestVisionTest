@@ -165,10 +165,6 @@ public class CourseService {
                 approvedExamResponses, rejectedExamResponses, validatingExamResponses);
     }
 
-    public Course findCourseByExamId(Long examId) {
-        return courseRepository.findByApprovedExamsId(examId);
-    }
-
     private ExamResponse getExamResponse(Exam exam) {
 
         GradingCriteriaDTO gradingCriteriaDTO = new  GradingCriteriaDTO(0,0);
@@ -239,5 +235,13 @@ public class CourseService {
                 new ParameterizedTypeReference<>() {});
 
         return response.getBody();
+    }
+
+    // rpc
+    public CourseResponse findCourseResponseByExamId(Long examId) {
+
+        Course course = courseRepository.findByApprovedExamsId(examId);
+        return getCourseResponse(course);
+
     }
 }

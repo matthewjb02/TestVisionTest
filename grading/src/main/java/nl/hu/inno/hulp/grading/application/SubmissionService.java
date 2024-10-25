@@ -2,14 +2,9 @@ package nl.hu.inno.hulp.grading.application;
 
 
 import jakarta.transaction.Transactional;
-import nl.hu.inno.hulp.commons.messaging.CourseDTO;
-import nl.hu.inno.hulp.commons.messaging.ExamSessionDTO;
-import nl.hu.inno.hulp.commons.messaging.SubmissionDTO;
 import nl.hu.inno.hulp.commons.request.GradingRequest;
-import nl.hu.inno.hulp.commons.response.ExamSessionResponse;
-import nl.hu.inno.hulp.commons.response.GradingResponse;
-import nl.hu.inno.hulp.commons.response.SubmissionResponse;
-import nl.hu.inno.hulp.commons.response.TeacherResponse;
+import nl.hu.inno.hulp.commons.request.UpdateQuestionGradingRequest;
+import nl.hu.inno.hulp.commons.response.*;
 import nl.hu.inno.hulp.grading.data.SubmissionRepository;
 import nl.hu.inno.hulp.grading.domain.Grading;
 import nl.hu.inno.hulp.grading.domain.Submission;
@@ -24,8 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Transactional
@@ -43,12 +39,11 @@ public class SubmissionService {
         this.submissionRepository = submissionRepository;
     }
 
-
     private Submission findSubmissionByExamAndStudentId(Long examId, Long studentId) {
-        String submissionUrl = "http://localhost:8086/exams/{examId}/students/{studentId}/submission";
-        SubmissionResponse submissionDto = restTemplate.getForObject(submissionUrl, SubmissionResponse.class, examId, studentId);
-        Long submissionId = submissionDto.getId();
-        return submissionRepository.findById(submissionDto.getId()).orElseThrow();
+        String submissionUrl = "http://localhost:8086/exams/" + examId + "/students/" + studentId + "/submission";
+        SubmissionResponse submissionResponse = restTemplate.getForObject(submissionUrl, SubmissionResponse.class, examId, studentId);
+        Long submissionId = submissionResponse.getId();
+        return submissionRepository.findById(submissionId).orElseThrow();
     }
 
     public SubmissionResponse getSubmissionResponseById(Long id) {
@@ -68,58 +63,62 @@ public class SubmissionService {
         return response.getBody();
     }
 
-//
-//    public void updateOpenQuestionGrading(Long examId, Long studentId, int questionNr, UpdateQuestionGradingRequest request) {
-//
-//
-//        Submission submission = findSubmissionByExamAndStudentId(examId, studentId);
-//        ExamSessionDTO examSession = submission.getExamSession();
-//
-//        // update submission examession quesiotn points with messaging
-//        LOGGER.info("Sending request for updating examSession question points: {}", examSession.getId());
-//        rabbitMQProducer.requestUpdateQuestionPoints(examSession.getId(), questionNr, request);
-//
-//
-//        submissionRepository.save(submission);
-//    }
-//
-//    public void addGrading(Long examId, Long studentId, GradingRequest request) {
-//        Submission submission = findSubmissionByExamAndStudentId(examId, studentId);
-//
-//        CourseDTO examCourse = rabbitMQProducer.requestCourseByExamId(examId);
-//        if (examCourse.getTeachers().stream().noneMatch(teacherDTO -> teacherDTO.getId().equals(request.getTeacherId()))) {
-//            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Teacher is not allowed to grade this exam");
-//        }
-//
-//        String teacherUrl = "http://localhost:8085/teacher/" + request.getTeacherId();
-//        TeacherResponse teacher = restTemplate.getForObject(teacherUrl, TeacherResponse.class);
-//
-//        Long exam = submission.getExamSession().getExam();
-//        String calculateGradeUrl = "http://localhost:8085/courses/{courseId}/exams/grade_calculation/" + exam;
-//        Double calculatedGrade = restTemplate.getForObject(calculateGradeUrl, Double.class);
-//
-//        Grading grading = Grading.createGrading(calculatedGrade, request.getComments());
-//
-//        grading.addGrader(teacher.getId());
-//        submission.addGrading(grading);
-//
-//        // after the final grade we update the exam statistics
-//        LOGGER.info("Sending request for updating statistics for exam {}", exam);
-//        rabbitMQProducer.requestUpdateStatistics(exam);
-//
-//        submissionRepository.save(submission);
-//    }
-//
-//    public void add(Submission submission) {
-//        submissionRepository.save(submission);
-//    }
+
+    public void updateOpenQuestionGrading(Long examId, Long studentId, int questionNr, UpdateQuestionGradingRequest request) {
+        Submission submission = findSubmissionByExamAndStudentId(examId, studentId);
+        Long examSessionIdFromSubmission = submission.getExamSessionId();
+        String updateQuestionGradingUrl = "http://localhost:8083/session/" + examSessionIdFromSubmission + "/questions/" + questionNr + "/points";
+
+
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("request", request);
+
+        restTemplate.put(updateQuestionGradingUrl, requestBody);
+
+        submissionRepository.save(submission);
+    }
+
+    public void addGrading(Long examId, Long studentId, GradingRequest request) {
+        Submission submission = findSubmissionByExamAndStudentId(examId, studentId);
+
+        String examCourseUrl = "http://localhost:8086/courses/exams/" + examId + "/course";
+        CourseResponse examCourse = restTemplate.getForObject(examCourseUrl, CourseResponse.class, examId);
+
+
+        if (examCourse.getTeachers().stream().noneMatch(teacherDTO -> teacherDTO.getId() == request.getTeacherId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Teacher is not allowed to grade this exam");
+        }
+
+        String teacherUrl = "http://localhost:8085/teacher/" + request.getTeacherId();
+        TeacherResponse teacher = restTemplate.getForObject(teacherUrl, TeacherResponse.class);
+
+
+        String calculatedGradeUrl = "http://localhost:8086/exams/" + examId + "/gradeCalculation";
+        double calculatedGrade = restTemplate.getForObject(calculatedGradeUrl, Double.class, examId);
+
+        Grading grading = Grading.createGrading(calculatedGrade, request.getComments());
+
+        grading.addGrader(teacher.getId());
+        submission.addGrading(grading);
+
+        // after the final grade we update the exam statistics
+        String updateStatisticsUrl = "http://localhost:8086/exams/" + examId + "/statistics";
+        restTemplate.put(updateStatisticsUrl, null, examId);
+
+        submissionRepository.save(submission);
+    }
+
+
+    public void add(Submission submission) {
+        submissionRepository.save(submission);
+    }
 
 
     // helper functions
 
     public SubmissionResponse toSubmissionResponse(Long id){
         Submission submission = submissionRepository.findById(id).orElseThrow();
-        String examSessionUrl = "http://localhost:8086/session/" + submission.getExamSessionId();
+        String examSessionUrl = "http://localhost:8083/session/" + submission.getExamSessionId();
         ExamSessionResponse examSession = restTemplate.getForObject(examSessionUrl, ExamSessionResponse.class);
 
         return new SubmissionResponse(examSession, submission.getId(), submission.getStatus(), toGradingsResponse(submission.getGrading()));

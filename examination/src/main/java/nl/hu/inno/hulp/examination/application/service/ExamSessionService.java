@@ -8,6 +8,7 @@ import nl.hu.inno.hulp.commons.exception.NotAllowedException;
 import nl.hu.inno.hulp.commons.request.AnswerRequest;
 import nl.hu.inno.hulp.commons.request.ExamSessionRequest;
 import nl.hu.inno.hulp.commons.request.StartExamSession;
+import nl.hu.inno.hulp.commons.request.UpdateQuestionGradingRequest;
 import nl.hu.inno.hulp.commons.response.ExamSessionResponse;
 import nl.hu.inno.hulp.commons.response.QuestionResponse;
 import nl.hu.inno.hulp.commons.response.StudentResponse;
@@ -18,13 +19,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 public class ExamSessionService {
     private final ExamSessionRepository examSessionRepository;
     private final ExaminationService examinationService;
     private final RestTemplate restTemplate;
     private final ExaminationProducer examinationProducer;
-
     @Autowired
     public ExamSessionService(ExamSessionRepository examSessionRepository, ExaminationService examinationService, RestTemplate restTemplate,
                               ExaminationProducer examinationProducer) {
@@ -107,4 +110,22 @@ public class ExamSessionService {
 
         return new ExamSessionResponse(examSession.getId(), examSession.getState(), examSession.getDuration(), studentResponse);
     }
+
+    // used by other modules via rpc
+    public void updatePointsOpenQuestion(Long examSessionId, int questionNr, UpdateQuestionGradingRequest request) {
+        ExamSession examSession = getExamSessionById(examSessionId);
+        Long examId = examSession.getExamId();
+
+
+        String url = "http://localhost:8086/exams/" + examId + "/openQuestionPoints";
+
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("questionNr", questionNr);
+        requestBody.put("request", request);
+
+        restTemplate.put(url, requestBody);
+
+
+    }
+
 }
