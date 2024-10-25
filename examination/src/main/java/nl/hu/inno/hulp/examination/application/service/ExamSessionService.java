@@ -12,6 +12,7 @@ import nl.hu.inno.hulp.commons.request.UpdateQuestionGradingRequest;
 import nl.hu.inno.hulp.commons.response.ExamSessionResponse;
 import nl.hu.inno.hulp.commons.response.QuestionResponse;
 import nl.hu.inno.hulp.commons.response.StudentResponse;
+import nl.hu.inno.hulp.commons.response.SubmissionResponse;
 import nl.hu.inno.hulp.examination.data.ExamSessionRepository;
 import nl.hu.inno.hulp.examination.domain.ExamSession;
 import nl.hu.inno.hulp.publisher.ExaminationProducer;
@@ -83,6 +84,16 @@ public class ExamSessionService {
             if (!examinationService.storeExamSession(examSession)) {
                 throw new ExamSessionNotStored("Exam session can't be stored in examination.");
             }
+
+            String createdSubmissionUrl = "http://localhost:8084/submission/" + examSession.getId();
+            SubmissionResponse submission = restTemplate.postForObject(createdSubmissionUrl, examSession.getId(), SubmissionResponse.class);
+
+            String addSubmissionToExamUrl = "http://localhost:8086/exams/" + examSession.getExamId() + "/" + submission.getSubmissionId();
+            restTemplate.put(addSubmissionToExamUrl, submission);
+
+            String saveSubmissionUrl = "http://localhost:8084/submission/" + submission.getSubmissionId();
+            restTemplate.postForObject(saveSubmissionUrl, submission, SubmissionResponse.class);
+
 
             ExamSessionResponse examSessionResponse = getExamSessionResponse(examSession.getId());
             examinationProducer.endingSessionRequest(examSessionResponse);
