@@ -3,12 +3,9 @@ package nl.hu.inno.hulp.exam.presentation.controller;
 import nl.hu.inno.hulp.commons.dto.GradingCriteriaDTO;
 import nl.hu.inno.hulp.commons.request.UpdateQuestionGradingRequest;
 import nl.hu.inno.hulp.commons.response.ExamResponse;
-import nl.hu.inno.hulp.commons.response.QuestionResponse;
 import nl.hu.inno.hulp.commons.response.SubmissionResponse;
 import nl.hu.inno.hulp.exam.application.service.ExamService;
-import nl.hu.inno.hulp.exam.domain.question.QuestionEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -80,6 +77,11 @@ public class ExamController {
     public double calculateGrade(@PathVariable Long examId) {
         return examService.calculateGrade(examId);
 
+    }
+
+    @PostMapping("/{examId}/{submissionId}")
+    public void addSubmission(@PathVariable Long examId, @PathVariable Long submissionId) {
+        examService.addSubmission(examId, submissionId);
     }
 
 }

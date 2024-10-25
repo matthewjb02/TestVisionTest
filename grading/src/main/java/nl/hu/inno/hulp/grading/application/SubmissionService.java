@@ -109,10 +109,19 @@ public class SubmissionService {
     }
 
 
-    public void add(Submission submission) {
-        submissionRepository.save(submission);
+    public SubmissionResponse createSubmission(Long examSessionId) {
+        Submission submission = Submission.createSubmission(examSessionId);
+        SubmissionResponse submissionResponse = toSubmissionResponse(submission.getId());
+
+
+        return toSubmissionResponse(submission.getId());
+
     }
 
+    public void saveSubmission(Long id) {
+        Submission submission = submissionRepository.findById(id).orElseThrow();
+        submissionRepository.save(submission);
+    }
 
     // helper functions
 
@@ -129,6 +138,8 @@ public class SubmissionService {
         return new GradingResponse(grading.getId(), grading.getGrade(), grading.getComments());
 
     }
+
+
 
 
 

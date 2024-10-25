@@ -214,8 +214,30 @@ public class ExamService {
 
     public void updateStatistics(Long examId) {
         Exam exam = getExam(examId);
-        exam.updateStatistics();
-        this.saveExam(exam);
+        double passGrade = 5.5;
+
+        int passCount = (int) exam.getSubmissionIds().stream()
+                .map(this::getSubmissionById)
+                .filter(submission -> submission.getGrading().getGrade() >= passGrade)
+                .count();
+
+        int failCount = exam.getSubmissionIds().size() - passCount;
+
+        double averageScore = exam.getSubmissionIds().stream()
+                .map(this::getSubmissionById)
+                .mapToDouble(submission -> submission.getGrading().getGrade())
+                .average()
+                .orElse(0);
+
+        Statistics statistics = new Statistics(exam.getSubmissionIds().size(), passCount, failCount, averageScore);
+        exam.setStatistics(statistics);
+        saveExam(exam);
+    }
+
+    public void addSubmission(Long examId, Long submissionId) {
+        Exam exam = getExam(examId);
+        exam.addSubmissionId(submissionId);
+
     }
 
 

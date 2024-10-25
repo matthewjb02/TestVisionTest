@@ -112,24 +112,6 @@ public class Exam {
         this.questions.addAll(questions);
     }
 
-    public void updateStatistics() {
-//        double passGrade = 5.5;
-//
-//        int submissionCount = submissionIds.size();
-//
-//        int passCount = (int) submissionIds.stream()
-//                .filter(submission -> submission.calculateGrade() >= passGrade)
-//                .count();
-//
-//        int failCount = submissionCount - passCount;
-//
-//        double averageScore = submissionIds.stream()
-//                .mapToDouble(Submission::calculateGrade)
-//                .average()
-//                .orElse(0);
-//
-//        statistics = new Statistics(submissionCount, passCount, failCount, averageScore);
-    }
 
     public int getTotalOpenQuestionPoints(){
         return questions.stream()
@@ -144,8 +126,6 @@ public class Exam {
                 .mapToInt(QuestionEntity::getPoints)
                 .sum();
     }
-
-
 
     public void addSubmissionId(Long submissionId) {
         this.submissionIds.add(submissionId);

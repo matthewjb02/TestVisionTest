@@ -48,6 +48,15 @@ public class SubmissionController {
         submissionService.addGrading(testId, studentId, request);
     }
 
+    // rpc
+    @PostMapping("/{examSessionId}")
+    public SubmissionResponse createSubmission(@PathVariable Long examSessionId) {
+        return submissionService.createSubmission(examSessionId);
+    }
 
+    @PostMapping("{submissionId}")
+    public  void saveSubmission(@PathVariable Long submissionId) {
+        submissionService.saveSubmission(submissionId);
+    }
 
 }
