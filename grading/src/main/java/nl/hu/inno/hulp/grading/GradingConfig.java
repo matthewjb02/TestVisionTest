@@ -1,4 +1,4 @@
-package nl.hu.inno.hulp.grading.rabbitmq;
+package nl.hu.inno.hulp.grading;
 
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -8,11 +8,18 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
+import org.springframework.web.client.RestTemplate;
 
 @Configuration
-public class RabbitMQConfig {
+public class GradingConfig {
 
+    // rpc with resttemplate
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
+    // messaing with rabbitmq
     @Value("${rabbit.exchange.name}")
     private String exchangeName;
 
@@ -22,10 +29,10 @@ public class RabbitMQConfig {
     @Value("${rabbit.demo.queue}")
     private String demoQueue;
 
-    @Value("${rabbit.exam.queue}")
+    @Value("${rabbit.grading.exam.queue}")
     private String examQueue;
 
-    @Value("${rabbit.examsession.queue}")
+    @Value("${rabbit.grading.examsession.queue}")
     private String examSessionQueue;
 
     @Bean
@@ -77,3 +84,4 @@ public class RabbitMQConfig {
         return rabbitTemplate;
     }
 }
+

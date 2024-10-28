@@ -1,7 +1,7 @@
 package nl.hu.inno.hulp.exam.application.service;
 
 import nl.hu.inno.hulp.commons.dto.GradingCriteriaDTO;
-import nl.hu.inno.hulp.commons.request.UpdateQuestionGradingRequest;
+import nl.hu.inno.hulp.commons.request.UpdateOpenQuestionPointsRequest;
 import nl.hu.inno.hulp.commons.response.*;
 import nl.hu.inno.hulp.exam.ExamProducer;
 import nl.hu.inno.hulp.exam.data.ExamRepository;
@@ -170,8 +170,6 @@ public class ExamService {
                 .findFirst()
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No submission found for exam with id: " + examId + " and student with id: " + studentId));
 
-
-
         return submissionResponse;
 
 
@@ -190,7 +188,7 @@ public class ExamService {
     }
 
 
-    public void updatePointsForOpenQuestion(Long examId, int questionNr, UpdateQuestionGradingRequest request) {
+    public void updatePointsForOpenQuestion(Long examId, int questionNr, UpdateOpenQuestionPointsRequest request) {
         Exam exam = getExam(examId);
         QuestionEntity question = exam.getQuestions().get(questionNr - 1);
         if (question != null) {
