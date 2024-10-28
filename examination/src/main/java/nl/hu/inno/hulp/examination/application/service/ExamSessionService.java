@@ -8,7 +8,7 @@ import nl.hu.inno.hulp.commons.exception.NotAllowedException;
 import nl.hu.inno.hulp.commons.request.AnswerRequest;
 import nl.hu.inno.hulp.commons.request.ExamSessionRequest;
 import nl.hu.inno.hulp.commons.request.StartExamSession;
-import nl.hu.inno.hulp.commons.request.UpdateQuestionGradingRequest;
+import nl.hu.inno.hulp.commons.request.UpdateOpenQuestionPointsRequest;
 import nl.hu.inno.hulp.commons.response.ExamSessionResponse;
 import nl.hu.inno.hulp.commons.response.QuestionResponse;
 import nl.hu.inno.hulp.commons.response.StudentResponse;
@@ -19,9 +19,6 @@ import nl.hu.inno.hulp.publisher.ExaminationProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class ExamSessionService {
@@ -88,12 +85,9 @@ public class ExamSessionService {
             String createdSubmissionUrl = "http://localhost:8084/submission/" + examSession.getId();
             SubmissionResponse submission = restTemplate.postForObject(createdSubmissionUrl, examSession.getId(), SubmissionResponse.class);
 
-            String addSubmissionToExamUrl = "http://localhost:8086/exams/" + examSession.getExamId() + "/" + submission.getSubmissionId();
-            restTemplate.put(addSubmissionToExamUrl, submission);
 
-            String saveSubmissionUrl = "http://localhost:8084/submission/" + submission.getSubmissionId();
-            restTemplate.postForObject(saveSubmissionUrl, submission, SubmissionResponse.class);
-
+            examinationProducer.sendAddSubmissionToExamRequest(examSession.getExamId(), submission.getSubmissionId());
+            examinationProducer.saveSubmissionRequest(submission.getSubmissionId());
 
             ExamSessionResponse examSessionResponse = getExamSessionResponse(examSession.getId());
             examinationProducer.endingSessionRequest(examSessionResponse);
@@ -123,20 +117,11 @@ public class ExamSessionService {
     }
 
     // used by other modules via rpc
-    public void updatePointsOpenQuestion(Long examSessionId, int questionNr, UpdateQuestionGradingRequest request) {
+    public void updatePointsOpenQuestion(Long examSessionId, int questionNr, UpdateOpenQuestionPointsRequest request) {
         ExamSession examSession = getExamSessionById(examSessionId);
         Long examId = examSession.getExamId();
 
-
-        String url = "http://localhost:8086/exams/" + examId + "/openQuestionPoints";
-
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("questionNr", questionNr);
-        requestBody.put("request", request);
-
-        restTemplate.put(url, requestBody);
-
-
+        examinationProducer.sendUpdateQuestionGradingRequest(examSessionId, questionNr, request);
     }
 
 }

@@ -7,9 +7,9 @@ public class UpdateOpenQuestionPoints {
 
     public long examId;
     public int questionNr;
-    public UpdateQuestionGradingRequest grading;
+    public UpdateOpenQuestionPointsRequest grading;
 
-    public UpdateOpenQuestionPoints(long examId, int questionNr, UpdateQuestionGradingRequest grading) {
+    public UpdateOpenQuestionPoints(long examId, int questionNr, UpdateOpenQuestionPointsRequest grading) {
         this.examId = examId;
         this.questionNr = questionNr;
         this.grading = grading;

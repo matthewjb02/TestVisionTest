@@ -1,7 +1,6 @@
 package nl.hu.inno.hulp.exam.presentation.controller;
 
 import nl.hu.inno.hulp.commons.dto.GradingCriteriaDTO;
-import nl.hu.inno.hulp.commons.request.UpdateQuestionGradingRequest;
 import nl.hu.inno.hulp.commons.response.ExamResponse;
 import nl.hu.inno.hulp.commons.response.SubmissionResponse;
 import nl.hu.inno.hulp.exam.application.service.ExamService;
@@ -62,16 +61,6 @@ public class ExamController {
         return examService.getSubmissionsByExamId(examId);
     }
 
-    @PutMapping("{examId}/openQuestionPoints")
-    public void updatePointsForOpenQuestion(@PathVariable Long examId, @RequestBody int questionNr, @RequestBody UpdateQuestionGradingRequest request) {
-        examService.updatePointsForOpenQuestion(examId, questionNr, request);
-    }
-
-
-    @PutMapping("/{examId}/statistics")
-    public void updateStatistics(@PathVariable Long examId) {
-        examService.updateStatistics(examId);
-    }
 
     @PostMapping("/{examId}/gradeCalculation")
     public double calculateGrade(@PathVariable Long examId) {
@@ -79,11 +68,8 @@ public class ExamController {
 
     }
 
-    @PostMapping("/{examId}/{submissionId}")
-    public void addSubmission(@PathVariable Long examId, @PathVariable Long submissionId) {
-        examService.addSubmission(examId, submissionId);
-    }
-
 }
+
+
 
 

@@ -1,6 +1,6 @@
 package nl.hu.inno.hulp.grading.presentation;
 
-import nl.hu.inno.hulp.grading.rabbitmq.RabbitMQProducer;
+import nl.hu.inno.hulp.grading.producer.RabbitMQProducer;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

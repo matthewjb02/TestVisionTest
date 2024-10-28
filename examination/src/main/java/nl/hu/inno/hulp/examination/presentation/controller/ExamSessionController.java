@@ -4,7 +4,6 @@ import nl.hu.inno.hulp.commons.exception.*;
 import nl.hu.inno.hulp.commons.request.AnswerRequest;
 import nl.hu.inno.hulp.commons.request.ExamSessionRequest;
 import nl.hu.inno.hulp.commons.request.StartExamSession;
-import nl.hu.inno.hulp.commons.request.UpdateQuestionGradingRequest;
 import nl.hu.inno.hulp.commons.response.ExamSessionResponse;
 import nl.hu.inno.hulp.commons.response.QuestionResponse;
 import nl.hu.inno.hulp.examination.application.service.ExamSessionService;
@@ -84,13 +83,5 @@ public class ExamSessionController {
         }
     }
 
-    // used by other modules via rpc
-    @PutMapping("/{id}/questions/{questionNr}/points")
-    public void updatePointsOpenQuestion(
-            @PathVariable Long id,
-            @PathVariable int questionNr,
-            @RequestBody UpdateQuestionGradingRequest request) {
-        examSessionService.updatePointsOpenQuestion(id, questionNr, request);
-    }
 
 }

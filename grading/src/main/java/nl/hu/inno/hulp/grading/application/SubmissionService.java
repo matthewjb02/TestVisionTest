@@ -3,12 +3,12 @@ package nl.hu.inno.hulp.grading.application;
 
 import jakarta.transaction.Transactional;
 import nl.hu.inno.hulp.commons.request.GradingRequest;
-import nl.hu.inno.hulp.commons.request.UpdateQuestionGradingRequest;
+import nl.hu.inno.hulp.commons.request.UpdateOpenQuestionPointsRequest;
 import nl.hu.inno.hulp.commons.response.*;
 import nl.hu.inno.hulp.grading.data.SubmissionRepository;
 import nl.hu.inno.hulp.grading.domain.Grading;
 import nl.hu.inno.hulp.grading.domain.Submission;
-import nl.hu.inno.hulp.grading.rabbitmq.RabbitMQProducer;
+import nl.hu.inno.hulp.grading.producer.RabbitMQProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
@@ -19,9 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 @Transactional
@@ -63,17 +61,11 @@ public class SubmissionService {
         return response.getBody();
     }
 
-
-    public void updateOpenQuestionGrading(Long examId, Long studentId, int questionNr, UpdateQuestionGradingRequest request) {
+    public void updateOpenQuestionGrading(Long examId, Long studentId, int questionNr, UpdateOpenQuestionPointsRequest request) {
         Submission submission = findSubmissionByExamAndStudentId(examId, studentId);
         Long examSessionIdFromSubmission = submission.getExamSessionId();
-        String updateQuestionGradingUrl = "http://localhost:8083/session/" + examSessionIdFromSubmission + "/questions/" + questionNr + "/points";
 
-
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("request", request);
-
-        restTemplate.put(updateQuestionGradingUrl, requestBody);
+        rabbitMQProducer.sendUpdateOpenQuestionPoints(examSessionIdFromSubmission, questionNr, request);
 
         submissionRepository.save(submission);
     }
@@ -92,7 +84,6 @@ public class SubmissionService {
         String teacherUrl = "http://localhost:8085/teacher/" + request.getTeacherId();
         TeacherResponse teacher = restTemplate.getForObject(teacherUrl, TeacherResponse.class);
 
-
         String calculatedGradeUrl = "http://localhost:8086/exams/" + examId + "/gradeCalculation";
         double calculatedGrade = restTemplate.getForObject(calculatedGradeUrl, Double.class, examId);
 
@@ -101,9 +92,7 @@ public class SubmissionService {
         grading.addGrader(teacher.getId());
         submission.addGrading(grading);
 
-        // after the final grade we update the exam statistics
-        String updateStatisticsUrl = "http://localhost:8086/exams/" + examId + "/statistics";
-        restTemplate.put(updateStatisticsUrl, null, examId);
+        rabbitMQProducer.sendUpdateExamStatistics(examId);
 
         submissionRepository.save(submission);
     }
@@ -138,10 +127,6 @@ public class SubmissionService {
         return new GradingResponse(grading.getId(), grading.getGrade(), grading.getComments());
 
     }
-
-
-
-
 
 
 }

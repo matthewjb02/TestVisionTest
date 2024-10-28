@@ -1,15 +1,11 @@
 package nl.hu.inno.hulp.grading.presentation;
 
 
-import nl.hu.inno.hulp.commons.messaging.SubmissionDTO;
+import nl.hu.inno.hulp.commons.request.UpdateOpenQuestionPointsRequest;
 import nl.hu.inno.hulp.grading.application.SubmissionService;
 import nl.hu.inno.hulp.commons.request.GradingRequest;
-import nl.hu.inno.hulp.commons.request.UpdateQuestionGradingRequest;
 import nl.hu.inno.hulp.commons.response.SubmissionResponse;
-import nl.hu.inno.hulp.grading.domain.Submission;
-import nl.hu.inno.hulp.grading.rabbitmq.RabbitMQProducer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import nl.hu.inno.hulp.grading.producer.RabbitMQProducer;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,8 +33,8 @@ public class SubmissionController {
         return submissionService.getSubmissionResponseById(id);
     }
 
-    @PutMapping("/{testId}/{studentId}/question/{questionNr}")
-    public void updateQuestionGrading(@PathVariable Long examId, @PathVariable Long studentId, @PathVariable int questionNr, @RequestBody UpdateQuestionGradingRequest request) {
+    @PutMapping("/{examId}/{studentId}/question/{questionNr}")
+    public void updateQuestionGrading(@PathVariable Long examId, @PathVariable Long studentId, @PathVariable int questionNr, @RequestBody UpdateOpenQuestionPointsRequest request) {
 
         submissionService.updateOpenQuestionGrading(examId, studentId, questionNr, request);
     }
