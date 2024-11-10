@@ -40,7 +40,8 @@ public class ExamService {
     }
 
     public ExamResponse addExam(long examMakerId, long examValidatorId) {
-        Exam exam = new Exam(examMakerId, examValidatorId);
+
+        Exam exam = new Exam(getTeacherById(examMakerId), getTeacherById(examValidatorId));
 
         Statistics statistics = Statistics.createStatistics(0, 0, 0, 0);
         exam.setStatistics(statistics);
@@ -90,6 +91,7 @@ public void sendAndProcessExam(Long id) {
         examRepository.save(exam);
         return toExamResponse(exam);
     }
+
 
     public ExamResponse addGradingCriteriaToExam(Long examId, GradingCriteriaDTO gradingCriteriaDTO) {
         Exam exam = examRepository.findById(examId)
@@ -154,7 +156,11 @@ public void sendAndProcessExam(Long id) {
         return responses;
     }
 
-
+    public Long getTeacherById(Long id) {
+        String url = "http://localhost:8081/teacher/" + id;
+        examProducer.sendTeacherRequest(id);
+        return restTemplate.getForObject(url, TeacherResponse.class).getId();
+    }
     public SubmissionResponse getSubmissionById(Long id) {
         String url = "http://localhost:8084/submission/" + id;
         return restTemplate.getForObject(url, SubmissionResponse.class);

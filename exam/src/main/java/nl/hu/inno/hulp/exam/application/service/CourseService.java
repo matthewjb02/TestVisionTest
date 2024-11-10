@@ -4,6 +4,7 @@ import nl.hu.inno.hulp.commons.dto.GradingCriteriaDTO;
 import nl.hu.inno.hulp.commons.request.CourseRequest;
 import nl.hu.inno.hulp.commons.response.CourseResponse;
 import nl.hu.inno.hulp.commons.response.*;
+import nl.hu.inno.hulp.exam.ExamProducer;
 import nl.hu.inno.hulp.exam.data.CourseRepository;
 import nl.hu.inno.hulp.exam.data.ExamRepository;
 import nl.hu.inno.hulp.exam.data.QuestionRepository;
@@ -32,13 +33,16 @@ public class CourseService {
     private final ExamRepository examRepository;
     private final QuestionRepository questionRepository;
     private final RestTemplate restTemplate;
+    private final ExamProducer examProducer;
+
 
     @Autowired
-    public CourseService(CourseRepository courseRepository, ExamRepository examRepository, QuestionRepository questionRepository, RestTemplate restTemplate) {
+    public CourseService(CourseRepository courseRepository, ExamRepository examRepository, QuestionRepository questionRepository, RestTemplate restTemplate, ExamProducer examProducer) {
         this.courseRepository = courseRepository;
         this.examRepository = examRepository;
         this.questionRepository = questionRepository;
         this.restTemplate = restTemplate;
+        this.examProducer = examProducer;
     }
 
     public List<CourseResponse> getAllCourses() {
@@ -227,14 +231,9 @@ public class CourseService {
 
     public TeacherResponse getTeacherById(Long id) {
         String url = "http://localhost:8081/teacher/" + id;
+        examProducer.sendTeacherRequest(id);
 
-        ResponseEntity<TeacherResponse> response = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<>() {});
-
-        return response.getBody();
+        return restTemplate.getForObject(url, TeacherResponse.class);
     }
 
     // rpc
