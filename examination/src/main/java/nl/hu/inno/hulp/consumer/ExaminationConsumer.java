@@ -22,10 +22,9 @@ public class ExaminationConsumer {
         this.examSessionService = examSessionService;
     }
 
-
-    @RabbitListener(queues = {"${rabbit.grading.demo.queue}"})
+    //@RabbitListener(queues = {"${rabbit.grading.demo.queue}"})
     public void consumeDemoMessage(String string) {
-        LOGGER.info("Message received: {}", string);
+        //LOGGER.info("Message received: {}", string);
     }
 
     @RabbitListener(queues = {"${rabbitmq.queue.name}"})
@@ -43,9 +42,9 @@ public class ExaminationConsumer {
         LOGGER.info(String.format("Received JSON message -> question-response: %s", questionResponse));
     }
 
-    @RabbitListener(queues = {"${rabbitmq.grading.examsession.queue}"})
+    //@RabbitListener(queues = {"${rabbitmq.grading.examsession.queue}"})
     public void  updateOpenQuestionGrading(Long examSessionIdFromSubmission, int questionNr, UpdateOpenQuestionPointsRequest request) {
         LOGGER.info(String.format("Received JSON message -> update-question-grading: %s", request));
-        examSessionService.updatePointsOpenQuestion(examSessionIdFromSubmission, questionNr, request);
+        //examSessionService.updatePointsOpenQuestion(examSessionIdFromSubmission, questionNr, request);
     }
 }
