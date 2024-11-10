@@ -71,10 +71,11 @@ public class ExamService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No exam with id: " + id + " found!"));
 
         ExamResponse response = toExamResponse(exam);
-        examProducer.sendExam(response);
         return response;
     }
-
+public void sendAndProcessExam(Long id) {
+        this.examProducer.sendExamResponse(getExamById(id));
+}
     public Exam getExam(Long id) {
         return examRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No exam with id: " + id + " found!"));

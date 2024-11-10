@@ -3,18 +3,19 @@ package nl.hu.inno.hulp.exam;
 
 import nl.hu.inno.hulp.commons.request.AddSubmissionToExam;
 import nl.hu.inno.hulp.commons.request.UpdateOpenQuestionPoints;
-import nl.hu.inno.hulp.commons.request.UpdateStatisticsRequest;
 import nl.hu.inno.hulp.commons.response.ExamResponse;
 import nl.hu.inno.hulp.exam.application.service.ExamService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ExamReceiver {
-
+public class ExamConsumer {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExamConsumer.class);
     private final ExamService examService;
 
-    public ExamReceiver(ExamService examService) {
+    public ExamConsumer(ExamService examService) {
         this.examService = examService;
     }
 
@@ -22,7 +23,11 @@ public class ExamReceiver {
     public void receiveMessage(ExamResponse examResponse){
         System.out.println(examResponse.getQuestions().get(1).getQuestion());
     }
-
+    @RabbitListener(queues = {"examination"})
+    public void consumeExamId(Long examId){
+        LOGGER.info(String.format("Received message -> %s", examId));
+        examService.sendAndProcessExam(examId);
+    }
     //@RabbitListener(queues = "${rabbitmq.examsession.exam.queue}")
     public void receiveUpdateOpenQuestionGradingMessage(UpdateOpenQuestionPoints message) {
         examService.updatePointsForOpenQuestion(message.getExamId(), message.getQuestionNr(), message.getGrading());

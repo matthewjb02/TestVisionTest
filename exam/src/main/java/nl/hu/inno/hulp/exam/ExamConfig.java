@@ -56,4 +56,5 @@ public class ExamConfig {
         rabbitTemplate.setMessageConverter(converter());
         return rabbitTemplate;
     }
+
 }

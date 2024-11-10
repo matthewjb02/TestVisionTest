@@ -85,7 +85,7 @@ public class ExaminationService {
     }
 
     public ExamResponse getExamById(Long id) {
-        String url = "http://localhost:8082/exam/" + id;
+        String url = "http://localhost:8082/exams/" + id;
         examinationProducer.sendExamRequest(id);
         return restTemplate.getForObject(url, ExamResponse.class);
     }

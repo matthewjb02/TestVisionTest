@@ -17,11 +17,11 @@ public class RabbitMQConsumer {
         this.submissionService = submissionService;
     }
 
-
-    @RabbitListener(queues = "${rabbit.monoliet.demo.queue}")
-    public void consumeNoteMessage(String string) {
-        LOGGER.info("Message received: {}", string);
-    }
+//
+//    @RabbitListener(queues = "${rabbit.monoliet.demo.queue}")
+//    public void consumeNoteMessage(String string) {
+//        LOGGER.info("Message received: {}", string);
+//    }
 
     @RabbitListener(queues = "${rabbitmq.examsession.grading.queue}")
     public void consumeAddSubmissionMessage(Long submissionId) {
