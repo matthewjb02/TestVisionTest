@@ -21,6 +21,8 @@ public class Examination {
 
     @Transient
     private Long examId;
+    @Transient
+    private Long courseId;
 
     private String name;
     private String password;
@@ -34,13 +36,14 @@ public class Examination {
     protected Examination() {
     }
 
-    public Examination(String name, Long examId, String password, ExamDate examDate, int duration, int extraTime) {
+    public Examination(String name, Long examId, String password, ExamDate examDate, int duration, int extraTime,long courseId) {
         this.name = name;
         this.examId = examId;
         this.password = password;
         this.examDate = examDate;
         this.duration = duration;
         this.extraTime = extraTime;
+        this.courseId=courseId;
     }
 
     public int totalDuration(boolean extraTimeRight) {

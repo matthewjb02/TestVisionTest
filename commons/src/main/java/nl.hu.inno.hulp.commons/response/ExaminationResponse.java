@@ -14,6 +14,8 @@ public class ExaminationResponse {
 
     private final ExamResponse exam;
 
+    private final CourseResponse course;
+
     private final String name;
     private final String password;
 
@@ -22,7 +24,7 @@ public class ExaminationResponse {
     private final int duration;
     private final int extraTime;
 
-    public ExaminationResponse(Long id, List<StudentResponse> candidates, List<ExamSessionResponse> examSessions, ExamResponse exam, String name, String password, ExamDateDTO examDate, int duration, int extraTime) {
+    public ExaminationResponse(Long id, List<StudentResponse> candidates, List<ExamSessionResponse> examSessions, ExamResponse exam, String name, String password, ExamDateDTO examDate, int duration, int extraTime,CourseResponse course) {
         this.id = id;
         this.candidates = candidates;
         this.examSessions = examSessions;
@@ -31,7 +33,7 @@ public class ExaminationResponse {
         this.password = password;
         this.examDate = examDate;
         this.duration = duration;
-        this.extraTime = extraTime;
+        this.extraTime = extraTime;this.course = course;
     }
 
     public ExamResponse getExam() {

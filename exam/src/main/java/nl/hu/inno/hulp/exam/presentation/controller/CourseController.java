@@ -52,6 +52,10 @@ public class CourseController {
     public CourseResponse addTestToCourse(@PathVariable Long courseId, @PathVariable Long examId) {
         return courseService.addTestToCourse(courseId, examId);
     }
+    @GetMapping("/{courseId}/exams/{examId}")
+    public ExamResponse getExamById(@PathVariable Long courseId, @PathVariable Long examId) {
+        return courseService.getApprovedExamByCourse(courseId, examId);
+    }
 
     @PutMapping("{id}/exams/{examId}/accept")
     public ExamResponse acceptExam(@PathVariable Long id, @PathVariable Long examId) throws Exception {

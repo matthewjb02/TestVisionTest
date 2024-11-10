@@ -105,6 +105,15 @@ public class CourseService {
 
         return examResponses;
     }
+    public ExamResponse getApprovedExamByCourse(Long courseId,Long examId){
+            Course course=courseRepository.findById(courseId).orElseThrow();
+            Exam exam=examRepository.findById(examId).orElseThrow();
+
+            if(course.getApprovedExams().contains(exam)){
+                return getExamResponse(exam);
+            }
+            else throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Exam not Approved");
+    }
 
     public ExamResponse acceptExam(long examId, Long courseId) throws Exception {
         Exam exam = examRepository.findById(examId).orElseThrow();
@@ -144,6 +153,10 @@ public class CourseService {
 
     private TeacherResponse getTeacherResponse(Long teacherId) {
         return getTeacherById(teacherId);
+    }
+    public void sendAndProcessCourse(Long id) {
+
+        this.examProducer.sendCourseResponse((getCourseById(id)));
     }
 
     private CourseResponse getCourseResponse(Course course){

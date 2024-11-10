@@ -34,6 +34,10 @@ public class ExaminationProducer {
         LOGGER.info(String.format("Message sent -> exam id: %s", examId));
         rabbitTemplate.convertAndSend(exchange, routingKey, examId);
     }
+    public void sendCourseRequest(Long courseId) {
+        LOGGER.info(String.format("Message sent -> course id: %s", courseId));
+        rabbitTemplate.convertAndSend(exchange, routingKey, courseId);
+    }
 
     public void sendQuestionRequest(Long examSessionId, Long examId, Long questionId) {
         LOGGER.info(String.format("Message sent -> exam-session id: %s exam id: %s, question id: %s", examSessionId, examId, questionId));

@@ -1,10 +1,7 @@
 package nl.hu.inno.hulp.consumer;
 
 import nl.hu.inno.hulp.commons.request.UpdateOpenQuestionPointsRequest;
-import nl.hu.inno.hulp.commons.response.ExamResponse;
-import nl.hu.inno.hulp.commons.response.ExamSessionResponse;
-import nl.hu.inno.hulp.commons.response.QuestionResponse;
-import nl.hu.inno.hulp.commons.response.StudentResponse;
+import nl.hu.inno.hulp.commons.response.*;
 import nl.hu.inno.hulp.examination.application.service.ExamSessionService;
 import nl.hu.inno.hulp.examination.domain.ExamSession;
 import org.slf4j.Logger;
@@ -30,6 +27,10 @@ public class ExaminationConsumer {
     @RabbitListener(queues = {"${rabbitmq.queue.name}"})
     public void consumeStudentResponse(@Payload StudentResponse studentResponse) {
         LOGGER.info(String.format("Received JSON message -> student-response: %s", studentResponse));
+    }
+    @RabbitListener(queues = {"${rabbitmq.queue.name}"})
+    public void consumeCourseResponse(@Payload CourseResponse courseResponse) {
+        LOGGER.info(String.format("Received JSON message -> course-response: %s", courseResponse));
     }
 
     @RabbitListener(queues = {"${rabbitmq.queue.name}"})

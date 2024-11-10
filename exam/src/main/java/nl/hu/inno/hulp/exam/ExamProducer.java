@@ -1,6 +1,7 @@
 package nl.hu.inno.hulp.exam;
 
 import nl.hu.inno.hulp.commons.request.TeacherRequest;
+import nl.hu.inno.hulp.commons.response.CourseResponse;
 import nl.hu.inno.hulp.commons.response.ExamResponse;
 import nl.hu.inno.hulp.commons.response.StudentResponse;
 import org.slf4j.Logger;
@@ -34,5 +35,9 @@ public class ExamProducer {
         LOGGER.info(String.format("Message sent -> %s", teacherId + ""));
         rabbitTemplate.convertAndSend(exchange, routingKey, teacherId);
 
+    }
+    public void sendCourseResponse(CourseResponse courseResponse) {
+        LOGGER.info(String.format("Message sent -> %s", courseResponse.toString()));
+        rabbitTemplate.convertAndSend(exchange, routingKey, courseResponse);
     }
 }

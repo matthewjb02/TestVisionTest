@@ -4,8 +4,10 @@ import nl.hu.inno.hulp.commons.dto.GradingCriteriaDTO;
 import nl.hu.inno.hulp.commons.request.UpdateOpenQuestionPointsRequest;
 import nl.hu.inno.hulp.commons.response.*;
 import nl.hu.inno.hulp.exam.ExamProducer;
+import nl.hu.inno.hulp.exam.data.CourseRepository;
 import nl.hu.inno.hulp.exam.data.ExamRepository;
 import nl.hu.inno.hulp.exam.data.QuestionRepository;
+import nl.hu.inno.hulp.exam.domain.Course;
 import nl.hu.inno.hulp.exam.domain.Exam;
 import nl.hu.inno.hulp.exam.domain.GradingCriteria;
 import nl.hu.inno.hulp.exam.domain.Statistics;
@@ -27,14 +29,16 @@ public class ExamService {
 
     private final ExamRepository examRepository;
     private final QuestionRepository questionRepository;
+    private final CourseRepository courseRepository;
     private final RestTemplate restTemplate;
     private final ExamProducer examProducer;
 
     @Autowired
-    public ExamService(ExamRepository examRepository, QuestionRepository questionRepository,
+    public ExamService(ExamRepository examRepository, QuestionRepository questionRepository, CourseRepository courseRepository,
                        RestTemplate restTemplate, ExamProducer examProducer) {
         this.examRepository = examRepository;
         this.questionRepository = questionRepository;
+        this.courseRepository = courseRepository;
         this.restTemplate = restTemplate;
         this.examProducer = examProducer;
     }
@@ -77,6 +81,7 @@ public class ExamService {
 public void sendAndProcessExam(Long id) {
         this.examProducer.sendExamResponse(getExamById(id));
 }
+
     public Exam getExam(Long id) {
         return examRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No exam with id: " + id + " found!"));
