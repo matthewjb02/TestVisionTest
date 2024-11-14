@@ -1,11 +1,13 @@
 package nl.hu.inno.hulp.exam.application.service;
 
 import nl.hu.inno.hulp.commons.dto.GradingCriteriaDTO;
-import nl.hu.inno.hulp.commons.enums.ExamState;
-import nl.hu.inno.hulp.exam.ExamProducer;
+import nl.hu.inno.hulp.commons.request.UpdateOpenQuestionPointsRequest;
 import nl.hu.inno.hulp.commons.response.*;
+import nl.hu.inno.hulp.exam.ExamProducer;
+import nl.hu.inno.hulp.exam.data.CourseRepository;
 import nl.hu.inno.hulp.exam.data.ExamRepository;
 import nl.hu.inno.hulp.exam.data.QuestionRepository;
+import nl.hu.inno.hulp.exam.domain.Course;
 import nl.hu.inno.hulp.exam.domain.Exam;
 import nl.hu.inno.hulp.exam.domain.GradingCriteria;
 import nl.hu.inno.hulp.exam.domain.Statistics;
@@ -13,10 +15,7 @@ import nl.hu.inno.hulp.exam.domain.question.MultipleChoiceQuestion;
 import nl.hu.inno.hulp.exam.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.exam.domain.question.QuestionEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
@@ -30,20 +29,23 @@ public class ExamService {
 
     private final ExamRepository examRepository;
     private final QuestionRepository questionRepository;
+    private final CourseRepository courseRepository;
     private final RestTemplate restTemplate;
     private final ExamProducer examProducer;
 
     @Autowired
-    public ExamService(ExamRepository examRepository, QuestionRepository questionRepository,
+    public ExamService(ExamRepository examRepository, QuestionRepository questionRepository, CourseRepository courseRepository,
                        RestTemplate restTemplate, ExamProducer examProducer) {
         this.examRepository = examRepository;
         this.questionRepository = questionRepository;
+        this.courseRepository = courseRepository;
         this.restTemplate = restTemplate;
         this.examProducer = examProducer;
     }
 
     public ExamResponse addExam(long examMakerId, long examValidatorId) {
-        Exam exam = new Exam(examMakerId, examValidatorId);
+
+        Exam exam = new Exam(getTeacherById(examMakerId), getTeacherById(examValidatorId));
 
         Statistics statistics = Statistics.createStatistics(0, 0, 0, 0);
         exam.setStatistics(statistics);
@@ -74,14 +76,15 @@ public class ExamService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No exam with id: " + id + " found!"));
 
         ExamResponse response = toExamResponse(exam);
-        examProducer.sendExam(response);
         return response;
     }
+public void sendAndProcessExam(Long id) {
+        this.examProducer.sendExamResponse(getExamById(id));
+}
 
     public Exam getExam(Long id) {
-        Exam exam = examRepository.findById(id)
+        return examRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No exam with id: " + id + " found!"));
-        return exam;
     }
 
     public ExamResponse addQuestionsByIdsToExam(Long examId, List<Long> questionIds) {
@@ -93,6 +96,7 @@ public class ExamService {
         examRepository.save(exam);
         return toExamResponse(exam);
     }
+
 
     public ExamResponse addGradingCriteriaToExam(Long examId, GradingCriteriaDTO gradingCriteriaDTO) {
         Exam exam = examRepository.findById(examId)
@@ -120,7 +124,7 @@ public class ExamService {
         }
 
         List<SubmissionResponse> submissionResponses = exam.getSubmissionIds().stream()
-                .map(submissionId -> getSubmissionById(submissionId))
+                .map(this::getSubmissionById)
                 .collect(Collectors.toList());
 
         StatisticsResponse statisticsResponse = new StatisticsResponse(0, 0, 0, 0);
@@ -157,15 +161,100 @@ public class ExamService {
         return responses;
     }
 
+    public Long getTeacherById(Long id) {
+        String url = "http://localhost:8081/teacher/" + id;
+        examProducer.sendTeacherRequest(id);
+        return restTemplate.getForObject(url, TeacherResponse.class).getId();
+    }
     public SubmissionResponse getSubmissionById(Long id) {
         String url = "http://localhost:8084/submission/" + id;
-
-        ResponseEntity<SubmissionResponse> response = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<>() {});
-
-        return response.getBody();
+        return restTemplate.getForObject(url, SubmissionResponse.class);
     }
+
+
+    // used by other modules via rpc
+
+    public SubmissionResponse getSubmissionByExamAndStudentId(Long examId, Long studentId){
+        Exam exam = getExam(examId);
+        SubmissionResponse submissionResponse = exam.getSubmissionIds().stream()
+                .map(submissionId -> getSubmissionById(submissionId))
+                .filter(submission -> submission.getStudent().getId().equals(studentId))
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No submission found for exam with id: " + examId + " and student with id: " + studentId));
+
+        return submissionResponse;
+
+
+
+    }
+
+    public List<SubmissionResponse> getSubmissionsByExamId(Long examId) {
+
+        Exam exam = getExam(examId);
+        List<SubmissionResponse> submissionResponses = exam.getSubmissionIds().stream()
+                .map(submissionId -> getSubmissionById(submissionId))
+                .collect(Collectors.toList());
+
+        return submissionResponses;
+
+    }
+
+
+    public void updatePointsForOpenQuestion(Long examId, int questionNr, UpdateOpenQuestionPointsRequest request) {
+        Exam exam = getExam(examId);
+        QuestionEntity question = exam.getQuestions().get(questionNr - 1);
+        if (question != null) {
+            if (request.getGivenPoints() > question.getPoints() || request.getGivenPoints() < 0) {
+                throw new IllegalArgumentException("Given points must be between 0 and the maximum points of the question");
+            }
+            question.addGivenPoints(request.getGivenPoints());
+
+            if (question.getClass().equals(OpenQuestion.class)) {
+                OpenQuestion openQuestion = (OpenQuestion) question;
+                openQuestion.addTeacherFeedback(request.getFeedback());
+            }
+        }
+    }
+
+    public double calculateGrade(Long examId) {
+        Exam exam = getExam(examId);
+        return exam.calculateGrade();
+
+    }
+
+    public void updateStatistics(Long examId) {
+        Exam exam = getExam(examId);
+        double passGrade = 5.5;
+
+        int passCount = (int) exam.getSubmissionIds().stream()
+                .map(this::getSubmissionById)
+                .filter(submission -> submission.getGrading().getGrade() >= passGrade)
+                .count();
+
+        int failCount = exam.getSubmissionIds().size() - passCount;
+
+        double averageScore = exam.getSubmissionIds().stream()
+                .map(this::getSubmissionById)
+                .mapToDouble(submission -> submission.getGrading().getGrade())
+                .average()
+                .orElse(0);
+
+        Statistics statistics = new Statistics(exam.getSubmissionIds().size(), passCount, failCount, averageScore);
+        exam.setStatistics(statistics);
+        saveExam(exam);
+    }
+
+    public void addSubmission(Long examId, Long submissionId) {
+        Exam exam = getExam(examId);
+        exam.addSubmissionId(submissionId);
+
+    }
+
+
+// helper functions
+
+    public void saveExam(Exam exam) {
+        examRepository.save(exam);
+    }
+
 }

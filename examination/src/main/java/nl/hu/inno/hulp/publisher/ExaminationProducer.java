@@ -1,7 +1,6 @@
 package nl.hu.inno.hulp.publisher;
 
-import nl.hu.inno.hulp.commons.request.AnswerRequest;
-import nl.hu.inno.hulp.commons.request.SeeQuestion;
+import nl.hu.inno.hulp.commons.request.*;
 import nl.hu.inno.hulp.commons.response.ExamSessionResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +34,10 @@ public class ExaminationProducer {
         LOGGER.info(String.format("Message sent -> exam id: %s", examId));
         rabbitTemplate.convertAndSend(exchange, routingKey, examId);
     }
+    public void sendCourseRequest(Long courseId) {
+        LOGGER.info(String.format("Message sent -> course id: %s", courseId));
+        rabbitTemplate.convertAndSend(exchange, routingKey, courseId);
+    }
 
     public void sendQuestionRequest(Long examSessionId, Long examId, Long questionId) {
         LOGGER.info(String.format("Message sent -> exam-session id: %s exam id: %s, question id: %s", examSessionId, examId, questionId));
@@ -50,5 +53,23 @@ public class ExaminationProducer {
     public void endingSessionRequest(ExamSessionResponse examSessionResponse) {
         LOGGER.info(String.format("Message sent -> exam-session-response: %s", examSessionResponse));
         rabbitTemplate.convertAndSend(exchange, routingKey, examSessionResponse);
+    }
+
+    public void sendUpdateQuestionGradingRequest(Long examSessionId, int questionNr, UpdateOpenQuestionPointsRequest request) {
+        UpdateOpenQuestionPoints updateOpenQuestionPoints = new UpdateOpenQuestionPoints(examSessionId, questionNr, request);
+        LOGGER.info(String.format("Message sent -> exam-session id: %s, question number: %s, request: %s", updateOpenQuestionPoints));
+        rabbitTemplate.convertAndSend(exchange, routingKey, updateOpenQuestionPoints);
+
+    }
+
+    public void sendAddSubmissionToExamRequest(Long examId, Long submissionId) {
+        AddSubmissionToExam addSubmissionToExam = new AddSubmissionToExam(examId, submissionId);
+        LOGGER.info(String.format("Message sent -> exam-session id: %s, submission-response: %s", addSubmissionToExam));
+        rabbitTemplate.convertAndSend(exchange, routingKey, addSubmissionToExam);
+    }
+
+    public void saveSubmissionRequest(Long submissionId) {
+        LOGGER.info(String.format("Message sent -> submission id: %s", submissionId));
+        rabbitTemplate.convertAndSend(exchange, routingKey, submissionId);
     }
 }

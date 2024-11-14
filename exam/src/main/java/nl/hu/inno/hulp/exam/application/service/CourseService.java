@@ -4,6 +4,7 @@ import nl.hu.inno.hulp.commons.dto.GradingCriteriaDTO;
 import nl.hu.inno.hulp.commons.request.CourseRequest;
 import nl.hu.inno.hulp.commons.response.CourseResponse;
 import nl.hu.inno.hulp.commons.response.*;
+import nl.hu.inno.hulp.exam.ExamProducer;
 import nl.hu.inno.hulp.exam.data.CourseRepository;
 import nl.hu.inno.hulp.exam.data.ExamRepository;
 import nl.hu.inno.hulp.exam.data.QuestionRepository;
@@ -32,13 +33,16 @@ public class CourseService {
     private final ExamRepository examRepository;
     private final QuestionRepository questionRepository;
     private final RestTemplate restTemplate;
+    private final ExamProducer examProducer;
+
 
     @Autowired
-    public CourseService(CourseRepository courseRepository, ExamRepository examRepository, QuestionRepository questionRepository, RestTemplate restTemplate) {
+    public CourseService(CourseRepository courseRepository, ExamRepository examRepository, QuestionRepository questionRepository, RestTemplate restTemplate, ExamProducer examProducer) {
         this.courseRepository = courseRepository;
         this.examRepository = examRepository;
         this.questionRepository = questionRepository;
         this.restTemplate = restTemplate;
+        this.examProducer = examProducer;
     }
 
     public List<CourseResponse> getAllCourses() {
@@ -101,6 +105,15 @@ public class CourseService {
 
         return examResponses;
     }
+    public ExamResponse getApprovedExamByCourse(Long courseId,Long examId){
+            Course course=courseRepository.findById(courseId).orElseThrow();
+            Exam exam=examRepository.findById(examId).orElseThrow();
+
+            if(course.getApprovedExams().contains(exam)){
+                return getExamResponse(exam);
+            }
+            else throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Exam not Approved");
+    }
 
     public ExamResponse acceptExam(long examId, Long courseId) throws Exception {
         Exam exam = examRepository.findById(examId).orElseThrow();
@@ -141,6 +154,10 @@ public class CourseService {
     private TeacherResponse getTeacherResponse(Long teacherId) {
         return getTeacherById(teacherId);
     }
+    public void sendAndProcessCourse(Long id) {
+
+        this.examProducer.sendCourseResponse((getCourseById(id)));
+    }
 
     private CourseResponse getCourseResponse(Course course){
         List<ExamResponse> approvedExamResponses = new ArrayList<>();
@@ -165,10 +182,6 @@ public class CourseService {
                 approvedExamResponses, rejectedExamResponses, validatingExamResponses);
     }
 
-    public Course findCourseByExamId(Long examId) {
-        return courseRepository.findByApprovedExamsId(examId);
-    }
-
     private ExamResponse getExamResponse(Exam exam) {
 
         GradingCriteriaDTO gradingCriteriaDTO = new  GradingCriteriaDTO(0,0);
@@ -180,7 +193,7 @@ public class CourseService {
         }
 
         List<SubmissionResponse> submissionResponses = exam.getSubmissionIds().stream()
-                .map(submissionId -> getSubmissionById(submissionId))
+                .map(this::getSubmissionById)
                 .collect(Collectors.toList());
 
 
@@ -231,13 +244,16 @@ public class CourseService {
 
     public TeacherResponse getTeacherById(Long id) {
         String url = "http://localhost:8081/teacher/" + id;
+        examProducer.sendTeacherRequest(id);
 
-        ResponseEntity<TeacherResponse> response = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<>() {});
+        return restTemplate.getForObject(url, TeacherResponse.class);
+    }
 
-        return response.getBody();
+    // rpc
+    public CourseResponse findCourseResponseByExamId(Long examId) {
+
+        Course course = courseRepository.findByApprovedExamsId(examId);
+        return getCourseResponse(course);
+
     }
 }

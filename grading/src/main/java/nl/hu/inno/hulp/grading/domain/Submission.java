@@ -16,7 +16,7 @@ public class Submission {
     private Long id;
 
     @Transient
-    private ExamSessionDTO examSession;
+    private Long examSessionId;
 
     @Transient
     private Grading grading;
@@ -24,18 +24,17 @@ public class Submission {
     @Enumerated(EnumType.STRING)
     private SubmissionStatus status;
 
-    private Submission(ExamSessionDTO examSession) {
-        this.examSession = examSession;
+    private Submission(Long examSessionSessionId) {
+        this.examSessionId = examSessionSessionId;
         this.status = SubmissionStatus.SUBMITTED;
     }
 
     protected Submission() {
     }
 
-    public static Submission createSubmission(ExamSessionDTO examSession) {
-        return new Submission(examSession);
+    public static Submission createSubmission(Long examSessionId) {
+        return new Submission(examSessionId);
     }
-
 
     public void addGrading(Grading grading) {
         this.grading = grading;

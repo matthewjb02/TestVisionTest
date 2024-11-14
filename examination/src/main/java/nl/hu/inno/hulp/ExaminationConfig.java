@@ -33,6 +33,12 @@ public class ExaminationConfig {
     @Value("${rabbitmq.queue.name}")
     private String queue;
 
+    @Value("${rabbitmq.examsession.exam.queue}")
+    private String examSessionQueue;
+
+    @Value("${rabbitmq.examsession.grading.queue}")
+    private String examSessionGradingQueue;
+
     @Value("${rabbitmq.exchange.name}")
     private String exchange;
 
@@ -42,6 +48,16 @@ public class ExaminationConfig {
     @Bean
     public Queue queue() {
         return new Queue(queue);
+    }
+
+    @Bean
+    public Queue examSessionQueue() {
+        return new Queue(examSessionQueue);
+    }
+
+    @Bean
+    public Queue examSessionGradingQueue() {
+        return new Queue(examSessionGradingQueue);
     }
 
     @Bean
@@ -56,6 +72,23 @@ public class ExaminationConfig {
                 .to(exchange())
                 .with(routingKey);
     }
+
+    @Bean
+    public Binding examSessionBinding() {
+        return BindingBuilder
+                .bind(examSessionQueue())
+                .to(exchange())
+                .with(routingKey);
+    }
+
+    @Bean
+    public Binding examSessionGradingBinding() {
+        return BindingBuilder
+                .bind(examSessionGradingQueue())
+                .to(exchange())
+                .with(routingKey);
+    }
+
 
     @Bean
     public MessageConverter converter() {

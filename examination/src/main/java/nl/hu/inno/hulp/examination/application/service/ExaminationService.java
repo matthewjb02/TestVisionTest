@@ -33,7 +33,8 @@ public class ExaminationService {
     public ExaminationResponse createExamination(CreateExamination request) {
         ExamDate examDate = new ExamDate(request.examDate().startDate, request.examDate().endDate);
         Examination examination = new Examination(request.name(), request.examId(), request.password(), examDate,
-                request.duration(), request.extraTime());
+                request.duration(), request.extraTime(), request.courseId());
+
         examinationRepository.save(examination);
 
         return getExaminationResponse(examination.getId());
@@ -84,10 +85,15 @@ public class ExaminationService {
         return restTemplate.getForObject(url, StudentResponse.class);
     }
 
-    public ExamResponse getExamById(Long id) {
-        String url = "http://localhost:8082/exam/" + id;
+    public ExamResponse getExamById(Long id,Long courseId) {
+        String url = "http://localhost:8082/courses/" + courseId + "/exams/" + id;
         examinationProducer.sendExamRequest(id);
         return restTemplate.getForObject(url, ExamResponse.class);
+    }
+    public CourseResponse getCourseById(Long id) {
+        String url = "http://localhost:8082/courses/" + id;
+        examinationProducer.sendCourseRequest(id);
+        return restTemplate.getForObject(url,CourseResponse.class);
     }
 
     public CandidatesResponse getCandidatesResponse(Long id, List<Long> candidates) {
@@ -99,6 +105,7 @@ public class ExaminationService {
         return new CandidatesResponse(examination.getId(), examination.getName(), studentResponses);
     }
 
+
     public ExaminationResponse getExaminationResponse(Long id) {
         Examination examination = getExaminationById(id);
         List<StudentResponse> studentResponses = examination.getCandidates().stream()
@@ -106,11 +113,19 @@ public class ExaminationService {
                 .collect(Collectors.toList());
 
         List<ExamSessionResponse> examSessionResponses = new ArrayList<>();
-        ExamResponse examResponse = getExamById(examination.getExamId());
+        CourseResponse courseResponse=getCourseById(examination.getCourseId());
+        ExamResponse examResponse = new ExamResponse();
+        for (ExamResponse exam : courseResponse.getApprovedExams()) {
+            examResponse=exam;
+        }
+        if (examResponse==null){
+            throw new NoExaminationFoundException("No exam found: " + id + " found!");
+        }
+
         ExamDateDTO examDateDTO = new ExamDateDTO();
 
         return new ExaminationResponse(examination.getId(), studentResponses, examSessionResponses,
                 examResponse, examination.getName(), examination.getPassword(), examDateDTO, examination.getDuration(),
-                examination.getExtraTime());
+                examination.getExtraTime(),courseResponse);
     }
 }

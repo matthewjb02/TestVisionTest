@@ -1,6 +1,7 @@
 package nl.hu.inno.hulp.publisher;
 
 import nl.hu.inno.hulp.commons.response.StudentResponse;
+import nl.hu.inno.hulp.commons.response.TeacherResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -27,5 +28,9 @@ public class UsersProducer {
     public void sendStudentResponse(StudentResponse studentResponse) {
         LOGGER.info(String.format("Message sent -> %s", studentResponse.toString()));
         rabbitTemplate.convertAndSend(exchange, routingKey, studentResponse);
+    }
+    public void sendTeacherResponse(TeacherResponse teacherResponse) {
+        LOGGER.info(String.format("Message sent -> %s", teacherResponse.toString()));
+        rabbitTemplate.convertAndSend(exchange, routingKey, teacherResponse);
     }
 }

@@ -8,9 +8,11 @@ import nl.hu.inno.hulp.commons.exception.NotAllowedException;
 import nl.hu.inno.hulp.commons.request.AnswerRequest;
 import nl.hu.inno.hulp.commons.request.ExamSessionRequest;
 import nl.hu.inno.hulp.commons.request.StartExamSession;
+import nl.hu.inno.hulp.commons.request.UpdateOpenQuestionPointsRequest;
 import nl.hu.inno.hulp.commons.response.ExamSessionResponse;
 import nl.hu.inno.hulp.commons.response.QuestionResponse;
 import nl.hu.inno.hulp.commons.response.StudentResponse;
+import nl.hu.inno.hulp.commons.response.SubmissionResponse;
 import nl.hu.inno.hulp.examination.data.ExamSessionRepository;
 import nl.hu.inno.hulp.examination.domain.ExamSession;
 import nl.hu.inno.hulp.publisher.ExaminationProducer;
@@ -24,7 +26,6 @@ public class ExamSessionService {
     private final ExaminationService examinationService;
     private final RestTemplate restTemplate;
     private final ExaminationProducer examinationProducer;
-
     @Autowired
     public ExamSessionService(ExamSessionRepository examSessionRepository, ExaminationService examinationService, RestTemplate restTemplate,
                               ExaminationProducer examinationProducer) {
@@ -81,6 +82,13 @@ public class ExamSessionService {
                 throw new ExamSessionNotStored("Exam session can't be stored in examination.");
             }
 
+            String createdSubmissionUrl = "http://localhost:8084/submission/" + examSession.getId();
+            SubmissionResponse submission = restTemplate.postForObject(createdSubmissionUrl, examSession.getId(), SubmissionResponse.class);
+
+
+            examinationProducer.sendAddSubmissionToExamRequest(examSession.getExamId(), submission.getSubmissionId());
+            examinationProducer.saveSubmissionRequest(submission.getSubmissionId());
+
             ExamSessionResponse examSessionResponse = getExamSessionResponse(examSession.getId());
             examinationProducer.endingSessionRequest(examSessionResponse);
             return examSessionResponse;
@@ -107,4 +115,13 @@ public class ExamSessionService {
 
         return new ExamSessionResponse(examSession.getId(), examSession.getState(), examSession.getDuration(), studentResponse);
     }
+
+    // used by other modules via rpc
+    public void updatePointsOpenQuestion(Long examSessionId, int questionNr, UpdateOpenQuestionPointsRequest request) {
+        ExamSession examSession = getExamSessionById(examSessionId);
+        Long examId = examSession.getExamId();
+
+        examinationProducer.sendUpdateQuestionGradingRequest(examSessionId, questionNr, request);
+    }
+
 }

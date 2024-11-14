@@ -43,21 +43,6 @@ public class RabbitMQConsumer {
         LOGGER.info("Message received: {}", string);
     }
 
-    @RabbitListener(queues = "${rabbit.grading.exam.queue}")
-    public SubmissionDTO consumeSubmissionByExamAndStudentId(SubmissionRequest request) {
-        LOGGER.info("Received request for submission by examId: {} and studentId: {}", request.getExamId(), request.getStudentId());
-        return examService.getSubmissionByExamAndStudentId(request.getExamId(), request.getStudentId());
-
-
-    }
-
-    @RabbitListener(queues = "${rabbit.grading.exam.queue}")
-    public List<SubmissionDTO> consumeSubmissionsByExamId(Long examId) {
-        LOGGER.info("Received request for submissions by examId: {}", examId);
-
-        return examService.getSubmissionsByExamId(examId);
-    }
-
     @RabbitListener(queues = "${rabbit.grading.examsession.name}")
     public void consumeUpdateOpenQuestionPoints(long examSessionId, int questionNr, UpdateQuestionGradingRequest request) {
         LOGGER.info("Received request for updating openQuestion points by submissionId: {} and openQuestionId: {}", examSessionId, questionNr, request);

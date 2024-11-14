@@ -54,6 +54,56 @@ public class Exam {
         totalPoints = questions.stream().mapToInt(QuestionEntity::getPoints).sum();
     }
 
+    public double calculateGrade() {
+        if (questions.isEmpty() || totalPoints == 0) {
+            return 1.0;
+        }
+
+        int totalOpenPoints = getTotalOpenQuestionPoints();
+        int totalMultipleChoicePoints = getTotalMultipleChoiceQuestionPoints();
+
+        double openQuestionWeight = gradingCriteria.getOpenQuestionWeight();
+        double multipleChoiceWeight = gradingCriteria.getClosedQuestionWeight();
+
+        int totalOpenGivenPoints = calculateTotalOpenGivenPoints();
+        int totalMultipleChoiceGivenPoints = calculateTotalMultipleChoiceGivenPoints();
+
+        double weightedOpenPoints = calculateWeightedPoints(totalOpenGivenPoints, openQuestionWeight);
+        double weightedMultipleChoicePoints = calculateWeightedPoints(totalMultipleChoiceGivenPoints, multipleChoiceWeight);
+
+        double grade = (weightedOpenPoints + weightedMultipleChoicePoints) / (totalOpenPoints + totalMultipleChoicePoints) * 10 * 2;
+        return Math.round(grade * 10.0) / 10.0;
+    }
+
+    private int calculateTotalOpenGivenPoints() {
+        int totalOpenGivenPoints = 0;
+        for (QuestionEntity question : questions) {
+            if (question instanceof OpenQuestion) {
+                totalOpenGivenPoints += question.getGivenPoints();
+            }
+        }
+        return totalOpenGivenPoints;
+    }
+
+    private int calculateTotalMultipleChoiceGivenPoints() {
+        int totalMultipleChoiceGivenPoints = 0;
+        for (QuestionEntity question : questions) {
+            if (question instanceof MultipleChoiceQuestion) {
+                MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion) question;
+                if (mcQuestion.getCorrectAnswerIndexes().equals(mcQuestion.getGivenAnswers())) {
+                    totalMultipleChoiceGivenPoints += mcQuestion.getPoints();
+                }
+            }
+        }
+        return totalMultipleChoiceGivenPoints;
+    }
+
+    private double calculateWeightedPoints(int totalGivenPoints, double weight) {
+        return totalGivenPoints * weight;
+    }
+
+
+
     public void removeQuestions(List<QuestionEntity> questions){
         this.questions.removeAll(questions);
     }
@@ -62,24 +112,6 @@ public class Exam {
         this.questions.addAll(questions);
     }
 
-    public void updateStatistics() {
-//        double passGrade = 5.5;
-//
-//        int submissionCount = submissionIds.size();
-//
-//        int passCount = (int) submissionIds.stream()
-//                .filter(submission -> submission.calculateGrade() >= passGrade)
-//                .count();
-//
-//        int failCount = submissionCount - passCount;
-//
-//        double averageScore = submissionIds.stream()
-//                .mapToDouble(Submission::calculateGrade)
-//                .average()
-//                .orElse(0);
-//
-//        statistics = new Statistics(submissionCount, passCount, failCount, averageScore);
-    }
 
     public int getTotalOpenQuestionPoints(){
         return questions.stream()
@@ -89,7 +121,7 @@ public class Exam {
     }
 
     public int getTotalMultipleChoiceQuestionPoints(){
-       return questions.stream()
+        return questions.stream()
                 .filter(question -> question instanceof MultipleChoiceQuestion)
                 .mapToInt(QuestionEntity::getPoints)
                 .sum();
@@ -98,4 +130,22 @@ public class Exam {
     public void addSubmissionId(Long submissionId) {
         this.submissionIds.add(submissionId);
     }
+
+    public void addExamMakerId(Long examMakerId) {
+        this.examMakerId = examMakerId;
+    }
+    public void addExamValidatorId(Long examValidatorId) {
+        this.examValidatorId = examValidatorId;
+    }
+
+    public void addGradingCriteria(GradingCriteria gradingCriteria) {
+        this.gradingCriteria = gradingCriteria;
+    }
+
+
+    public void addStatistics(Statistics statistics) {
+        this.statistics = statistics;
+    }
+
+
 }

@@ -14,24 +14,38 @@ import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.amqp.support.converter.SimpleMessageConverter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
 @Configuration
-@EnableRabbit
+@EnableWebSecurity
 public class ExamConfig {
-    public static final String QUEUE_NAME = "examQueue";
+
+    @Value("${rabbitmq.queue.name}")
+    private String queue;
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests((requests) -> requests.anyRequest().permitAll());
+
+        return http.build();
+    }
 
     @Bean
     public RestTemplate restTemplate(){
         return new RestTemplate();
     }
     @Bean
-    public Queue examQueue() {
-        return new Queue(QUEUE_NAME, true);
+    public Queue Queue() {
+        return new Queue(queue);
     }
 
     @Bean
@@ -45,4 +59,5 @@ public class ExamConfig {
         rabbitTemplate.setMessageConverter(converter());
         return rabbitTemplate;
     }
+
 }
