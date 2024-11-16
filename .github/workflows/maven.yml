@@ -37,4 +37,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: grading-module
-          path: grading/target/grading-module.jar
+          path: grading/target/grading-0.0.1-SNAPSHOT.jar
