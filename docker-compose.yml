@@ -6,4 +6,26 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    networks:
+      - app_network
 
+  grading_postgres:
+    image: postgres:14-alpine
+    container_name: grading_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: welkom123
+      POSTGRES_DB: testvision_grading
+    ports:
+      - "25432:5432"
+    volumes:
+      - grading_postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+
+volumes:
+  grading_postgres_data:
+
+networks:
+  app_network:
+    driver: bridge
