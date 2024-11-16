@@ -8,7 +8,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RabbitMQConsumer {
+public class RabbitMQConsumer  {
 
     private final SubmissionService submissionService;
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(RabbitMQConsumer.class);
