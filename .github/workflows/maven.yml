@@ -1,4 +1,4 @@
-name: Java CI and Deploy to Azure Web App
+name: Java CI and Build Grading Module (Manual Deploy to Azure Web App)
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,7 +20,6 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: maven
 
       - name: Cache Maven dependencies
         uses: actions/cache@v3
@@ -33,37 +32,9 @@ jobs:
       - name: Build with Maven
         run: mvn clean install -DskipTests=true
 
-      - name: Upload artifact for deployment
+      - name: Upload grading module artifact
         if: github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@v3
         with:
-          name: java-app
-          path: target/*.jar
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build-and-deploy
-    environment: production
-    permissions:
-      id-token: write
-
-    steps:
-      - name: Download build artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: java-app
-
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: 'INNO-Testvision-grading'
-          slot-name: 'production'
-          package: '*.jar'
-          enable-logging: true
+          name: grading-module
+          path: grading/target/grading-module.jar

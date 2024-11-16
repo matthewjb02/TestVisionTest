@@ -23,11 +23,11 @@ public class RabbitMQConsumer {
 //        LOGGER.info("Message received: {}", string);
 //    }
 
-    @RabbitListener(queues = "${rabbitmq.examsession.grading.queue}")
-    public void consumeAddSubmissionMessage(Long submissionId) {
-        LOGGER.info("Message received: {}", submissionId);
-        submissionService.saveSubmission(submissionId);
-    }
+//    @RabbitListener(queues = "${rabbitmq.examsession.grading.queue}")
+//    public void consumeAddSubmissionMessage(Long submissionId) {
+//        LOGGER.info("Message received: {}", submissionId);
+//        submissionService.saveSubmission(submissionId);
+//    }
 }
 
 
