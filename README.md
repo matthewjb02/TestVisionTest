@@ -22,6 +22,13 @@ Na opstarten kun je alvast kijken op
 
   (als het goed is kloppen de defaults, anders moet je de url/username even uit de application.properties vissen)
 
+# README Deployment
+
+## README Matthew - Edutech Product Services - Productie Deployment
+- Ik heb een virtual machine (VM) in Azure opgezet waarop RabbitMQ en een PostgreSQL-database voor de gradingmodule draaien. Hiervoor heb ik Docker en Docker-Compose geïnstalleerd op de VM en vervolgens het docker-compose.yml-bestand uitgevoerd om de services te starten.
+- Ik heb een virtueel netwerk gemaakt met een subnet voor de grading module. de VM draait op dit virutele netwerk
+- Ik heb een poging gedaan om de grading-module als webapplicatie te deployen op Azure. Hiervoor is een Azure Web App gekoppeld aan de GitHub-repository van de applicatie, waarbij de main-branch als standaard is ingesteld. de webapp zelf is verbonden met het virutele netwerk op het subnet voor de grading module.Een GitHub Actions-workflow is geconfigureerd om de applicatie te bouwen en te deployen. Jammer genoeg slaagt de build niet vanwege: "Failed to CreateArtifact: Artifact storage quota has been hit. Unable to upload any new artifacts.
+
 # README Messaging
 
 ## README Matthew - Edutech Product Services - Messaging
