@@ -29,6 +29,9 @@ Na opstarten kun je alvast kijken op
 - Ik heb een virtueel netwerk gemaakt met een subnet voor de grading module. de VM draait op dit virutele netwerk
 - Ik heb een poging gedaan om de grading-module als webapplicatie te deployen op Azure. Hiervoor is een Azure Web App gekoppeld aan de GitHub-repository van de applicatie, waarbij de main-branch als standaard is ingesteld. de webapp zelf is verbonden met het virutele netwerk op het subnet voor de grading module.Een GitHub Actions-workflow is geconfigureerd om de applicatie te bouwen en te deployen. Jammer genoeg slaagt de build niet vanwege: "Failed to CreateArtifact: Artifact storage quota has been hit. Unable to upload any new artifacts.
 
+## README Ruben - Edutech Product Services - Productie Deployment
+- Ik heb virtueel netwerk aangemaakt en daarmee heb ik een aantal vms aangezet om de modules te deployen.
+
 # README Messaging
 
 ## README Matthew - Edutech Product Services - Messaging
