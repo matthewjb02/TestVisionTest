@@ -43,11 +43,11 @@ jobs:
           name: grading-module
           path: grading/target/grading-0.0.1-SNAPSHOT.jar
 
-      - name: Upload secrets.properties
+      - name: Upload encrypted secrets.properties
         uses: actions/upload-artifact@v4
         with:
-          name: secrets-file
-          path: secrets.properties
+          name: encrypted-secrets-file
+          path: encrypted/secrets.properties.gpg
 
   deploy:
     runs-on: ubuntu-latest
@@ -63,10 +63,17 @@ jobs:
         with:
           name: grading-module
 
-      - name: Download secrets.properties
+      - name: Download encrypted secrets.properties file
         uses: actions/download-artifact@v4
         with:
-          name: secrets-file
+          name: encrypted-secrets-file
+
+      - name: Decrypt secrets.properties
+        run: |
+          gpg --batch --passphrase "$GPG_PASSPHRASE" --decrypt \
+          --output secrets.properties encrypted/secrets.properties.gpg
+        env:
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Set secrets as environment variables
         run: |
