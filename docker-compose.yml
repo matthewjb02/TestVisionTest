@@ -15,7 +15,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: welkom123
-      POSTGRES_DB: testvision_grading
+      POSTGRES_DB: testvision-grading
     ports:
       - "25432:5432"
     volumes:
