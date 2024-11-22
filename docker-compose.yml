@@ -10,7 +10,7 @@ services:
       - app_network
 
   grading_postgres:
-    image: postgres:14-alpine
+    image: postgres:17-alpine
     container_name: grading_postgres
     environment:
       POSTGRES_USER: postgres
