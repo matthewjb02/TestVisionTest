@@ -43,19 +43,10 @@ jobs:
           name: grading-module
           path: grading/target/grading-0.0.1-SNAPSHOT.jar
 
-      - name: Upload secrets.properties
-        uses: actions/upload-artifact@v4
-        with:
-          name: secrets-file
-          path: secrets.properties
-
   deploy:
     runs-on: ubuntu-latest
     needs: build
     if: github.ref == 'refs/heads/main'
-    environment:
-      name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
       - name: Download artifact from build job
@@ -63,20 +54,10 @@ jobs:
         with:
           name: grading-module
 
-      - name: Download secrets.properties
-        uses: actions/download-artifact@v4
-        with:
-          name: secrets-file
-
-      - name: Set secrets as environment variables
-        run: |
-          export $(grep -v '^#' secrets.properties | xargs)
-
       - name: Deploy to Azure Web App
-        id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'INNO-testvision-grading'
           slot-name: 'Production'
           package: grading-0.0.1-SNAPSHOT.jar
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_73515D5397D34CAB8FB1E26C38C3FA25 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
