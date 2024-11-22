@@ -19,9 +19,10 @@ public class Examination {
     @OneToMany(cascade = CascadeType.ALL)
     private List<ExamSession> examSessions;
 
-    @Transient
+    @Column(name = "exam_id")
     private Long examId;
-    @Transient
+
+    @Column(name = "course_id")
     private Long courseId;
 
     private String name;
@@ -43,7 +44,7 @@ public class Examination {
         this.examDate = examDate;
         this.duration = duration;
         this.extraTime = extraTime;
-        this.courseId=courseId;
+        this.courseId= courseId;
     }
 
     public int totalDuration(boolean extraTimeRight) {
