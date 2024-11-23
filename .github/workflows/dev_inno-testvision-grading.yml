@@ -1,7 +1,4 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
-name: Build and deploy JAR app to Azure Web App - INNO-testvision-grading
+name: Build and deploy Grading JAR app to Azure Web App - INNO-testvision-grading
 
 on:
   push:
@@ -22,14 +19,14 @@ jobs:
           java-version: '17'
           distribution: 'microsoft'
 
-      - name: Build with Maven
-        run: mvn clean install
+      - name: Build only Grading module
+        run: mvn -pl grading clean install
 
-      - name: Upload artifact for deployment job
+      - name: Upload Grading artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
-          name: java-app
-          path: '${{ github.workspace }}/target/*.jar'
+          name: grading-app
+          path: 'grading/target/grading-0.0.1-SNAPSHOT.jar'
 
   deploy:
     runs-on: ubuntu-latest
@@ -37,18 +34,18 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-      
+
     steps:
-      - name: Download artifact from build job
+      - name: Download Grading artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: java-app
-      
-      - name: Deploy to Azure Web App
+          name: grading-app
+
+      - name: Deploy Grading JAR to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'INNO-testvision-grading'
           slot-name: 'Production'
-          package: '*.jar'
+          package: 'grading-0.0.1-SNAPSHOT.jar'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_3AC5B4C41514457FBE064F33BD70B76C }}
