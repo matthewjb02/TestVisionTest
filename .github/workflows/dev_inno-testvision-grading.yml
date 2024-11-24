@@ -29,20 +29,12 @@ jobs:
       - name: Build Grading module
         run: mvn -pl grading clean package
 
-      # Step 4: Rename JAR for Azure
-      - name: Rename Grading JAR to app.jar
-        run: mv grading/target/grading-0.0.1-SNAPSHOT.jar grading/target/app.jar
-
-      # Step 5: Log files in target folder (debugging step)
-      - name: List files in target directory
-        run: ls -l grading/target
-
-      # Step 6: Upload renamed JAR artifact
+      # Upload Grading artifact
       - name: Upload Grading artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: grading-app
-          path: 'grading/target/app.jar'
+          path: 'grading/target/grading-0.0.1-SNAPSHOT.jar'
 
   deploy:
     runs-on: ubuntu-latest
@@ -57,12 +49,16 @@ jobs:
         with:
           name: grading-app
 
-      # Step 2: Deploy Grading JAR to Azure Web App
+      # Step 2: Rename Grading artifact
+      - name: Rename Grading artifact
+        run: mv grading-0.0.1-SNAPSHOT.jar app.jar
+
+      # Step 3: Deploy Grading JAR to Azure Web App
       - name: Deploy Grading JAR to Azure Web App
         id: deploy-grading
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'INNO-testvision-grading'
           slot-name: 'Production'
-          package: 'grading/target/app.jar'
+          package: 'app.jar'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_3AC5B4C41514457FBE064F33BD70B76C }}
