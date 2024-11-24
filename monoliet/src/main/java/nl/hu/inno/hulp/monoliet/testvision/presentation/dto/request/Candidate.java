@@ -1,8 +1,0 @@
-package nl.hu.inno.hulp.monoliet.testvision.presentation.dto.request;
-
-import nl.hu.inno.hulp.monoliet.testvision.domain.user.Student;
-
-public class Candidate {
-    public Long examinationId;
-    public Student student;
-}

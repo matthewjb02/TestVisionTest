@@ -113,7 +113,7 @@ public class ExaminationService {
                 .collect(Collectors.toList());
 
         List<ExamSessionResponse> examSessionResponses = new ArrayList<>();
-        CourseResponse courseResponse=getCourseById(examination.getCourseId());
+        CourseResponse courseResponse= getCourseById(examination.getCourseId());
         ExamResponse examResponse = new ExamResponse();
         for (ExamResponse exam : courseResponse.getApprovedExams()) {
             examResponse=exam;
