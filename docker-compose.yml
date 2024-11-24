@@ -8,15 +8,24 @@ services:
       - "15672:15672"
     networks:
       - app_network
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
 
-  examination_db:
-    image: postgres:17-alpine
-    container_name: examination_db
+  grading_postgres:
+    image: postgres:14-alpine
+    container_name: grading_postgres
+    environment:
+      POSTGRES_USER: ${GRADING_DB_USERNAME}
+      POSTGRES_PASSWORD: ${GRADING_DB_PASSWORD}
+      POSTGRES_DB: ${GRADING_DB}
+    ports:
+      - "25432:5432"
+    volumes:
+      - grading_postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+
+  examination_postgres:
+    image: postgres:14-alpine
+    container_name: examination_postgres
     environment:
       POSTGRES_USER: ${EXAMINATION_DB_USERNAME}
       POSTGRES_PASSWORD: ${EXAMINATION_DB_PASSWORD}
@@ -24,13 +33,13 @@ services:
     ports:
       - "25433:5432"
     volumes:
-      - examination_data:/var/lib/postgresql/data
+      - examination_postgres_data:/var/lib/postgresql/data
     networks:
       - app_network
 
-  exam_db:
+  exam_postgres:
     image: postgres:14-alpine
-    container_name: exam_db
+    container_name: exam_postgres
     environment:
       POSTGRES_USER: ${EXAM_DB_USERNAME}
       POSTGRES_PASSWORD: ${EXAM_DB_PASSWORD}
@@ -38,32 +47,13 @@ services:
     ports:
       - "25434:5432"
     volumes:
-      - exam_data:/var/lib/postgresql/data
-    networks:
-      - app_network
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-
-  grading_db:
-    image: postgres:14-alpine
-    container_name: grading_db
-    environment:
-      POSTGRES_USER: ${GRADING_DB_USERNAME}
-      POSTGRES_PASSWORD: ${GRADING_DB_PASSWORD}
-      POSTGRES_DB: ${GRADING_DB}
-    ports:
-      - "25434:5432"
-    volumes:
-      - grading_data:/var/lib/postgresql/data
+      - exam_postgres_data:/var/lib/postgresql/data
     networks:
       - app_network
 
-  users_db:
+  users_postgres:
     image: postgres:14-alpine
-    container_name: users_db
+    container_name: users_postgres
     environment:
       POSTGRES_USER: ${USERS_DB_USERNAME}
       POSTGRES_PASSWORD: ${USERS_DB_PASSWORD}
@@ -71,15 +61,15 @@ services:
     ports:
       - "25435:5432"
     volumes:
-      - users_data:/var/lib/postgresql/data
+      - users_postgres_data:/var/lib/postgresql/data
     networks:
       - app_network
 
 volumes:
-  examination_data:
-  exam_data:
-  grading_data:
-  users_data:
+  grading_postgres_data:
+  examination_postgres_data:
+  exam_postgres_data:
+  users_postgres_data:
 
 networks:
   app_network:
