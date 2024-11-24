@@ -25,21 +25,24 @@ jobs:
       - name: Build and install Commons module
         run: mvn -pl commons clean install
 
-
+      # Step 3: Build Grading module
       - name: Build Grading module
         run: mvn -pl grading clean package
 
-
+      # Step 4: Rename JAR for Azure
       - name: Rename Grading JAR to app.jar
         run: mv grading/target/grading-0.0.1-SNAPSHOT.jar grading/target/app.jar
 
+      # Step 5: Log files in target folder (debugging step)
+      - name: List files in target directory
+        run: ls -l grading/target
 
+      # Step 6: Upload renamed JAR artifact
       - name: Upload Grading artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: grading-app
           path: 'grading/target/app.jar'
-
 
   deploy:
     runs-on: ubuntu-latest
@@ -48,13 +51,13 @@ jobs:
       name: 'Production'
 
     steps:
-      # Download Grading artifact from build job
+      # Step 1: Download Grading artifact from build job
       - name: Download Grading artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: grading-app
 
-
+      # Step 2: Deploy Grading JAR to Azure Web App
       - name: Deploy Grading JAR to Azure Web App
         id: deploy-grading
         uses: azure/webapps-deploy@v3
