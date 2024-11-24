@@ -23,6 +23,11 @@ public class SubmissionController {
         this.rabbitMQProducer = rabbitMQProducer;
     }
 
+    @GetMapping("/test")
+    public String test() {
+        return "Grading service is up and running!";
+    }
+
     @GetMapping("/{testId}")
     public List<SubmissionResponse> getSubmissionsByTestId(@PathVariable Long testId) {
         return submissionService.getSubmissionsByExamId(testId);
