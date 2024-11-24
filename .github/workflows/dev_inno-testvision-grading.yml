@@ -19,24 +19,26 @@ jobs:
           java-version: '17'
           distribution: 'microsoft'
 
-
       - name: Install Parent POM
         run: mvn -N clean install
-
 
       - name: Build and install Commons module
         run: mvn -pl commons clean install
 
-      # Step 3: Build Grading module
-      - name: Build Grading module
-        run: mvn -pl grading clean install
 
-      # Upload Grading artifact
+      - name: Build Grading module
+        run: mvn -pl grading clean package
+
+
+      - name: Rename Grading JAR to app.jar
+        run: mv grading/target/grading-0.0.1-SNAPSHOT.jar grading/target/app.jar
+
+
       - name: Upload Grading artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: grading-app
-          path: 'grading/target/grading-0.0.1-SNAPSHOT.jar'
+          path: 'grading/target/app.jar'
 
 
   deploy:
@@ -46,11 +48,12 @@ jobs:
       name: 'Production'
 
     steps:
-      # Deploy Grading module
+      # Download Grading artifact from build job
       - name: Download Grading artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: grading-app
+
 
       - name: Deploy Grading JAR to Azure Web App
         id: deploy-grading
@@ -58,6 +61,5 @@ jobs:
         with:
           app-name: 'INNO-testvision-grading'
           slot-name: 'Production'
-          package: 'grading-0.0.1-SNAPSHOT.jar'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_3AC5B4C41514457FBE064F33BD70B76C  }}
-
+          package: 'grading/target/app.jar'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_3AC5B4C41514457FBE064F33BD70B76C }}
