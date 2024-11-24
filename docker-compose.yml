@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 services:
   rabbitmq:
     image: rabbitmq:3.9.11-management-alpine
@@ -8,23 +8,78 @@ services:
       - "15672:15672"
     networks:
       - app_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
-  grading_postgres:
+  examination_db:
     image: postgres:17-alpine
-    container_name: grading_postgres
+    container_name: examination_db
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: welkom123
-      POSTGRES_DB: testvision_grading
+      POSTGRES_USER: ${EXAMINATION_DB_USERNAME}
+      POSTGRES_PASSWORD: ${EXAMINATION_DB_PASSWORD}
+      POSTGRES_DB: ${EXAMINATION_DB}
+    ports:
+      - "25431:5432"
+    volumes:
+      - examination_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+
+  exam_db:
+    image: postgres:14-alpine
+    container_name: exam_db
+    environment:
+      POSTGRES_USER: ${EXAM_DB_USERNAME}
+      POSTGRES_PASSWORD: ${EXAM_DB_PASSWORD}
+      POSTGRES_DB: ${EXAM_DB}
     ports:
       - "25432:5432"
     volumes:
-      - grading_postgres_data:/var/lib/postgresql/data
+      - exam_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  grading_db:
+    image: postgres:14-alpine
+    container_name: grading_db
+    environment:
+      POSTGRES_USER: ${GRADING_DB_USERNAME}
+      POSTGRES_PASSWORD: ${GRADING_DB_PASSWORD}
+      POSTGRES_DB: ${GRADING_DB}
+    ports:
+      - "25433:5432"
+    volumes:
+      - grading_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+
+  users_db:
+    image: postgres:14-alpine
+    container_name: users_db
+    environment:
+      POSTGRES_USER: ${USERS_DB_USERNAME}
+      POSTGRES_PASSWORD: ${USERS_DB_PASSWORD}
+      POSTGRES_DB: ${USERS_DB}
+    ports:
+      - "25435:5432"
+    volumes:
+      - users_data:/var/lib/postgresql/data
     networks:
       - app_network
 
 volumes:
-  grading_postgres_data:
+  examination_data:
+  exam_data:
+  grading_data:
+  users_data:
 
 networks:
   app_network:
