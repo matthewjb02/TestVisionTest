@@ -20,7 +20,6 @@
 	
 	<modules>
 		<module>commons</module>
-		<module>monoliet</module>
 		<module>users</module>
 		<module>exam</module>
 		<module>examination</module>
@@ -47,10 +46,6 @@
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
 		</dependency>
 	
 		<dependency>
@@ -98,6 +93,16 @@
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 			<version> 42.7.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.github.cdimascio</groupId>
+			<artifactId>java-dotenv</artifactId>
+			<version>5.2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
 		</dependency>
     </dependencies>
 
