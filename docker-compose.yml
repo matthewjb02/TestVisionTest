@@ -22,7 +22,7 @@ services:
       POSTGRES_PASSWORD: ${EXAMINATION_DB_PASSWORD}
       POSTGRES_DB: ${EXAMINATION_DB}
     ports:
-      - "25431:5432"
+      - "25433:5432"
     volumes:
       - examination_data:/var/lib/postgresql/data
     networks:
@@ -36,7 +36,7 @@ services:
       POSTGRES_PASSWORD: ${EXAM_DB_PASSWORD}
       POSTGRES_DB: ${EXAM_DB}
     ports:
-      - "25432:5432"
+      - "25434:5432"
     volumes:
       - exam_data:/var/lib/postgresql/data
     networks:
@@ -55,7 +55,7 @@ services:
       POSTGRES_PASSWORD: ${GRADING_DB_PASSWORD}
       POSTGRES_DB: ${GRADING_DB}
     ports:
-      - "25433:5432"
+      - "25434:5432"
     volumes:
       - grading_data:/var/lib/postgresql/data
     networks:
