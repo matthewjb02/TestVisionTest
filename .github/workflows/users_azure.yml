@@ -27,7 +27,7 @@ jobs:
 
 
       - name: Build Userss module
-        run: mvn -pl userss clean install
+        run: mvn -pl users clean install
 
       - name: Upload Userss artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -46,9 +46,9 @@ jobs:
       - name: Download Users artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: users-app
+          name: userss-app
 
-      - name: Deploy Users JAR to Azure Web App
+      - name: Deploy Userss JAR to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
