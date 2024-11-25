@@ -1,6 +1,5 @@
 name: Build and deploy Grading and Commons JAR apps to Azure Web Apps
 
-
 on:
   push:
     branches:
@@ -21,10 +20,8 @@ jobs:
           java-version: '17'
           distribution: 'microsoft'
 
-
       - name: Install Parent POM
         run: mvn -N clean install
-
 
       - name: Build and install Commons module
         run: mvn -pl commons clean install
@@ -40,6 +37,16 @@ jobs:
           name: grading-app
           path: 'grading/target/grading-0.0.1-SNAPSHOT.jar'
 
+      # Step 4: Build Examination module
+      - name: Build Examination module
+        run: mvn -pl examination clean install
+
+      # Upload Examination artifact
+      - name: Upload Examination artifact for deployment job
+        uses: actions/upload-artifact@v4
+        with:
+          name: examination-app
+          path: 'examination/target/examination-0.0.1-SNAPSHOT.jar'
 
   deploy:
     runs-on: ubuntu-latest
@@ -48,7 +55,7 @@ jobs:
       name: 'Production'
 
     steps:
-      # Deploy Grading module
+
       - name: Download Grading artifact from build job
         uses: actions/download-artifact@v4
         with:
@@ -61,4 +68,19 @@ jobs:
           app-name: 'INNO-testvision-grading'
           slot-name: 'Production'
           package: 'grading-0.0.1-SNAPSHOT.jar'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_3AC5B4C41514457FBE064F33BD70B76C  }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_3AC5B4C41514457FBE064F33BD70B76C }}
+
+
+      - name: Download Examination artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: examination-app
+
+      - name: Deploy Examination JAR to Azure Web App
+        id: deploy-examination
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'INNO-testvision-examination'
+          slot-name: 'Production'
+          package: 'examination-0.0.1-SNAPSHOT.jar'
+          publish-profile: ${{secrets.AZUREAPPSERVICE_PUBLISHPROFILE_39830FA5EA934936B8707C5FA285E813 }}
