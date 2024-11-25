@@ -40,7 +40,7 @@ jobs:
     needs: build
     environment:
       name: 'exmaination_Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
 
     steps:
       - name: Download Examination artifact from build job
