@@ -25,6 +25,21 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>nl.hu.inno.hulp.UsersApplication</mainClass>
+                </configuration>
+            </plugin>
+
+        </plugins>
+
+    </build>
+
     <properties>
         <maven.compiler.source>19</maven.compiler.source>
         <maven.compiler.target>19</maven.compiler.target>

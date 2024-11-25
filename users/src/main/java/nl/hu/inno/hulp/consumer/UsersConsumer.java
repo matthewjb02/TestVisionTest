@@ -19,15 +19,15 @@ public class UsersConsumer {
     public UsersConsumer(StudentService studentService) {
         this.studentService = studentService;
     }
-
-    @RabbitListener(queues = {"examination"})
-    public void consumeStudentId(Long studentId) {
-        LOGGER.info(String.format("Received message -> %s", studentId));
-        studentService.processAndSendStudentResponse(studentId);
-    }
-    @RabbitListener(queues = {"exam"})
-    public void consumeTeacherId(Long teacherId) {
-        LOGGER.info(String.format("Received message -> %s", teacherId));
-        teacherService.processAndSendTeacherResponse(teacherId);
-    }
+//
+//    @RabbitListener(queues = {"examination"})
+//    public void consumeStudentId(Long studentId) {
+//        LOGGER.info(String.format("Received message -> %s", studentId));
+//        studentService.processAndSendStudentResponse(studentId);
+//    }
+//    @RabbitListener(queues = {"exam"})
+//    public void consumeTeacherId(Long teacherId) {
+//        LOGGER.info(String.format("Received message -> %s", teacherId));
+//        teacherService.processAndSendTeacherResponse(teacherId);
+//    }
 }
