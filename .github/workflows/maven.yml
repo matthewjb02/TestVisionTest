@@ -65,7 +65,7 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'INNO-testvision-grading'
-          slot-name: 'Production'
+          slot-name: 'Production_grading'
           package: 'grading-0.0.1-SNAPSHOT.jar'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_3AC5B4C41514457FBE064F33BD70B76C }}
 
@@ -80,6 +80,6 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'INNO-testvision-examination'
-          slot-name: 'Production'
+          slot-name: 'Production_examination'
           package: 'examination-0.0.1-SNAPSHOT.jar'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C425286D981E4D8480B8051376B3814E}}
