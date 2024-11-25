@@ -1,4 +1,4 @@
-name: Build and deploy Exam JAR app to Azure Web App
+name: Build and deploy Users JAR app to Azure Web App
 
 on:
   push:
@@ -43,7 +43,7 @@ jobs:
 
 
     steps:
-      - name: Download Exam artifact from build job
+      - name: Download Users artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: users-app
