@@ -1,4 +1,4 @@
-name: Build and deploy Users JAR app to Azure Web App
+name: Build and deploy Userss JAR app to Azure Web App
 
 on:
   push:
@@ -26,20 +26,20 @@ jobs:
         run: mvn -pl commons clean install
 
 
-      - name: Build Users module
-        run: mvn -pl users clean install
+      - name: Build Userss module
+        run: mvn -pl userss clean install
 
-      - name: Upload Users artifact for deployment job
+      - name: Upload Userss artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
-          name: users-app
+          name: userss-app
           path: 'users/target/users-0.0.1-SNAPSHOT.jar'
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: 'users_Production'
+      name: 'userss_Production'
 
 
     steps:
@@ -52,7 +52,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'users'
+          app-name: 'userss'
           slot-name: 'Production'
           package: 'users-0.0.1-SNAPSHOT.jar'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_FEBE08812EA440EDBE43E2B69683ACE6 }}
