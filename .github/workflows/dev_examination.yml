@@ -1,7 +1,4 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
-name: Build and deploy JAR app to Azure Web App - examination
+name: Build and deploy Examination JAR app to Azure Web App
 
 on:
   push:
@@ -22,33 +19,40 @@ jobs:
           java-version: '17'
           distribution: 'microsoft'
 
-      - name: Build with Maven
-        run: mvn clean install
+      - name: Install Parent POM
+        run: mvn -N clean install
 
-      - name: Upload artifact for deployment job
+      - name: Build and install Commons module
+        run: mvn -pl commons clean install
+
+
+      - name: Build Examination module
+        run: mvn -pl examination clean install
+
+      - name: Upload Examination artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
-          name: java-app
-          path: '${{ github.workspace }}/target/*.jar'
+          name: examination-app
+          path: 'examination/target/examination-0.0.1-SNAPSHOT.jar'
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: 'Production'
+      name: 'exmaination_Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-      
+
     steps:
-      - name: Download artifact from build job
+      - name: Download Examination artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: java-app
-      
-      - name: Deploy to Azure Web App
+          name: examination-app
+
+      - name: Deploy Examination JAR to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'examination'
           slot-name: 'Production'
-          package: '*.jar'
+          package: 'examination-0.0.1-SNAPSHOT.jar'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_7B2300470C7A44E1ADB97EC83BB840F3 }}
