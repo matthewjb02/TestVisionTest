@@ -83,4 +83,4 @@ jobs:
           app-name: 'INNO-testvision-examination'
           slot-name: 'Production'
           package: 'examination-0.0.1-SNAPSHOT.jar'
-          publish-profile: ${{secrets.AZUREAPPSERVICE_PUBLISHPROFILE_39830FA5EA934936B8707C5FA285E813 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_39830FA5EA934936B8707C5FA285E813 }}
