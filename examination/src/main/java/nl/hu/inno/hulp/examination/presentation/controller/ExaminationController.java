@@ -20,6 +20,12 @@ public class ExaminationController {
         this.examinationService = examinationService;
     }
 
+    @GetMapping("/test")
+    public String test() {
+        return "Grading service is up and running!";
+    }
+
+
     @GetMapping("{id}")
     public ExaminationResponse getExamination(@PathVariable Long id) {
         try {
