@@ -11,13 +11,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
 
       - name: Set up Java version
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
-
+          distribution: 'microsoft'
 
       - name: Install Parent POM
         run: mvn -N clean install
@@ -52,7 +52,6 @@ jobs:
     needs: build
     environment:
       name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
 
@@ -80,7 +79,7 @@ jobs:
         id: deploy-examination
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'examination'
+          app-name: 'INNO-testvision-examination'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C425286D981E4D8480B8051376B3814E }}
           package: 'examination-0.0.1-SNAPSHOT.jar'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C425286D981E4D8480B8051376B3814E}}
