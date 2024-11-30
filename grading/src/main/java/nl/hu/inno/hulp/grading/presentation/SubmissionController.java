@@ -33,7 +33,7 @@ public class SubmissionController {
         return submissionService.getSubmissionsByExamId(testId);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/sub")
     public SubmissionResponse getSubmissionById(@PathVariable Long id) {
         return submissionService.getSubmissionResponseById(id);
     }
