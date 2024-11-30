@@ -41,17 +41,17 @@ public class ExamConsumer {
         LOGGER.info(String.format("Received JSON message teacherResponse -> %s", teacherResponse));
     }
 
-    //@RabbitListener(queues = "${rabbitmq.examsession.exam.queue}")
+    @RabbitListener(queues = "${rabbitmq.examsession.exam.queue}")
     public void receiveUpdateOpenQuestionGradingMessage(UpdateOpenQuestionPoints message) {
         examService.updatePointsForOpenQuestion(message.getExamId(), message.getQuestionNr(), message.getGrading());
     }
 
-    //@RabbitListener(queues = "${rabbit.grading.exam.queue}")
+    @RabbitListener(queues = "${rabbit.grading.exam.queue}")
     public void receiveUpdateExamStatisticsMessage(Long examId) {
         examService.updateStatistics(examId);
     }
 
-    //@RabbitListener(queues = "${rabbitmq.examsession.exam.queue}")
+    @RabbitListener(queues = "${rabbitmq.examsession.exam.queue}")
     public void receiveAddSubmissionToExamMessage(AddSubmissionToExam message) {
         examService.addSubmission(message.getExamId(), message.getSubmissionId());
     }

@@ -15,10 +15,10 @@ public class Submission {
     @GeneratedValue
     private Long id;
 
-    @Transient
+    @Column (name = "exam_session_id")
     private Long examSessionId;
 
-    @Transient
+    @OneToOne(cascade = CascadeType.ALL)
     private Grading grading;
 
     @Enumerated(EnumType.STRING)

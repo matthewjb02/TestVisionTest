@@ -50,7 +50,7 @@ public class SubmissionController {
     }
 
     // rpc
-    @PostMapping("/{examSessionId}")
+    @PostMapping("/{examSessionId}/create")
     public SubmissionResponse createSubmission(@PathVariable Long examSessionId) {
         return submissionService.createSubmission(examSessionId);
     }

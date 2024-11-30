@@ -73,7 +73,7 @@ public class ExamSessionService {
     }
 
     public ExamSessionResponse endExamSession(ExamSessionRequest request) {
-        ExamSession examSession = getExamSessionById(request.examSessionId());
+        ExamSession examSession = getExamSessionById(request.getExamSessionId());
 
         if (examSession.getState() == ExamState.Active) {
             examSession.endSession();
@@ -82,10 +82,11 @@ public class ExamSessionService {
                 throw new ExamSessionNotStored("Exam session can't be stored in examination.");
             }
 
-            String createdSubmissionUrl = "http://localhost:8084/submission/" + examSession.getId();
+            String createdSubmissionUrl = "http://localhost:8084/submission/" + examSession.getId() + "/create";
             SubmissionResponse submission = restTemplate.postForObject(createdSubmissionUrl, examSession.getId(), SubmissionResponse.class);
 
 
+            assert submission != null;
             examinationProducer.sendAddSubmissionToExamRequest(examSession.getExamId(), submission.getSubmissionId());
             examinationProducer.saveSubmissionRequest(submission.getSubmissionId());
 
@@ -105,7 +106,7 @@ public class ExamSessionService {
 
     public StudentResponse getStudentResponse(Long id) {
         String url = "http://localhost:8081/student/" + id;
-        examinationProducer.sendStudentRequest(id);
+//        examinationProducer.sendStudentRequest(id);
         return restTemplate.getForObject(url, StudentResponse.class);
     }
 

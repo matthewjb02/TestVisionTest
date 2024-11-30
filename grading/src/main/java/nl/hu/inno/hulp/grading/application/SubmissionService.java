@@ -97,14 +97,16 @@ public class SubmissionService {
         submissionRepository.save(submission);
     }
 
-
     public SubmissionResponse createSubmission(Long examSessionId) {
+        if (examSessionId == null) {
+            throw new IllegalArgumentException("ExamSession ID must not be null");
+        }
+
         Submission submission = Submission.createSubmission(examSessionId);
-        SubmissionResponse submissionResponse = toSubmissionResponse(submission.getId());
+        submission = submissionRepository.save(submission);
 
 
         return toSubmissionResponse(submission.getId());
-
     }
 
     public void saveSubmission(Long id) {
@@ -119,7 +121,8 @@ public class SubmissionService {
         String examSessionUrl = "http://localhost:8083/session/" + submission.getExamSessionId();
         ExamSessionResponse examSession = restTemplate.getForObject(examSessionUrl, ExamSessionResponse.class);
 
-        return new SubmissionResponse(examSession, submission.getId(), submission.getStatus(), toGradingsResponse(submission.getGrading()));
+        assert examSession != null;
+        return new SubmissionResponse(examSession, submission.getId(), submission.getStatus());
 
     }
 

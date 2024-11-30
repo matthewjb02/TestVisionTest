@@ -18,10 +18,10 @@ public class ExamSession {
     @GeneratedValue
     private Long id;
 
-    @Transient
+    @Column(name = "examination_id")
     private Long examinationId;
 
-    @Transient
+    @Column(name = "student_id")
     private Long studentId;
 
     @Transient
@@ -50,9 +50,9 @@ public class ExamSession {
     }
 
     public ExamSession startSession(String password) {
-        if (!examDate.checkDate()) {
-            throw new ExamDateException("Session cannot be started because your to soon or to late");
-        }
+//        if (!examDate.checkDate()) {
+//            throw new ExamDateException("Session cannot be started because your to soon or to late");
+//        }
 
         if (verifyPassword(password)) {
             changeState(ExamState.Active);
