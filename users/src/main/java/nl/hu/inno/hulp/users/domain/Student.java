@@ -1,16 +1,16 @@
 package nl.hu.inno.hulp.users.domain;
 
 import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.springframework.data.aerospike.mapping.Document;
 
-@Entity
-@Getter
+@EqualsAndHashCode(callSuper = true)
+@Data
+@Document
 public class Student extends User {
     @Id
-    @GeneratedValue
     private Long id;
     private boolean extraTimeRight = false;
     @Embedded

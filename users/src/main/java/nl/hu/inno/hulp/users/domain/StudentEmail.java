@@ -2,9 +2,14 @@ package nl.hu.inno.hulp.users.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import lombok.Data;
+import org.springframework.data.aerospike.mapping.Document;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+@Data
+@Document
 @Embeddable
 public class StudentEmail {
     @Column(name = "email", unique = true, nullable = false)

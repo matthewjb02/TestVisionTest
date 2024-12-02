@@ -1,10 +1,13 @@
 package nl.hu.inno.hulp.users.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.springframework.data.aerospike.mapping.Document;
 
-@Entity
-@Getter
+@EqualsAndHashCode(callSuper = true)
+@Data
+@Document
 public class Teacher extends User {
     @GeneratedValue
     @Id
