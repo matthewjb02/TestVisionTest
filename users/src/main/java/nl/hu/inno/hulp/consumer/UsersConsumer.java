@@ -8,17 +8,17 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-//@Service
+@Service
 public class UsersConsumer {
-    //private static final Logger LOGGER = LoggerFactory.getLogger(UsersConsumer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UsersConsumer.class);
 
-    //private StudentService studentService;
-    //private TeacherService teacherService;
+    private StudentService studentService;
+    private TeacherService teacherService;
 
-    //@Autowired
-    //public UsersConsumer(StudentService studentService) {
-        //this.studentService = studentService;
-    //}
+    @Autowired
+    public UsersConsumer(StudentService studentService) {
+        this.studentService = studentService;
+    }
 
     /*@RabbitListener(queues = {"examination"})
     public void consumeStudentId(Long studentId) {
