@@ -9,67 +9,25 @@ services:
     networks:
       - app_network
 
-  grading_postgres:
-    image: postgres:14-alpine
-    container_name: grading_postgres
+  scylla:
+    image: scylladb/scylla
+    container_name: scylla
     environment:
-      POSTGRES_USER: ${GRADING_DB_USERNAME}
-      POSTGRES_PASSWORD: ${GRADING_DB_PASSWORD}
-      POSTGRES_DB: ${GRADING_DB}
+      - SCYLLA_CLUSTER_NAME=universal_cluster
+      - SCYLLA_LISTEN_ADDRESS=0.0.0.0
+      - SCYLLA_BROADCAST_ADDRESS=scylla
+      - SCYLLA_RPC_ADDRESS=0.0.0.0
+      - SCYLLA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
     ports:
-      - "25432:5432"
+      - "9042:9042"  # CQL port
+      - "7001:7001"  # Cluster communication port
     volumes:
-      - grading_postgres_data:/var/lib/postgresql/data
-    networks:
-      - app_network
-
-  examination_postgres:
-    image: postgres:14-alpine
-    container_name: examination_postgres
-    environment:
-      POSTGRES_USER: ${EXAMINATION_DB_USERNAME}
-      POSTGRES_PASSWORD: ${EXAMINATION_DB_PASSWORD}
-      POSTGRES_DB: ${EXAMINATION_DB}
-    ports:
-      - "25433:5432"
-    volumes:
-      - examination_postgres_data:/var/lib/postgresql/data
-    networks:
-      - app_network
-
-  exam_postgres:
-    image: postgres:14-alpine
-    container_name: exam_postgres
-    environment:
-      POSTGRES_USER: ${EXAM_DB_USERNAME}
-      POSTGRES_PASSWORD: ${EXAM_DB_PASSWORD}
-      POSTGRES_DB: ${EXAM_DB}
-    ports:
-      - "25434:5432"
-    volumes:
-      - exam_postgres_data:/var/lib/postgresql/data
-    networks:
-      - app_network
-
-  users_postgres:
-    image: postgres:14-alpine
-    container_name: users_postgres
-    environment:
-      POSTGRES_USER: ${USERS_DB_USERNAME}
-      POSTGRES_PASSWORD: ${USERS_DB_PASSWORD}
-      POSTGRES_DB: ${USERS_DB}
-    ports:
-      - "25435:5432"
-    volumes:
-      - users_postgres_data:/var/lib/postgresql/data
+      - scylla_data:/var/lib/scylla
     networks:
       - app_network
 
 volumes:
-  grading_postgres_data:
-  examination_postgres_data:
-  exam_postgres_data:
-  users_postgres_data:
+  scylla_data:
 
 networks:
   app_network:
