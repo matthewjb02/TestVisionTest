@@ -51,17 +51,18 @@ services:
     networks:
       - app_network
 
-  users_postgres:
-    image: postgres:14-alpine
-    container_name: users_postgres
-    environment:
-      POSTGRES_USER: ${USERS_DB_USERNAME}
-      POSTGRES_PASSWORD: ${USERS_DB_PASSWORD}
-      POSTGRES_DB: ${USERS_DB}
+  users_aerospike:
+    image: aerospike/aerospike-server:latest
+    container_name: users_aerospike
     ports:
-      - "25435:5432"
+      - "3000:3000" # Client access
+      - "3001:3001" # Aerospike management
+      - "3002:3002" # Cluster heartbeat
+      - "3003:3003" # Fabric protocol
     volumes:
-      - users_postgres_data:/var/lib/postgresql/data
+      - users_aerospike_data:/opt/aerospike/data
+    environment:
+      - SERVICE_TYPE=load-balancer
     networks:
       - app_network
 
@@ -69,7 +70,7 @@ volumes:
   grading_postgres_data:
   examination_postgres_data:
   exam_postgres_data:
-  users_postgres_data:
+  users_aerospike_data:
 
 networks:
   app_network:

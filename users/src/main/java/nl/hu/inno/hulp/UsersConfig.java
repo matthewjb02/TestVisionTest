@@ -1,5 +1,8 @@
 package nl.hu.inno.hulp;
 
+//import com.aerospike.client.AerospikeClient;
+//import com.aerospike.client.Host;
+//import com.aerospike.client.policy.ClientPolicy;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -61,6 +64,19 @@ public class UsersConfig {
     public MessageConverter converter() {
         return new Jackson2JsonMessageConverter();
     }
+
+    /*@Bean
+    public AerospikeClient aerospikeClient() {
+        ClientPolicy clientPolicy = new ClientPolicy();
+        clientPolicy.failIfNotConnected = true; // Ensure connection is established
+        clientPolicy.timeout = 1000; // Connection timeout in milliseconds
+
+        Host[] hosts = new Host[] {
+                new Host("localhost", 3000)
+        };
+
+        return new AerospikeClient(clientPolicy, hosts);
+    }*/
 
     @Bean
     public AmqpTemplate amqpTemplate(ConnectionFactory connectionFactory) {
