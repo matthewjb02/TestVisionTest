@@ -1,33 +1,28 @@
 package nl.hu.inno.hulp.examination.domain;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 import lombok.AccessLevel;
 import lombok.Getter;
 import nl.hu.inno.hulp.commons.enums.ExamState;
-import nl.hu.inno.hulp.commons.exception.ExamDateException;
 import nl.hu.inno.hulp.commons.exception.PasswordIncorrectException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.time.LocalDate;
-import java.util.Date;
-
-@Entity
+@Document(collection = "exam_sessions")
 @Getter
 public class ExamSession {
     @Id
-    @GeneratedValue
     private Long id;
 
-    @Column(name = "examination_id")
+    @Field("examination_id")
     private Long examinationId;
 
-    @Column(name = "student_id")
+    @Field("student_id")
     private Long studentId;
 
-    @Transient
     private Long examId;
 
-    @Embedded
     private ExamDate examDate;
 
     private ExamState state;
@@ -50,31 +45,12 @@ public class ExamSession {
     }
 
     public ExamSession startSession(String password) {
-//        if (!examDate.checkDate()) {
-//            throw new ExamDateException("Session cannot be started because your to soon or to late");
-//        }
-
         if (verifyPassword(password)) {
             changeState(ExamState.Active);
             return this;
         }
-
         throw new PasswordIncorrectException("This password is incorrect.");
     }
-
-    /*public ExamSession answerQuestion(int questionNr, Object answer) {
-        QuestionEntity question = seeQuestion(questionNr);
-
-        if (question.getClass().equals(MultipleChoiceQuestion.class)){
-            MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion)question;
-            mcQuestion.setGivenAnswers((List<Integer>)answer);
-        } else {
-            OpenQuestion openQuestion = (OpenQuestion)question;
-            openQuestion.setAnswer((String) answer);
-        }
-
-        return this;
-    }*/
 
     public ExamSession endSession() {
         changeState(ExamState.Completed);
