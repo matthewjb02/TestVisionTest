@@ -19,8 +19,8 @@ services:
       - SCYLLA_RPC_ADDRESS=0.0.0.0
       - SCYLLA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
     ports:
-      - "9042:9042"  # CQL port
-      - "7001:7001"  # Cluster communication port
+      - "9042:9042"
+      - "7001:7001"
     volumes:
       - scylla_data:/var/lib/scylla
     networks:
