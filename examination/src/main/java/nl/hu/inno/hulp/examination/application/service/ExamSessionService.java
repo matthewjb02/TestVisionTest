@@ -37,7 +37,7 @@ public class ExamSessionService {
 
     public ExamSessionResponse startExamSession(StartExamSession request) {
         if (examinationService.validatingStudent(request)) {
-            ExamSession examSession = new ExamSession(examinationService.getExaminationById(request.examinationId()),
+            ExamSession examSession = new ExamSession(request.examsessionId(),examinationService.getExaminationById(request.examinationId()),
                     request.studentId(), true);
 
             examSession.startSession(request.password());
