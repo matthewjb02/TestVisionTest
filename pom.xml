@@ -27,29 +27,6 @@
 		<module>insight</module>
 	</modules>
 
-	<repositories>
-		<repository>
-			<id>maven-central</id>
-			<url>https://repo.maven.apache.org/maven2</url>
-		</repository>
-		<repository>
-			<id>sonatype</id>
-			<url>https://oss.sonatype.org/content/repositories/releases/</url>
-		</repository>
-		<repository>
-			<id>netty-repo</id>
-			<url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
-		</repository>
-		<repository>
-			<id>dropwizard-repo</id>
-			<url>https://repo1.maven.org/maven2/io/dropwizard/metrics/</url>
-		</repository>
-		<repository>
-			<id>spotbugs-repo</id>
-			<url>https://repo.maven.apache.org/maven2/com/github/spotbugs/spotbugs-annotations/</url>
-		</repository>
-	</repositories>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -119,43 +96,6 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.scylladb</groupId>
-			<artifactId>java-driver-core</artifactId>
-			<version>4.14.1.0</version> <!-- Gebruik de nieuwste stabiele versie -->
-		</dependency>
-
-		<!-- ScyllaDB Java Driver Mapper Runtime -->
-		<dependency>
-			<groupId>com.scylladb</groupId>
-			<artifactId>java-driver-mapper-runtime</artifactId>
-			<version>4.14.1.0</version>
-		</dependency>
-
-		<!-- ScyllaDB Java Driver Mapper Processor -->
-		<dependency>
-			<groupId>com.scylladb</groupId>
-			<artifactId>java-driver-mapper-processor</artifactId>
-			<version>4.14.1.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty-handler</artifactId>
-			<version>4.1.113.Final</version>
-		</dependency>
-
-		<dependency>
-			<groupId>io.dropwizard.metrics</groupId>
-			<artifactId>metrics-core</artifactId>
-			<version>4.2.22</version>
-		</dependency>
-		<dependency>
-			<groupId>com.github.spotbugs</groupId>
-			<artifactId>spotbugs-annotations</artifactId>
-			<version>4.8.3</version>
 		</dependency>
 
 		<dependency>
