@@ -9,7 +9,7 @@ import nl.hu.inno.hulp.commons.enums.ExamState;
 import nl.hu.inno.hulp.commons.exception.PasswordIncorrectException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-@Document(collection = "exam_sessions")
+@Document(collection = "Examsession")
 @Getter
 public class ExamSession {
     @Id
@@ -34,7 +34,8 @@ public class ExamSession {
     protected ExamSession() {
     }
 
-    public ExamSession(Examination context, Long studentId, boolean extraTimeRight) {
+    public ExamSession(Long id, Examination context, Long studentId, boolean extraTimeRight) {
+        this.id = id;
         this.state = ExamState.Published;
         this.examinationId = context.getId();
         this.duration = context.totalDuration(extraTimeRight);

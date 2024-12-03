@@ -32,7 +32,7 @@ public class ExaminationService {
 
     public ExaminationResponse createExamination(CreateExamination request) {
         ExamDate examDate = new ExamDate(request.examDate().startDate, request.examDate().endDate);
-        Examination examination = new Examination(request.name(), request.examId(), request.password(), examDate,
+        Examination examination = new Examination( request.id(), request.name(), request.examId(), request.password(), examDate,
                 request.duration(), request.extraTime(), request.courseId());
 
         examinationRepository.save(examination);
@@ -47,6 +47,8 @@ public class ExaminationService {
 
     public CandidatesResponse selectCandidate(Candidate candidate) {
         Examination examination = getExaminationById(candidate.examinationId);
+        examination.selectCandidate(candidate.studentId);
+        examinationRepository.save(examination);
         return getCandidatesResponse(examination.getId(), examination.selectCandidate(candidate.studentId));
     }
 

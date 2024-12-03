@@ -1,11 +1,13 @@
 package nl.hu.inno.hulp.examination.domain;
 
+import lombok.Getter;
 import org.springframework.data.mongodb.core.mapping.Field;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.Objects;
 
+@Getter
 public class ExamDate {
     @Field("begin_date")
     private Date beginDate;
@@ -34,11 +36,4 @@ public class ExamDate {
         return currentDate.before(endDate) && currentDate.after(beginDate);
     }
 
-    public Date getBeginDate() {
-        return beginDate;
-    }
-
-    public Date getEndDate() {
-        return endDate;
-    }
 }

@@ -8,11 +8,11 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-@Document(collection = "examinations")
+@Document(collection = "Examination")
 @Getter
 public class Examination {
     @Id
-    private Long id; // ID blijft Long
+    private Long id;
 
     @Field("candidates")
     private List<Long> candidates = new ArrayList<>();
@@ -37,7 +37,8 @@ public class Examination {
     protected Examination() {
     }
 
-    public Examination(String name, Long examId, String password, ExamDate examDate, int duration, int extraTime, Long courseId) {
+    public Examination(Long id, String name, Long examId, String password, ExamDate examDate, int duration, int extraTime, Long courseId) {
+        this.id = id;
         this.name = name;
         this.examId = examId;
         this.password = password;
