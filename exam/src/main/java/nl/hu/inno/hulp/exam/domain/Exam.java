@@ -7,32 +7,30 @@ import nl.hu.inno.hulp.commons.enums.ValidationStatus;
 import nl.hu.inno.hulp.exam.domain.question.MultipleChoiceQuestion;
 import nl.hu.inno.hulp.exam.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.exam.domain.question.QuestionEntity;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.couchbase.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+@Document
 @Getter
 @Setter
 public class Exam {
     @Id
-    @GeneratedValue
-    private Long id;
+    private String id;
     @Embedded
     private GradingCriteria gradingCriteria;
 
-    @Lob
     private List<Long> submissionIds = new ArrayList<>();
 
     private ValidationStatus validationStatus= ValidationStatus.WAITING;
     private String reason;
 
-    @OneToMany
     private List<QuestionEntity> questions;
 
     private Long examValidatorId;
 
-    @OneToOne(cascade = CascadeType.ALL)
     private Statistics statistics;
 
     private Long examMakerId;

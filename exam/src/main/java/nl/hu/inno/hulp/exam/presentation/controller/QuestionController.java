@@ -25,7 +25,7 @@ public class QuestionController {
     }
 
     @GetMapping("/{id}")
-    public QuestionResponse getQuestionById(@PathVariable Long id) {
+    public QuestionResponse getQuestionById(@PathVariable String id) {
         return questionService.getQuestionById(id);
     }
 
@@ -35,7 +35,7 @@ public class QuestionController {
     }
 
     @DeleteMapping("/{id}")
-    public QuestionResponse deleteQuestion(@PathVariable Long id) {
+    public QuestionResponse deleteQuestion(@PathVariable String id) {
         return questionService.deleteQuestion(id);
     }
 }

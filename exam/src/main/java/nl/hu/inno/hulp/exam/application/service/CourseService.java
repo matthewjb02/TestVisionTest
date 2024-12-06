@@ -46,7 +46,8 @@ public class CourseService {
     }
 
     public List<CourseResponse> getAllCourses() {
-            List<Course> allCourses = courseRepository.findAll();
+            List<Course> allCourses = courseRepository.findAllByCourse();
+            System.out.println(allCourses);
         List<CourseResponse> courseDTOs = new ArrayList<>();
         for (Course course : allCourses){
             courseDTOs.add(getCourseResponse(course));
@@ -55,7 +56,7 @@ public class CourseService {
         return courseDTOs;
     }
 
-    public CourseResponse getCourseById(Long id) {
+    public CourseResponse getCourseById(String id) {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No course with id: " + id + " found!"));
 
@@ -68,20 +69,20 @@ public class CourseService {
         return getCourseResponse(savedCourse);
     }
 
-    public CourseResponse deleteCourse(Long id) {
+    public CourseResponse deleteCourse(String id) {
         CourseResponse oldDTO = getCourseById(id);
         courseRepository.deleteById(id);
         return oldDTO;
     }
 
-    public CourseResponse addTeacherToCourse(Long courseId, Long teacherId) {
+    public CourseResponse addTeacherToCourse(String courseId, Long teacherId) {
         Course course=courseRepository.findById(courseId).orElseThrow();
         course.addTeacher(teacherId);
         courseRepository.save(course);
         return getCourseResponse(course);
     }
 
-    public CourseResponse addTestToCourse(Long courseId, Long testId) {
+    public CourseResponse addTestToCourse(String courseId, String testId) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found"));
 
@@ -94,7 +95,7 @@ public class CourseService {
         return getCourseResponse(course);
     }
 
-    public List<ExamResponse> getAllTestsByCourseId(Long courseId) {
+    public List<ExamResponse> getAllTestsByCourseId(String courseId) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No course with id: " + courseId + " found!"));
 
@@ -105,7 +106,7 @@ public class CourseService {
 
         return examResponses;
     }
-    public ExamResponse getApprovedExamByCourse(Long courseId,Long examId){
+    public ExamResponse getApprovedExamByCourse(String courseId,String examId){
             Course course=courseRepository.findById(courseId).orElseThrow();
             Exam exam=examRepository.findById(examId).orElseThrow();
 
@@ -115,7 +116,7 @@ public class CourseService {
             else throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Exam not Approved");
     }
 
-    public ExamResponse acceptExam(long examId, Long courseId) throws Exception {
+    public ExamResponse acceptExam(String examId, String courseId) throws Exception {
         Exam exam = examRepository.findById(examId).orElseThrow();
         Course course = courseRepository.findById(courseId).orElseThrow();
 
@@ -125,7 +126,7 @@ public class CourseService {
         return getExamResponse(exam);
     }
 
-    public ExamResponse rejectExam(long examId, Long courseId, String reason) throws Exception {
+    public ExamResponse rejectExam(String examId, String courseId, String reason) throws Exception {
         Exam exam = examRepository.findById(examId).orElseThrow();
         Course course = courseRepository.findById(courseId).orElseThrow();
         course.rejectExam(exam,exam.getExamValidatorId(),reason);
@@ -134,14 +135,14 @@ public class CourseService {
         return getExamResponse(exam);
     }
 
-    public ExamResponse viewDeniedExam(long examId, Long courseId) throws Exception {
+    public ExamResponse viewDeniedExam(String examId, String courseId) throws Exception {
         Exam exam = examRepository.findById(examId).orElseThrow();
         Course course = courseRepository.findById(courseId).orElseThrow();
         course.viewWrongExam(exam);
         return getExamResponse(exam);
     }
   
-    public ExamResponse modifyWrongExam(long examId, Long courseId, List<QuestionEntity>newQuestions) throws Exception {
+    public ExamResponse modifyWrongExam(String examId, String courseId, List<QuestionEntity>newQuestions) throws Exception {
         Exam exam = examRepository.findById(examId).orElseThrow();
         Course course = courseRepository.findById(courseId).orElseThrow();
         course.modifyQuestions(exam,exam.getQuestions(),newQuestions);
@@ -154,7 +155,7 @@ public class CourseService {
     private TeacherResponse getTeacherResponse(Long teacherId) {
         return getTeacherById(teacherId);
     }
-    public void sendAndProcessCourse(Long id) {
+    public void sendAndProcessCourse(String id) {
 
         this.examProducer.sendCourseResponse((getCourseById(id)));
     }
@@ -250,7 +251,7 @@ public class CourseService {
     }
 
     // rpc
-    public CourseResponse findCourseResponseByExamId(Long examId) {
+    public CourseResponse findCourseResponseByExamId(String examId) {
 
         Course course = courseRepository.findByApprovedExamsId(examId);
         return getCourseResponse(course);

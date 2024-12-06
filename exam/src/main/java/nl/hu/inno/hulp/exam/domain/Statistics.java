@@ -5,14 +5,17 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
+import org.springframework.data.couchbase.core.mapping.Document;
 
-@Entity
+import java.util.UUID;
+
+@Document
 @Getter
 public class Statistics {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+
+    private String id= UUID.randomUUID().toString();
 
     private int submissionCount;
     private int passCount;

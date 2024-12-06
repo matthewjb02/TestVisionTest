@@ -4,26 +4,28 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import nl.hu.inno.hulp.commons.enums.ValidationStatus;
 import nl.hu.inno.hulp.exam.domain.question.QuestionEntity;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.couchbase.core.mapping.Document;
+import org.springframework.data.couchbase.core.mapping.Field;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-@Entity
+@Document
 @Getter
 public class Course {
     @Id
-    @GeneratedValue
-    private Long id;
-
+    private String id;
+    @Field
     private String name;
-
-    @Lob
+    @Field
     private List<Long> teacherIds =new ArrayList<>();
-    @OneToMany
+    @Field
     private List<Exam> approvedExams =new ArrayList<>();
-    @OneToMany
+    @Field
     private List<Exam> validatingExams =new ArrayList<>();
-    @OneToMany
+    @Field
     private List<Exam> rejectedExams =new ArrayList<>();
 
     protected Course(){
@@ -32,6 +34,7 @@ public class Course {
 
     public Course(String name){
         this.name = name;
+        this.id= UUID.randomUUID().toString();
     }
 
     public void addTeacher(Long teacherId){

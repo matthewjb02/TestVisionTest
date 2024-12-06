@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Transactional
 public class QuestionService {
 
     private final QuestionRepository questionRepository;
@@ -40,7 +39,7 @@ public class QuestionService {
         return questionResponses;
     }
 
-    public QuestionResponse getQuestionById(Long id) {
+    public QuestionResponse getQuestionById(String id) {
         QuestionEntity question = questionRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No question with id: " + id + " found!"));
 
@@ -64,7 +63,7 @@ public class QuestionService {
         return getQuestionById(savedEntity.getId());
     }
 
-    public QuestionResponse deleteQuestion(Long id) {
+    public QuestionResponse deleteQuestion(String id) {
         QuestionResponse oldResponse = getQuestionById(id);
         questionRepository.deleteById(id);
         return oldResponse;

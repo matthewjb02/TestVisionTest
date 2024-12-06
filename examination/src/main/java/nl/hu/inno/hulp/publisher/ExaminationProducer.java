@@ -62,7 +62,7 @@ public class ExaminationProducer {
 
     }
 
-    public void sendAddSubmissionToExamRequest(Long examId, Long submissionId) {
+    public void sendAddSubmissionToExamRequest(String examId, Long submissionId) {
         AddSubmissionToExam addSubmissionToExam = new AddSubmissionToExam(examId, submissionId);
         LOGGER.info(String.format("Message sent -> exam-session id: %s, submission-response: %s", addSubmissionToExam));
         rabbitTemplate.convertAndSend(exchange, routingKey, addSubmissionToExam);

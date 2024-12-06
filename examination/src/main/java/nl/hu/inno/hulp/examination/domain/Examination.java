@@ -21,7 +21,7 @@ public class Examination {
     private List<ExamSession> examSessions = new ArrayList<>();
 
     @Field("exam_id")
-    private Long examId;
+    private String examId;
 
     @Field("course_id")
     private Long courseId;

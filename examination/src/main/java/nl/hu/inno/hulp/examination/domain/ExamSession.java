@@ -21,7 +21,7 @@ public class ExamSession {
     @Field("student_id")
     private Long studentId;
 
-    private Long examId;
+    private String examId;
 
     private ExamDate examDate;
 

@@ -5,10 +5,10 @@ import lombok.Data;
 @Data
 public class AddSubmissionToExam {
 
-    Long examId;
+    String examId;
     Long SubmissionId;
 
-    public AddSubmissionToExam(Long examId, Long submissionId) {
+    public AddSubmissionToExam(String examId, Long submissionId) {
         this.examId = examId;
         this.SubmissionId = submissionId;
     }
