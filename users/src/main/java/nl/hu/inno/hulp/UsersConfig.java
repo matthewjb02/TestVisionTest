@@ -27,6 +27,24 @@ import java.util.Collections;
 @EnableAerospikeRepositories(basePackageClasses = {StudentRepository.class, TeacherRepository.class})
 public class UsersConfig extends AbstractAerospikeDataConfiguration {
 
+    @Value("${rabbitmq.queue.name}")
+    private String queue;
+
+    @Value("${rabbitmq.exchange.name}")
+    private String exchange;
+
+    @Value ("${rabbitmq.routing.key}")
+    private String routingKey;
+
+    @Value("${aerospike.host}")
+    String host;
+
+    @Value("${aerospike.port}")
+    int port;
+
+    @Value("${aerospike.namespace}")
+    String nameSpace;
+
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
@@ -40,15 +58,6 @@ public class UsersConfig extends AbstractAerospikeDataConfiguration {
         return http.build();
     }
 
-    @Value("${aerospike.host}")
-    String host;
-
-    @Value("${aerospike.port}")
-    int port;
-
-    @Value("${aerospike.namespace}")
-    String nameSpace;
-
     @Override
     protected Collection<Host> getHosts() {
         return Collections.singleton(new Host(host, port));
@@ -58,15 +67,6 @@ public class UsersConfig extends AbstractAerospikeDataConfiguration {
     protected String nameSpace() {
         return nameSpace;
     }
-
-    @Value("${rabbitmq.queue.name}")
-    private String queue;
-
-    @Value("${rabbitmq.exchange.name}")
-    private String exchange;
-
-    @Value ("${rabbitmq.routing.key}")
-    private String routingKey;
 
     @Bean
     public Queue queue() {
