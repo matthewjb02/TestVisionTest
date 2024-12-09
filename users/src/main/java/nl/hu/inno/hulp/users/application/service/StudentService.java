@@ -36,7 +36,7 @@ public class StudentService {
     }
 
     public StudentResponse addStudent(StudentRequest studentRequest) {
-        Student student = new Student(studentRequest.firstName, studentRequest.lastName,
+        Student student = new Student(studentRequest.id, studentRequest.firstName, studentRequest.lastName,
                 studentRequest.extraTimeRight,studentRequest.email);
         studentRepository.save(student);
 
