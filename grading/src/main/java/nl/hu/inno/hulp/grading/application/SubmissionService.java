@@ -1,6 +1,5 @@
 package nl.hu.inno.hulp.grading.application;
 
-
 import jakarta.transaction.Transactional;
 import nl.hu.inno.hulp.commons.request.GradingRequest;
 import nl.hu.inno.hulp.commons.request.UpdateOpenQuestionPointsRequest;
@@ -21,11 +20,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-
 @Transactional
 @Service
 public class SubmissionService {
-
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RabbitMQProducer.class);
     private final RabbitMQProducer rabbitMQProducer;
@@ -37,18 +34,18 @@ public class SubmissionService {
         this.submissionRepository = submissionRepository;
     }
 
-    private Submission findSubmissionByExamAndStudentId(Long examId, Long studentId) {
+    private Submission findSubmissionByExamAndStudentId(String examId, String studentId) {
         String submissionUrl = "http://localhost:8086/exams/" + examId + "/students/" + studentId + "/submission";
         SubmissionResponse submissionResponse = restTemplate.getForObject(submissionUrl, SubmissionResponse.class, examId, studentId);
         Long submissionId = submissionResponse.getId();
         return submissionRepository.findById(submissionId).orElseThrow();
     }
 
-    public SubmissionResponse getSubmissionResponseById(Long id) {
+    public SubmissionResponse getSubmissionResponseById(String id) {
         return toSubmissionResponse(id);
     }
 
-    public List<SubmissionResponse> getSubmissionsByExamId(Long examId) {
+    public List<SubmissionResponse> getSubmissionsByExamId(String examId) {
         String submissionUrl = "http://localhost:8086/exams/{examId}/submissions";
         ResponseEntity<List<SubmissionResponse>> response = restTemplate.exchange(
                 submissionUrl,
@@ -61,16 +58,16 @@ public class SubmissionService {
         return response.getBody();
     }
 
-    public void updateOpenQuestionGrading(Long examId, Long studentId, int questionNr, UpdateOpenQuestionPointsRequest request) {
+    public void updateOpenQuestionGrading(String examId, String studentId, int questionNr, UpdateOpenQuestionPointsRequest request) {
         Submission submission = findSubmissionByExamAndStudentId(examId, studentId);
-        Long examSessionIdFromSubmission = submission.getExamSessionId();
+        String examSessionIdFromSubmission = submission.getExamSessionId();
 
         rabbitMQProducer.sendUpdateOpenQuestionPoints(examSessionIdFromSubmission, questionNr, request);
 
         submissionRepository.save(submission);
     }
 
-    public void addGrading(Long examId, Long studentId, GradingRequest request) {
+    public void addGrading(String examId, String studentId, GradingRequest request) {
         Submission submission = findSubmissionByExamAndStudentId(examId, studentId);
 
         String examCourseUrl = "http://localhost:8086/courses/exams/" + examId + "/course";
@@ -97,7 +94,7 @@ public class SubmissionService {
         submissionRepository.save(submission);
     }
 
-    public SubmissionResponse createSubmission(Long examSessionId) {
+    public SubmissionResponse createSubmission(String examSessionId) {
         if (examSessionId == null) {
             throw new IllegalArgumentException("ExamSession ID must not be null");
         }
@@ -105,32 +102,26 @@ public class SubmissionService {
         Submission submission = Submission.createSubmission(examSessionId);
         submission = submissionRepository.save(submission);
 
-
         return toSubmissionResponse(submission.getId());
     }
 
-    public void saveSubmission(Long id) {
+    public void saveSubmission(String id) {
         Submission submission = submissionRepository.findById(id).orElseThrow();
         submissionRepository.save(submission);
     }
 
     // helper functions
 
-    public SubmissionResponse toSubmissionResponse(Long id){
+    public SubmissionResponse toSubmissionResponse(String id){
         Submission submission = submissionRepository.findById(id).orElseThrow();
         String examSessionUrl = "http://localhost:8083/session/" + submission.getExamSessionId();
         ExamSessionResponse examSession = restTemplate.getForObject(examSessionUrl, ExamSessionResponse.class);
 
         assert examSession != null;
         return new SubmissionResponse(examSession, submission.getId(), submission.getStatus());
-
     }
 
     public GradingResponse toGradingsResponse(Grading grading) {
         return new GradingResponse(grading.getId(), grading.getGrade(), grading.getComments());
-
     }
-
-
 }
-
