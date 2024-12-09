@@ -4,6 +4,7 @@ name: Build and deploy Grading and Commons JAR apps to Azure Web Apps
 on:
   push:
     branches:
+      - master
       - main
   workflow_dispatch:
 
