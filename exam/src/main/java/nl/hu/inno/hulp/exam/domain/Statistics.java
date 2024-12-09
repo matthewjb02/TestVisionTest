@@ -6,11 +6,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import org.springframework.data.couchbase.core.mapping.Document;
+import org.springframework.data.couchbase.repository.Collection;
+import org.springframework.data.couchbase.repository.Scope;
 
 import java.util.UUID;
 
 @Document
 @Getter
+@Scope("statistics")
+@Collection("statistics")
 public class Statistics {
 
     @Id

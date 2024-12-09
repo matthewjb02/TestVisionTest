@@ -46,7 +46,8 @@ public class CourseService {
     }
 
     public List<CourseResponse> getAllCourses() {
-            List<Course> allCourses = courseRepository.findAllByCourse();
+
+            List<Course> allCourses = courseRepository.findAll();
             System.out.println(allCourses);
         List<CourseResponse> courseDTOs = new ArrayList<>();
         for (Course course : allCourses){

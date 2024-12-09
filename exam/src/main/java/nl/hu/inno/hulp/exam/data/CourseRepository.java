@@ -14,7 +14,5 @@ import java.util.List;
 public interface CourseRepository extends CouchbaseRepository<Course, String> {
     @ScanConsistency(query= QueryScanConsistency.REQUEST_PLUS)
     Course findByApprovedExamsId(String examId);
-@Query("SELECT * FROM exam WHERE _class = 'nl.hu.inno.hulp.exam.domain.Course'")
-    List<Course> findAllByCourse();
 
 }

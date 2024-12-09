@@ -40,9 +40,18 @@ public class QuestionService {
     }
 
     public QuestionResponse getQuestionById(String id) {
-        QuestionEntity question = questionRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No question with id: " + id + " found!"));
-
+//        QuestionEntity qu =questionRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,""));
+//        System.out.println(qu);
+//        String raw = questionRepository.findRawOpenQuestionById(id);
+//        System.out.println(raw);
+        try{
+             questionRepository.findOpenQuestionById(id);
+       }
+        catch (Error e){
+         throw new IllegalArgumentException(e);
+        }
+//        if (question != null) { System.out.println("Retrieved JSON: " + question); }
+        OpenQuestion question = questionRepository.findOpenQuestionById(id);
         return getQuestionResponse(question);
     }
 

@@ -83,9 +83,6 @@ public class ExamConfig extends AbstractCouchbaseConfiguration {
         return rabbitTemplate;
     }
 
-    public Cluster couchbaseCluster() {
-        return Cluster.connect(connectionString, username, password);
-    }
 
     @Override
     public String getConnectionString() {

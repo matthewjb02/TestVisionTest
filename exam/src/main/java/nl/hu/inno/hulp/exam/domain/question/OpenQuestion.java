@@ -2,8 +2,12 @@ package nl.hu.inno.hulp.exam.domain.question;
 
 import jakarta.persistence.Entity;
 import org.springframework.data.couchbase.core.mapping.Document;
+import org.springframework.data.couchbase.repository.Collection;
+import org.springframework.data.couchbase.repository.Scope;
 
 @Document
+@Scope("question")
+@Collection("openQuestion")
 public class OpenQuestion extends QuestionEntity {
     private String correctAnswer;
     private String answer = "";

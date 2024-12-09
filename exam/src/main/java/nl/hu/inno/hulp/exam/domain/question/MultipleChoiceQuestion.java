@@ -3,6 +3,8 @@ package nl.hu.inno.hulp.exam.domain.question;
 import jakarta.persistence.*;
 import lombok.Getter;
 import org.springframework.data.couchbase.core.mapping.Document;
+import org.springframework.data.couchbase.repository.Collection;
+import org.springframework.data.couchbase.repository.Scope;
 
 import java.io.Serializable;
 import java.util.List;
@@ -10,6 +12,8 @@ import java.util.UUID;
 
 @Document
 @Getter
+@Scope("question")
+@Collection("multipleChoiceQuestion")
 public class MultipleChoiceQuestion extends QuestionEntity implements Serializable {
 
     @ElementCollection

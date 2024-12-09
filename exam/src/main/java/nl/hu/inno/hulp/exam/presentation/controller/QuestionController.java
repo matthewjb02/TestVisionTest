@@ -26,6 +26,7 @@ public class QuestionController {
 
     @GetMapping("/{id}")
     public QuestionResponse getQuestionById(@PathVariable String id) {
+    System.out.println(id);
         return questionService.getQuestionById(id);
     }
 

@@ -7,12 +7,16 @@ import nl.hu.inno.hulp.exam.domain.question.QuestionEntity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.couchbase.core.mapping.Document;
 import org.springframework.data.couchbase.core.mapping.Field;
+import org.springframework.data.couchbase.repository.Collection;
+import org.springframework.data.couchbase.repository.Scope;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Document
+@Scope("course")
+@Collection("course")
 @Getter
 public class Course {
     @Id

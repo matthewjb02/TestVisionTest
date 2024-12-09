@@ -6,6 +6,8 @@ import nl.hu.inno.hulp.commons.response.ExamResponse;
 import nl.hu.inno.hulp.exam.application.service.CourseService;
 import nl.hu.inno.hulp.exam.domain.question.QuestionEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
