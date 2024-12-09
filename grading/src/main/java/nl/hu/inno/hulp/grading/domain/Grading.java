@@ -29,6 +29,5 @@ public class Grading {
 
     public void addGrader(String grader) {
         this.graderId = grader;
-
     }
 }

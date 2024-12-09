@@ -18,7 +18,7 @@ public class SubmissionResponse extends ExamSessionResponse {
     private GradingResponse grading;
 
     public SubmissionResponse(ExamSessionResponse examSession, String submissionId, SubmissionStatus submissionStatus, GradingResponse grading) {
-        super(examSession.getId(),examSession.getStatus(), examSession.getDuration(), examSession.getStudent());
+        super(examSession.getId(), examSession.getStatus(), examSession.getDuration(), examSession.getStudent());
         this.submissionId = submissionId;
         this.submissionStatus = submissionStatus;
         this.grading = new GradingResponse(grading.getId(),grading.getGrade(), grading.getComments());

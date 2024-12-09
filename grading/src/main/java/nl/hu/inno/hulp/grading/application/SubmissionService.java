@@ -37,7 +37,7 @@ public class SubmissionService {
     private Submission findSubmissionByExamAndStudentId(String examId, String studentId) {
         String submissionUrl = "http://localhost:8086/exams/" + examId + "/students/" + studentId + "/submission";
         SubmissionResponse submissionResponse = restTemplate.getForObject(submissionUrl, SubmissionResponse.class, examId, studentId);
-        Long submissionId = submissionResponse.getId();
+        String submissionId = submissionResponse.getId();
         return submissionRepository.findById(submissionId).orElseThrow();
     }
 
@@ -63,7 +63,6 @@ public class SubmissionService {
         String examSessionIdFromSubmission = submission.getExamSessionId();
 
         rabbitMQProducer.sendUpdateOpenQuestionPoints(examSessionIdFromSubmission, questionNr, request);
-
         submissionRepository.save(submission);
     }
 
@@ -72,7 +71,6 @@ public class SubmissionService {
 
         String examCourseUrl = "http://localhost:8086/courses/exams/" + examId + "/course";
         CourseResponse examCourse = restTemplate.getForObject(examCourseUrl, CourseResponse.class, examId);
-
 
         if (examCourse.getTeachers().stream().noneMatch(teacherDTO -> teacherDTO.getId() == request.getTeacherId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Teacher is not allowed to grade this exam");
