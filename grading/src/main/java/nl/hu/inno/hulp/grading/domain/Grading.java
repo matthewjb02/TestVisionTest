@@ -10,10 +10,8 @@ import java.util.UUID;
 public class Grading {
     @Id
     private String id= UUID.randomUUID().toString();
-
     private double grade = 0.0;
     private String comments;
-
     private String graderId;
 
     public Grading(double grade, String comments) {

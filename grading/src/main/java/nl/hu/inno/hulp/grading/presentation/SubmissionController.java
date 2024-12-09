@@ -1,9 +1,11 @@
 package nl.hu.inno.hulp.grading.presentation;
 
 import nl.hu.inno.hulp.commons.request.UpdateOpenQuestionPointsRequest;
+import nl.hu.inno.hulp.commons.response.TeacherResponse;
 import nl.hu.inno.hulp.grading.application.SubmissionService;
 import nl.hu.inno.hulp.commons.request.GradingRequest;
 import nl.hu.inno.hulp.commons.response.SubmissionResponse;
+import nl.hu.inno.hulp.grading.domain.Grading;
 import nl.hu.inno.hulp.grading.producer.RabbitMQProducer;
 import org.springframework.web.bind.annotation.*;
 
