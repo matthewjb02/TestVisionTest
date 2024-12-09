@@ -1,28 +1,29 @@
 package nl.hu.inno.hulp.users.domain;
 
-import com.aerospike.mapper.annotations.AerospikeKey;
-import com.aerospike.mapper.annotations.AerospikeRecord;
-import jakarta.persistence.Embedded;
+import org.springframework.data.annotation.Id;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.data.aerospike.mapping.Document;
+import org.springframework.data.aerospike.mapping.Field;
+
+import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@AerospikeRecord(namespace="users", set="students")
+@Document
 public class Student extends User {
-    @AerospikeKey
-    private Long id;
+    @Id
+    private String id = UUID.randomUUID().toString();
     private boolean extraTimeRight = false;
-    @Embedded
+    @Field("email")
     private StudentEmail email;
 
     protected Student() {
         super();
     }
 
-    public Student(Long id, String firstName, String lastName, boolean extraTimeRight,String email) {
+    public Student(String firstName, String lastName, boolean extraTimeRight, String email) {
         super(firstName, lastName);
-        this.id = id;
         this.extraTimeRight = extraTimeRight;
         this.email = new StudentEmail(email);
     }

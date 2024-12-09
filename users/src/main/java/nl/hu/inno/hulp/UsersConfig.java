@@ -8,9 +8,7 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.aerospike.config.AbstractAerospikeDataConfiguration;
@@ -26,7 +24,6 @@ import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
-@EnableConfigurationProperties(AerospikeConfigurationProperties.class)
 @EnableAerospikeRepositories(basePackageClasses = {StudentRepository.class, TeacherRepository.class})
 public class UsersConfig extends AbstractAerospikeDataConfiguration {
 
@@ -41,6 +38,25 @@ public class UsersConfig extends AbstractAerospikeDataConfiguration {
             .authorizeHttpRequests((requests) -> requests.anyRequest().permitAll());
 
         return http.build();
+    }
+
+    @Value("${aerospike.host}")
+    String host;
+
+    @Value("${aerospike.port}")
+    int port;
+
+    @Value("${aerospike.namespace}")
+    String nameSpace;
+
+    @Override
+    protected Collection<Host> getHosts() {
+        return Collections.singleton(new Host(host, port));
+    }
+
+    @Override
+    protected String nameSpace() {
+        return nameSpace;
     }
 
     @Value("${rabbitmq.queue.name}")
@@ -80,18 +96,5 @@ public class UsersConfig extends AbstractAerospikeDataConfiguration {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         rabbitTemplate.setMessageConverter(converter());
         return rabbitTemplate;
-    }
-
-    @Autowired
-    private AerospikeConfigurationProperties aerospikeConfigurationProperties;
-
-    @Override
-    protected Collection<Host> getHosts() {
-        return Collections.singleton(new Host(aerospikeConfigurationProperties.getHost(), aerospikeConfigurationProperties.getPort()));
-    }
-
-    @Override
-    protected String nameSpace() {
-        return aerospikeConfigurationProperties.getNamespace();
     }
 }
