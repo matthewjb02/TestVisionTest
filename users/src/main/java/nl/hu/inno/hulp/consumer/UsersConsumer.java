@@ -21,12 +21,12 @@ public class UsersConsumer {
     }
 
     /*@RabbitListener(queues = {"examination"})
-    public void consumeStudentId(Long studentId) {
+    public void consumeStudentId(String studentId) {
         LOGGER.info(String.format("Received message -> %s", studentId));
         studentService.processAndSendStudentResponse(studentId);
     }*/
 //    @RabbitListener(queues = {"exam"})
-//    public void consumeTeacherId(Long teacherId) {
+//    public void consumeTeacherId(String teacherId) {
 //        LOGGER.info(String.format("Received message -> %s", teacherId));
 //        teacherService.processAndSendTeacherResponse(teacherId);
 //    }
