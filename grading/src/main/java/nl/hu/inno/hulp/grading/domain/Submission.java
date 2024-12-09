@@ -1,6 +1,5 @@
 package nl.hu.inno.hulp.grading.domain;
 
-import jakarta.persistence.*;
 import lombok.Data;
 import nl.hu.inno.hulp.commons.enums.SubmissionStatus;
 import org.springframework.data.neo4j.core.schema.Id;
@@ -12,12 +11,8 @@ import java.util.UUID;
 public class Submission {
     @Id
     private String id= UUID.randomUUID().toString();
-
     private String examSessionId;
-
     private Grading grading;
-
-    @Enumerated(EnumType.STRING)
     private SubmissionStatus status;
 
     private Submission(String examSessionSessionId) {

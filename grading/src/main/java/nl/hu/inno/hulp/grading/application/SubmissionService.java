@@ -35,7 +35,7 @@ public class SubmissionService {
     }
 
     private Submission findSubmissionByExamAndStudentId(String examId, String studentId) {
-        String submissionUrl = "http://localhost:8086/exams/" + examId + "/students/" + studentId + "/submission";
+        String submissionUrl = "http://localhost:8082/exams/" + examId + "/students/" + studentId + "/submission";
         SubmissionResponse submissionResponse = restTemplate.getForObject(submissionUrl, SubmissionResponse.class, examId, studentId);
         String submissionId = submissionResponse.getId();
         return submissionRepository.findById(submissionId).orElseThrow();
@@ -69,17 +69,17 @@ public class SubmissionService {
     public void addGrading(String examId, String studentId, GradingRequest request) {
         Submission submission = findSubmissionByExamAndStudentId(examId, studentId);
 
-        String examCourseUrl = "http://localhost:8086/courses/exams/" + examId + "/course";
+        String examCourseUrl = "http://localhost:8082/courses/exams/" + examId + "/course";
         CourseResponse examCourse = restTemplate.getForObject(examCourseUrl, CourseResponse.class, examId);
 
         if (examCourse.getTeachers().stream().noneMatch(teacherDTO -> teacherDTO.getId() == request.getTeacherId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Teacher is not allowed to grade this exam");
         }
 
-        String teacherUrl = "http://localhost:8085/teacher/" + request.getTeacherId();
+        String teacherUrl = "http://localhost:8081/teacher/" + request.getTeacherId();
         TeacherResponse teacher = restTemplate.getForObject(teacherUrl, TeacherResponse.class);
 
-        String calculatedGradeUrl = "http://localhost:8086/exams/" + examId + "/gradeCalculation";
+        String calculatedGradeUrl = "http://localhost:8082/exams/" + examId + "/gradeCalculation";
         double calculatedGrade = restTemplate.getForObject(calculatedGradeUrl, Double.class, examId);
 
         Grading grading = Grading.createGrading(calculatedGrade, request.getComments());
