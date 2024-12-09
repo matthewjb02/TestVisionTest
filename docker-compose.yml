@@ -14,15 +14,12 @@ services:
   users_aerospike:
     image: aerospike/aerospike-server:latest
     container_name: users_aerospike
-    ports:
-      - "3000:3000"  # Client access
-      - "3001:3001"  # Management access
-      - "3002:3002"  # Cluster heartbeat
-      - "3003:3003"  # Fabric protocol
-    volumes:
-      - users_aerospike_data:/opt/aerospike/data
     environment:
       - SERVICE_TYPE=load-balancer
+    ports:
+      - "3000:3000"
+    volumes:
+      - users_aerospike_data:/opt/aerospike/data
     networks:
       - app_network
 
