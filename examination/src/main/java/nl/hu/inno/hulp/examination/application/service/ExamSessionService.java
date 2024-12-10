@@ -26,6 +26,7 @@ public class ExamSessionService {
     private final ExaminationService examinationService;
     private final RestTemplate restTemplate;
     private final ExaminationProducer examinationProducer;
+
     @Autowired
     public ExamSessionService(ExamSessionRepository examSessionRepository, ExaminationService examinationService, RestTemplate restTemplate,
                               ExaminationProducer examinationProducer) {
@@ -49,7 +50,7 @@ public class ExamSessionService {
         throw new NotAllowedException("Student is not allowed to start session because student is not a candidate.");
     }
 
-    public QuestionResponse seeQuestion(Long id, Long questionId)  {
+    public QuestionResponse seeQuestion(String id, String questionId)  {
         ExamSession examSession = getExamSessionById(id);
 
         if (examSession.getState() == ExamState.Active) {
@@ -82,7 +83,7 @@ public class ExamSessionService {
                 throw new ExamSessionNotStored("Exam session can't be stored in examination.");
             }
 
-            String createdSubmissionUrl = "http://localhost:8084/submission/" + examSession.getId() + "/create";
+            String createdSubmissionUrl = "https://inno-testvision-grading-abaybzgufxdvh5cy.northeurope-01.azurewebsites.net/submission/" + examSession.getId() + "/create";
             SubmissionResponse submission = restTemplate.postForObject(createdSubmissionUrl, examSession.getId(), SubmissionResponse.class);
 
 
@@ -99,18 +100,18 @@ public class ExamSessionService {
         }
     }
 
-    public ExamSession getExamSessionById(Long id) {
+    public ExamSession getExamSessionById(String id) {
         return examSessionRepository.findById(id)
                 .orElseThrow(() -> new NoExamSessionFoundException("No exam session with id: " + id + " found!"));
     }
 
-    public StudentResponse getStudentResponse(Long id) {
-        String url = "http://localhost:8081/student/" + id;
+    public StudentResponse getStudentResponse(String id) {
+        String url = "https://userss-fje9bmb2b3gtdafe.northeurope-01.azurewebsites.net/student/" + id;
 //        examinationProducer.sendStudentRequest(id);
         return restTemplate.getForObject(url, StudentResponse.class);
     }
 
-    public ExamSessionResponse getExamSessionResponse(Long id) {
+    public ExamSessionResponse getExamSessionResponse(String id) {
         ExamSession examSession = getExamSessionById(id);
         StudentResponse studentResponse = getStudentResponse(examSession.getStudentId());
 
@@ -118,9 +119,9 @@ public class ExamSessionService {
     }
 
     // used by other modules via rpc
-    public void updatePointsOpenQuestion(Long examSessionId, int questionNr, UpdateOpenQuestionPointsRequest request) {
+    public void updatePointsOpenQuestion(String examSessionId, int questionNr, UpdateOpenQuestionPointsRequest request) {
         ExamSession examSession = getExamSessionById(examSessionId);
-        Long examId = examSession.getExamId();
+        String examId = examSession.getExamId();
 
         examinationProducer.sendUpdateQuestionGradingRequest(examSessionId, questionNr, request);
     }

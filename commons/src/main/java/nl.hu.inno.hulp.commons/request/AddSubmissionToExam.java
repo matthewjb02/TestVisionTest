@@ -4,11 +4,10 @@ import lombok.Data;
 
 @Data
 public class AddSubmissionToExam {
+    String examId;
+    String SubmissionId;
 
-    Long examId;
-    Long SubmissionId;
-
-    public AddSubmissionToExam(Long examId, Long submissionId) {
+    public AddSubmissionToExam(String examId, String submissionId) {
         this.examId = examId;
         this.SubmissionId = submissionId;
     }

@@ -79,7 +79,7 @@ public class SubmissionService {
         String teacherUrl = "https://userss-fje9bmb2b3gtdafe.northeurope-01.azurewebsites.net/teacher/" + request.getTeacherId();
         TeacherResponse teacher = restTemplate.getForObject(teacherUrl, TeacherResponse.class);
 
-        String calculatedGradeUrl = "https://exam-aze2emf4etgrapew.northeurope-01.azurewebsites.net/courses/exams/exams/" + examId + "/gradeCalculation";
+        String calculatedGradeUrl = "https://exam-aze2emf4etgrapew.northeurope-01.azurewebsites.net/exams/" + examId + "/gradeCalculation";
         double calculatedGrade = restTemplate.getForObject(calculatedGradeUrl, Double.class, examId);
 
         Grading grading = Grading.createGrading(calculatedGrade, request.getComments());
