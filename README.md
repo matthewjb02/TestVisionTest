@@ -41,8 +41,6 @@ Het is mogelijk dat de requests voor het aanmaken, opvragen en bewerken van exam
 
 Voor de zekerheid is er een `dev_local` branch aangemaakt, waarin dezelfde code staat als in de `main` branch. Het verschil is dat in deze branch alles lokaal draait. Hier zou de MongoDB zonder problemen moeten functioneren.
 
-### Onderbouwing
-- 
 # README Deployment
 ## README algemeen
 Er zijn 4 modules gedeployed via azure  te bereiken via deze links.
