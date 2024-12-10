@@ -22,7 +22,7 @@ jobs:
           distribution: 'microsoft'
 
       - name: Install Parent POM
-        run: mvn -pl clean install
+        run: mvn -N clean install
 
       - name: Build and install Commons module
         run: mvn -pl commons clean install
