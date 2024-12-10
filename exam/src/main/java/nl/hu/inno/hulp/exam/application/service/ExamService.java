@@ -244,7 +244,7 @@ public void sendAndProcessExam(String id) {
         saveExam(exam);
     }
 
-    public void addSubmission(String examId, Long submissionId) {
+    public void addSubmission(String examId, String submissionId) {
         Exam exam = getExam(examId);
         exam.addSubmissionId(submissionId);
 

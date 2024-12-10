@@ -31,7 +31,7 @@ public class ExamController {
     }
 
     @PostMapping("/examMaker/{makerId}/examValidator/{examValidatorId}")
-    public ExamResponse addExam(@PathVariable Long makerId, @PathVariable Long examValidatorId) {
+    public ExamResponse addExam(@PathVariable String makerId, @PathVariable String examValidatorId) {
         return examService.addExam(makerId, examValidatorId);
     }
 
@@ -52,7 +52,7 @@ public class ExamController {
 
     // used by other modules via rpc
     @GetMapping("{examId}/students/{studentId}/submission")
-    public SubmissionResponse getSubmissionByExamAndStudentId(@PathVariable String examId, @PathVariable Long studentId) {
+    public SubmissionResponse getSubmissionByExamAndStudentId(@PathVariable String examId, @PathVariable String studentId) {
         return examService.getSubmissionByExamAndStudentId(examId, studentId);
     }
 

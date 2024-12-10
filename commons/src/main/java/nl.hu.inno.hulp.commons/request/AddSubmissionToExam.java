@@ -6,9 +6,9 @@ import lombok.Data;
 public class AddSubmissionToExam {
 
     String examId;
-    Long SubmissionId;
+    String SubmissionId;
 
-    public AddSubmissionToExam(String examId, Long submissionId) {
+    public AddSubmissionToExam(String examId, String submissionId) {
         this.examId = examId;
         this.SubmissionId = submissionId;
     }

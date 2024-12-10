@@ -81,7 +81,7 @@ public class CourseService {
         return oldDTO;
     }
 
-    public CourseResponse addTeacherToCourse(String courseId, Long teacherId) {
+    public CourseResponse addTeacherToCourse(String courseId, String teacherId) {
         Course course=courseRepository.findById(courseId).orElseThrow();
         course.addTeacher(teacherId);
         courseRepository.save(course);
@@ -147,7 +147,7 @@ public class CourseService {
         return getExamResponse(exam);
     }
 
-    private TeacherResponse getTeacherResponse(Long teacherId) {
+    private TeacherResponse getTeacherResponse(String teacherId) {
         return getTeacherById(teacherId);
     }
     public void sendAndProcessCourse(String id) {
@@ -170,7 +170,7 @@ public class CourseService {
         }
 
         List<TeacherResponse> teacherResponses = new ArrayList<>();
-        for (Long teacherId : course.getTeacherIds()){
+        for (String teacherId : course.getTeacherIds()){
             teacherResponses.add(getTeacherResponse(teacherId));
         }
       

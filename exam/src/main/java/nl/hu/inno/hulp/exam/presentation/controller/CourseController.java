@@ -45,7 +45,7 @@ public class CourseController {
     }
 
     @PostMapping("/{courseId}/teachers/{teacherId}")
-    public CourseResponse addTeacherToCourse(@PathVariable String courseId, @PathVariable Long teacherId) {
+    public CourseResponse addTeacherToCourse(@PathVariable String courseId, @PathVariable String teacherId) {
         return courseService.addTeacherToCourse(courseId, teacherId);
     }
 

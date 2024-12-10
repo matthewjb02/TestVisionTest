@@ -55,14 +55,14 @@ public class ExaminationProducer {
         rabbitTemplate.convertAndSend(exchange, routingKey, examSessionResponse);
     }
 
-    public void sendUpdateQuestionGradingRequest(Long examSessionId, int questionNr, UpdateOpenQuestionPointsRequest request) {
+    public void sendUpdateQuestionGradingRequest(String examSessionId, int questionNr, UpdateOpenQuestionPointsRequest request) {
         UpdateOpenQuestionPoints updateOpenQuestionPoints = new UpdateOpenQuestionPoints(examSessionId, questionNr, request);
         LOGGER.info(String.format("Message sent -> exam-session id: %s, question number: %s, request: %s", updateOpenQuestionPoints));
         rabbitTemplate.convertAndSend(exchange, routingKey, updateOpenQuestionPoints);
 
     }
 
-    public void sendAddSubmissionToExamRequest(String examId, Long submissionId) {
+    public void sendAddSubmissionToExamRequest(String examId, String submissionId) {
         AddSubmissionToExam addSubmissionToExam = new AddSubmissionToExam(examId, submissionId);
         LOGGER.info(String.format("Message sent -> exam-session id: %s, submission-response: %s", addSubmissionToExam));
         rabbitTemplate.convertAndSend(exchange, routingKey, addSubmissionToExam);

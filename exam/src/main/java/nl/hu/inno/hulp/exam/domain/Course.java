@@ -24,7 +24,7 @@ public class Course {
     @Field
     private String name;
     @Field
-    private List<Long> teacherIds =new ArrayList<>();
+    private List<String> teacherIds =new ArrayList<>();
     @Field
     private List<Exam> approvedExams =new ArrayList<>();
     @Field
@@ -41,7 +41,7 @@ public class Course {
         this.id= UUID.randomUUID().toString();
     }
 
-    public void addTeacher(Long teacherId){
+    public void addTeacher(String teacherId){
         teacherIds.add(teacherId);
     }
 
