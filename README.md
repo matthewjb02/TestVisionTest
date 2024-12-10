@@ -22,15 +22,164 @@ Na opstarten kun je alvast kijken op
 
   (als het goed is kloppen de defaults, anders moet je de url/username even uit de application.properties vissen)
 
+# README Edutech Product Services - NoSQL
+vanwege artifact quota hit konden we niks deployen op deze repo. Er is een andere repo die alle modules deployt -> https://github.com/matthewjb02/TestVisionTest
+
+## Matthew(document-store)(MongoDB)
+
+### Beschrijving
+Voor de examination-module heb ik de PostgreSQL-database vervangen door een MongoDB NoSQL-database. Hiervoor heb ik in MongoDB Atlas, de cloudomgeving van MongoDB, een cluster aangemaakt. In dit cluster heb ik een database opgezet met documenten voor exam en examination.
+
+In de code heb ik onder andere het domein aangepast en de nodige configuraties doorgevoerd om de applicatie te laten werken met MongoDB. Bij het aanmaken, opvragen en bewerken van exam- en examination-objecten maakt de applicatie nu gebruik van deze MongoDB-database. Daarnaast is MongoDB opgenomen in de docker-compose.yml-file die draait op de Azure VM.
+
+### MongoDb bekijken
+Ik heb de credientals in Teams gestuurd.
+<img width="610" alt="Scherm­afbeelding 2024-12-03 om 23 42 41" src="https://github.com/user-attachments/assets/0d6b55b8-de5c-4a86-91c7-059a074c2c5a">
+via het icoontje kan je in intellij als het goed is verbinden met de db.
+
+### MongoDB & Azure bug
+Het is mogelijk dat de requests voor het aanmaken, opvragen en bewerken van exam- en examination-objecten niet correct werken in de cloud. Waarschijnlijk komt dit doordat de MongoDB niet goed verbind op Azure, ondanks dat ik deze correct heb geconfigureerd in docker-compose file die op de Azure VM draait
+
+Voor de zekerheid is er een `main_local` branch aangemaakt, waarin dezelfde code staat als in de `main` branch. Het verschil is dat in deze branch alles lokaal draait. Hier zou de MongoDB zonder problemen moeten functioneren.
+
+## Ruben Strydom graph database (neo4j) en key-value database (aerospike)
+### Beschrijving
+Voor de users module word een key-value database gebruikt omdat dit module te klein is voor de grotere type databases zoals cassandra of mongo.
+
+Voor de grotere module grading is cassandra ook te groot ervoor en omdat er al twee teamleden zijn die een document-store database hebben heb ik besloten om een graph database te gebruiken. Neo4j heb ik gekozen omdat het goed te combineren is met springboot. Ook word het gebruikt door grote bedrijven waardoor je zeker bent dat de database grote aantal data en verkeer aankan.
+
+## Werkende databases
+De twee databases werken en kan doormiddel van een docker opgestart en gebruikt worden. De werkende code staat in de dev_local branch.
+## Pasquinel Bhikhoe Document storage database voor exam module (Couchbase)
+### Beschijving
+orgineel wou ik scylla gebruiken vanwege de fijne integratie tussen modules en dit is geprobeeerd maar mislukt. daarna heb ik gekeken naar een andere database en het is couchbase geworden. De scope en Collection fucnties in de bucket zorgen voor fijne partitioning. De code functioneerd lokaal voor het grootste gedeeldte  op de branch dev local maar er moet wel na het opstarten van de docker via deze link http://localhost:8091/ui/index.html#/ een nieuwe lokale  cluster worden aangemaakt volgens de naam en wachtwoord uit de envoirement variabelen. verder heeft het de volgende structuur nodig
+- exam
+   - exam
+     - exam
+  
+   - course
+     - course
+   - question
+       - openQuestion
+       - multipleChoiceQuestion
+   - statitics
+       - statistics
+#
+niveau 1 is de bucket
+niveau 2 is de scope
+niveau 3 is de collection
+
+Qua deployment ben ik er iets te laat achter gekomen dat de vm betaald en vrij duur is, ik was er vanuit gegaan dat de voorbeelden uit de powerpoint niet zo verschrikkeld duur waren en toen ik keek naar deployment was het al een beetje te laat daarvoor. Voor de eindopdracht zal ik ook kijken om alles om te schrijven naar een opensource noSQL zoals apache CouchDB 
 # README Deployment
+## README algemeen
+Er zijn 4 modules gedeployed via azure  te bereiken via deze links.
+
+- Exam webapp - https://exam-aze2emf4etgrapew.northeurope-01.azurewebsites.net/swagger-ui/index.html#/
+
+- Grading webapp - https://inno-testvision-grading-abaybzgufxdvh5cy.northeurope-01.azurewebsites.net/swagger-ui/index.html#/
+
+- Examination  webapp -  https://examination-ewbtf5d0dvgpdjb2.northeurope-01.azurewebsites.net/swagger-ui/index.html#/
+ 
+- Users web app -  https://userss-fje9bmb2b3gtdafe.northeurope-01.azurewebsites.net/swagger-ui/index.html#/ 
+
+- er is comminucatie, alleen werkt de applicatie niet voorbij het starten van de examensessie door een probleem met de applicatie en niet met de comminucatie. Dat moeten we nog intern debuggen en fixen
+
+Dit is de workflow die tot nu toe werkt:
+
+# TestVision Requests
+
+## Flow
+
+### 1. Create Student
+
+{
+  "firstName": "string",
+  "lastName": "string",
+  "extraTimeRight": true,
+  "email": "john.doe@student.hu.nl"
+}
+
+### 2. Create Teacher (x2)
+
+{
+  "firstName": "string",
+  "lastName": "string",
+  "email": "john.ojde@hu.nl"
+}
+
+### 3. Create Course
+
+(Assumed JSON schema not provided.)
+
+### 4. Add Course to Teacher
+
+(Assumed JSON schema not provided.)
+
+### 5. Create Question
+{
+
+  "points": 0,
+  "question": "string",
+  "type": "open"
+ }
+
+### 6. Create Exam
+
+(Assumed JSON schema not provided.)
+
+### 7. Add Exam to Course
+
+(Assumed JSON schema not provided.)
+
+### 8. Add Grading Criteria to Course
+
+{
+  "openQuestionWeight": 0.5,
+  "closedQuestionWeight": 0.5
+}
+
+### 9. Add Question to Exam
+
+(Assumed JSON schema not provided.)
+
+### 10 accept exam
+
+### 11. Create Examination
+
+{
+  "name": "string",
+  "courseId": 1,
+  "examId": 1,
+  "password": "string",
+  "examDate": {
+    "startDate": "2024-11-11 15:12:05.208 ",
+    "endDate": "2024-11-11 15:12:05.208 "
+  },
+  "duration": 0,
+  "extraTime": 0
+}
+ 
+### 11. Add Student to Examination
+
+
+### 12. Start Exam Session
+
+{
+  "examinationId": 1,
+  "studentId": 1,
+  "password": "string"
+}
 
 ## README Matthew - Edutech Product Services - Productie Deployment
-- Ik heb een virtual machine (VM) in Azure opgezet waarop RabbitMQ en een PostgreSQL-database voor de gradingmodule draaien. Hiervoor heb ik Docker en Docker-Compose geïnstalleerd op de VM en vervolgens het docker-compose.yml-bestand uitgevoerd om de services te starten.
-- Ik heb een virtueel netwerk gemaakt met een subnet voor de grading module. de VM draait op dit virutele netwerk
-- Ik heb een poging gedaan om de grading-module als webapplicatie te deployen op Azure. Hiervoor is een Azure Web App gekoppeld aan de GitHub-repository van de applicatie, waarbij de main-branch als standaard is ingesteld. de webapp zelf is verbonden met het virutele netwerk op het subnet voor de grading module.Een GitHub Actions-workflow is geconfigureerd om de applicatie te bouwen en te deployen. Jammer genoeg slaagt de build niet vanwege: "Failed to CreateArtifact: Artifact storage quota has been hit. Unable to upload any new artifacts.
+- Ik heb de virtual machine (VM) in Azure opgezet waarop RabbitMQ en de PostgreSQL-database draait voor de grading module. Hiervoor heb ik Docker en Docker-Compose geïnstalleerd op de VM en vervolgens het docker-compose.yml-bestand uitgevoerd om de services te starten.
+- Ik heb een virtueel netwerk gemaakt met een subnetten. de VM en webapps draaien op dit virutele netwerk
+- Ik heb per module een webapp op azure gemaakt om ze te deployen. Hiervoor is de Azure Web App gekoppeld aan de GitHub-repository van de applicatie, waarbij de main branch als standaard is ingesteld. de webapp zelf is verbonden met het virutele netwerk op een subnet. GitHub Actions-workflows zijn geconfigureerd om de applicaties te bouwen en te deployen.
 
 ## README Ruben - Edutech Product Services - Productie Deployment
 - Ik heb virtueel netwerk aangemaakt en daarmee heb ik een aantal vms aangezet om de modules te deployen.
+  
+## README Pasquinel Edutech Product Services - Productie Deployment
+- ik heb matthew geholpen met de deployment en ik heb de messaging voor de examen module gemaakt
 
 # README Messaging
 
