@@ -228,7 +228,7 @@ public class CourseService {
     }
 
     public SubmissionResponse getSubmissionById(String id) {
-        String url = "http://localhost:8080/submission/" + id;
+        String url = " https://inno-testvision-grading-abaybzgufxdvh5cy.northeurope-01.azurewebsites.net/" + id;
         ResponseEntity<SubmissionResponse> response = restTemplate.exchange(
                 url,
                 HttpMethod.GET,
@@ -239,7 +239,7 @@ public class CourseService {
     }
 
     public TeacherResponse getTeacherById(String id) {
-        String url = "http://localhost:8081/teacher/" + id;
+        String url = " https://userss-fje9bmb2b3gtdafe.northeurope-01.azurewebsites.net/" + id;
         examProducer.sendTeacherRequest(id);
 
         return restTemplate.getForObject(url, TeacherResponse.class);

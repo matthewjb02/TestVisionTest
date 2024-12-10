@@ -195,12 +195,12 @@ public void sendAndProcessExam(String id) {
     }
 
     public String getTeacherById(String id) {
-        String url = "http://localhost:8081/teacher/" + id;
+        String url = " https://userss-fje9bmb2b3gtdafe.northeurope-01.azurewebsites.net/" + id;
         examProducer.sendTeacherRequest(id);
         return restTemplate.getForObject(url, TeacherResponse.class).getId();
     }
     public SubmissionResponse getSubmissionById(String id) {
-        String url = "http://localhost:8084/submission/" + id;
+        String url = " https://inno-testvision-grading-abaybzgufxdvh5cy.northeurope-01.azurewebsites.net/" + id;
         return restTemplate.getForObject(url, SubmissionResponse.class);
     }
 
