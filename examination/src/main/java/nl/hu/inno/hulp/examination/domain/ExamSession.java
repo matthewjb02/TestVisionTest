@@ -9,11 +9,13 @@ import nl.hu.inno.hulp.commons.enums.ExamState;
 import nl.hu.inno.hulp.commons.exception.PasswordIncorrectException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.UUID;
+
 @Document(collection = "Examsession")
 @Getter
 public class ExamSession {
     @Id
-    private String id;
+    private String id = UUID.randomUUID().toString();
 
     @Field("examination_id")
     private String examinationId;

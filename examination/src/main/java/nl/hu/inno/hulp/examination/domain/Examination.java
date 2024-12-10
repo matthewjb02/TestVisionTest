@@ -7,12 +7,13 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Document(collection = "Examination")
 @Getter
 public class Examination {
     @Id
-    private String id;
+    private String id = UUID.randomUUID().toString();
 
     @Field("candidates")
     private List<String> candidates = new ArrayList<>();
