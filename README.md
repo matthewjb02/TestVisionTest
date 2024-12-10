@@ -23,6 +23,7 @@ Na opstarten kun je alvast kijken op
   (als het goed is kloppen de defaults, anders moet je de url/username even uit de application.properties vissen)
 
 # README Edutech Product Services - NoSQL
+vanwege artifact quota hit konden we niks deployen op deze repo. Er is een andere repo die alle modules deployt -> https://github.com/matthewjb02/TestVisionTest
 
 ## Matthew(document-store)(MongoDB)
 
@@ -37,10 +38,38 @@ Ik heb de credientals in Teams gestuurd.
 via het icoontje kan je in intellij als het goed is verbinden met de db.
 
 ### MongoDB & Azure bug
-Het is mogelijk dat de requests voor het aanmaken, opvragen en bewerken van exam- en examination-objecten niet correct werken in de cloud. Waarschijnlijk komt dit doordat de MongoDB niet goed functioneert op Azure, ondanks dat ik deze correct heb geconfigureerd.
+Het is mogelijk dat de requests voor het aanmaken, opvragen en bewerken van exam- en examination-objecten niet correct werken in de cloud. Waarschijnlijk komt dit doordat de MongoDB niet goed verbind op Azure, ondanks dat ik deze correct heb geconfigureerd in docker-compose file die op de Azure VM draait
 
-Voor de zekerheid is er een `dev_local` branch aangemaakt, waarin dezelfde code staat als in de `main` branch. Het verschil is dat in deze branch alles lokaal draait. Hier zou de MongoDB zonder problemen moeten functioneren.
+Voor de zekerheid is er een `main_local` branch aangemaakt, waarin dezelfde code staat als in de `main` branch. Het verschil is dat in deze branch alles lokaal draait. Hier zou de MongoDB zonder problemen moeten functioneren.
 
+## Ruben Strydom graph database (neo4j) en key-value database (aerospike)
+### Beschrijving
+Voor de users module word een key-value database gebruikt omdat dit module te klein is voor de grotere type databases zoals cassandra of mongo.
+
+Voor de grotere module grading is cassandra ook te groot ervoor en omdat er al twee teamleden zijn die een document-store database hebben heb ik besloten om een graph database te gebruiken. Neo4j heb ik gekozen omdat het goed te combineren is met springboot. Ook word het gebruikt door grote bedrijven waardoor je zeker bent dat de database grote aantal data en verkeer aankan.
+
+## Werkende databases
+De twee databases werken en kan doormiddel van een docker opgestart en gebruikt worden. De werkende code staat in de dev_local branch.
+## Pasquinel Bhikhoe Document storage database voor exam module (Couchbase)
+### Beschijving
+orgineel wou ik scylla gebruiken vanwege de fijne integratie tussen modules en dit is geprobeeerd maar mislukt. daarna heb ik gekeken naar een andere database en het is couchbase geworden. De scope en Collection fucnties in de bucket zorgen voor fijne partitioning. De code functioneerd lokaal voor het grootste gedeeldte  op de branch dev local maar er moet wel na het opstarten van de docker via deze link http://localhost:8091/ui/index.html#/ een nieuwe lokale  cluster worden aangemaakt volgens de naam en wachtwoord uit de envoirement variabelen. verder heeft het de volgende structuur nodig
+- exam
+   - exam
+     - exam
+  
+   - course
+     - course
+   - question
+       - openQuestion
+       - multipleChoiceQuestion
+   - statitics
+       - statistics
+#
+niveau 1 is de bucket
+niveau 2 is de scope
+niveau 3 is de collection
+
+Qua deployment ben ik er iets te laat achter gekomen dat de vm betaald en vrij duur is, ik was er vanuit gegaan dat de voorbeelden uit de powerpoint niet zo verschrikkeld duur waren en toen ik keek naar deployment was het al een beetje te laat daarvoor. Voor de eindopdracht zal ik ook kijken om alles om te schrijven naar een opensource noSQL zoals apache CouchDB 
 # README Deployment
 ## README algemeen
 Er zijn 4 modules gedeployed via azure  te bereiken via deze links.
