@@ -37,7 +37,7 @@ public class RabbitMQProducer {
         rabbitTemplate.convertAndSend(exchangeName, routingKey, updateOpenQuestionPoints);
     }
 
-    public void sendUpdateExamStatistics(Long examId) {
+    public void sendUpdateExamStatistics(String examId) {
 
         LOGGER.info("Sending message: {}", examId);
         rabbitTemplate.convertAndSend(exchangeName, routingKey, examId);

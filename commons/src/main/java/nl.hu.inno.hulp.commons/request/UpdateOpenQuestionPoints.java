@@ -14,6 +14,4 @@ public class UpdateOpenQuestionPoints {
         this.questionNr = questionNr;
         this.grading = grading;
     }
-
-
 }
