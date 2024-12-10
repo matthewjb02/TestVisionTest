@@ -9,6 +9,7 @@ services:
       - "15672:15672"
     networks:
       - app_network
+
   couchbase:
     image: couchbase:community
     container_name: couchbase
@@ -32,7 +33,6 @@ services:
       - couchbase
     networks:
       - couchbase_network
-
 
   users_aerospike:
     image: aerospike/aerospike-server:latest
@@ -59,6 +59,7 @@ services:
       - examination_mongo_data:/data/db
     networks:
       - app_network
+
   neo4j:
     image: neo4j:latest
     container_name: grading_neo4j
