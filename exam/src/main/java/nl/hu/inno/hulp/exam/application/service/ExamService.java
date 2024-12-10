@@ -1,5 +1,7 @@
 package nl.hu.inno.hulp.exam.application.service;
 
+import com.couchbase.client.core.deps.com.fasterxml.jackson.core.JsonProcessingException;
+import com.couchbase.client.core.deps.com.fasterxml.jackson.databind.ObjectMapper;
 import nl.hu.inno.hulp.commons.dto.GradingCriteriaDTO;
 import nl.hu.inno.hulp.commons.request.UpdateOpenQuestionPointsRequest;
 import nl.hu.inno.hulp.commons.response.*;
@@ -15,6 +17,7 @@ import nl.hu.inno.hulp.exam.domain.question.MultipleChoiceQuestion;
 import nl.hu.inno.hulp.exam.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.exam.domain.question.QuestionEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.couchbase.core.CouchbaseTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -22,6 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,15 +36,21 @@ public class ExamService {
     private final CourseRepository courseRepository;
     private final RestTemplate restTemplate;
     private final ExamProducer examProducer;
+    private final ObjectMapper objectMapper;
+    private final CouchbaseTemplate couchbaseTemplate;
+    private final QuestionService questionService;
 
     @Autowired
     public ExamService(ExamRepository examRepository, QuestionRepository questionRepository, CourseRepository courseRepository,
-                       RestTemplate restTemplate, ExamProducer examProducer) {
+                       RestTemplate restTemplate, ExamProducer examProducer, ObjectMapper objectMapper, CouchbaseTemplate couchbaseTemplate, QuestionService questionService) {
         this.examRepository = examRepository;
         this.questionRepository = questionRepository;
         this.courseRepository = courseRepository;
         this.restTemplate = restTemplate;
         this.examProducer = examProducer;
+        this.objectMapper = objectMapper;
+        this.couchbaseTemplate = couchbaseTemplate;
+        this.questionService = questionService;
     }
 
     public ExamResponse addExam(String examMakerId, String  examValidatorId) {
@@ -86,11 +96,34 @@ public void sendAndProcessExam(String id) {
         return examRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No exam with id: " + id + " found!"));
     }
+    public QuestionEntity toQuestion(String id) {
+        QuestionEntity question= null;
+        try { Optional<QuestionEntity> questionEntity = Optional.ofNullable(couchbaseTemplate.findById(OpenQuestion.class).one(id));
+            if (questionEntity.isPresent()){
 
+                question= questionEntity.orElseThrow();}
+            else
+            {
+                Optional<QuestionEntity> questionEntity2 = Optional.ofNullable(couchbaseTemplate.findById(MultipleChoiceQuestion.class).one(id));
+
+                if (questionEntity2.isPresent())
+                { question= questionEntity2.orElseThrow(); }
+        }
+
+        }
+        catch (Error e){
+            e.printStackTrace();
+        }
+        return question;
+    }
     public ExamResponse addQuestionsByIdsToExam(String examId, List<String> questionIds) {
         Exam exam = examRepository.findById(examId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Exam not found"));
-        List<QuestionEntity> newQuestions = questionRepository.findAllById(questionIds);
+
+        List<QuestionEntity> newQuestions = new ArrayList<>();
+        for (String questionID : questionIds){
+            newQuestions.add(toQuestion(questionID));
+        }
         exam.getQuestions().addAll(newQuestions);
         exam.calculateTotalPoints();
         examRepository.save(exam);

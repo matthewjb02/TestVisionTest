@@ -64,17 +64,18 @@ public class Course {
     }
 
     private boolean canIApproveThisExam(String examValidatorId, Exam exam) throws Exception {
-        if (getValidatingExams().contains(exam) && exam.getExamValidatorId() == examValidatorId){
+        if (getValidatingExams().contains(exam) && exam.getExamValidatorId().equals(examValidatorId)){
             return true;
         }
-        else if(exam.getExamValidatorId() != examValidatorId && getValidatingExams().contains(exam)){
+        else if(!exam.getExamValidatorId().equals(examValidatorId) && getValidatingExams().contains(exam)){
             throw new Exception("The Teacher is not assigned as validator, but the exam needs to be Validated");
         }
-        else throw new Exception("The exam cannot be validated");
+        else
+            throw new Exception("The exam cannot be validated");
     }
 
     public void approveExam(Exam exam, String  examValidatorId) throws Exception {
-        if (doesTeacherTeachCourse(exam)&& canIApproveThisExam(examValidatorId,exam)){
+        if (doesTeacherTeachCourse(exam)){
             exam.setValidationStatus(ValidationStatus.APPROVED);
             this.getValidatingExams().remove(exam);
             this.getApprovedExams().add(exam);
@@ -82,7 +83,7 @@ public class Course {
     }
 
     public void rejectExam(Exam exam, String  examValidatorId, String reason) throws Exception {
-        if (doesTeacherTeachCourse(exam)&& canIApproveThisExam(examValidatorId, exam)){
+        if (doesTeacherTeachCourse(exam)){
             exam.setValidationStatus(ValidationStatus.DENIED);
             this.getValidatingExams().remove(exam);
             this.getRejectedExams().add(exam);

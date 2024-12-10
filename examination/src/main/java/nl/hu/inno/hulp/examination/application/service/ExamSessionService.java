@@ -55,7 +55,7 @@ public class ExamSessionService {
 
         if (examSession.getState() == ExamState.Active) {
             examinationProducer.sendQuestionRequest(examSession.getId(), examSession.getExamId(), questionId);
-            return new QuestionResponse(10, "hello world");
+            return new QuestionResponse(questionId,10, "hello world");
         } else {
             throw new ExaminationInactiveException("This exam is inactive");
         }

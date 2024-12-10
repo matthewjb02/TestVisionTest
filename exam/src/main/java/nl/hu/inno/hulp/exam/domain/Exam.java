@@ -15,6 +15,7 @@ import org.springframework.data.couchbase.repository.Scope;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Document
 @Getter
@@ -23,7 +24,7 @@ import java.util.List;
 @Collection("exam")
 public class Exam {
     @Id
-    private String id;
+    private String id= UUID.randomUUID().toString();
     @Embedded
     private GradingCriteria gradingCriteria;
     @Field

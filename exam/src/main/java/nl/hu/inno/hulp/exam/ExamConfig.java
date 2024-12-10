@@ -40,7 +40,6 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @EnableCouchbaseRepositories(basePackages = "nl.hu.inno.hulp.exam")
-
 public class ExamConfig extends AbstractCouchbaseConfiguration {
     @Value("${spring.couchbase.connection-string}")
     private String connectionString;
