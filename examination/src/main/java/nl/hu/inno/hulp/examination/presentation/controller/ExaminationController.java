@@ -27,7 +27,7 @@ public class ExaminationController {
 
 
     @GetMapping("{id}")
-    public ExaminationResponse getExamination(@PathVariable Long id) {
+    public ExaminationResponse getExamination(@PathVariable String id) {
         try {
             return examinationService.getExaminationResponse(id);
         } catch (NoExaminationFoundException e) {
@@ -82,7 +82,7 @@ public class ExaminationController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteExamination(@PathVariable Long id) {
+    public void deleteExamination(@PathVariable String id) {
         examinationService.deleteExamination(id);
     }
 }

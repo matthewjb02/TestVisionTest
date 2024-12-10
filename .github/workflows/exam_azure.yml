@@ -3,8 +3,6 @@ name: Build and deploy Exam JAR app to Azure Web App
 on:
   push:
     branches:
-      - master
-      - main
       - dev
   workflow_dispatch:
 

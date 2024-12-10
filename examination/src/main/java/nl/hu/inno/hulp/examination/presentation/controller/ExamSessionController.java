@@ -42,7 +42,7 @@ public class ExamSessionController {
     }*/
 
     @GetMapping("/seeQuestion/{questionId}/{examId}")
-    public QuestionResponse seeQuestion(@PathVariable Long examId, @PathVariable Long questionId) {
+    public QuestionResponse seeQuestion(@PathVariable String examId, @PathVariable String questionId) {
         try {
             return examSessionService.seeQuestion(examId, questionId);
         } catch(ExaminationInactiveException e) {
@@ -75,7 +75,7 @@ public class ExamSessionController {
     }
 
     @GetMapping("/{id}")
-    public ExamSessionResponse getExamSession(@PathVariable Long id) {
+    public ExamSessionResponse getExamSession(@PathVariable String id) {
         try {
             return examSessionService.getExamSessionResponse(id);
         } catch (NoExamSessionFoundException e) {

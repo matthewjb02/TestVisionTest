@@ -1,5 +1,6 @@
 package nl.hu.inno.hulp.exam.application.service;
 
+import com.couchbase.client.core.deps.com.fasterxml.jackson.databind.ObjectMapper;
 import nl.hu.inno.hulp.commons.dto.GradingCriteriaDTO;
 import nl.hu.inno.hulp.commons.request.CourseRequest;
 import nl.hu.inno.hulp.commons.response.CourseResponse;
@@ -15,6 +16,7 @@ import nl.hu.inno.hulp.exam.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.exam.domain.question.QuestionEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.couchbase.core.CouchbaseTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,18 +36,23 @@ public class CourseService {
     private final QuestionRepository questionRepository;
     private final RestTemplate restTemplate;
     private final ExamProducer examProducer;
+    private  final ObjectMapper objectMapper;
+    private final CouchbaseTemplate couchbaseTemplate;
 
 
     @Autowired
-    public CourseService(CourseRepository courseRepository, ExamRepository examRepository, QuestionRepository questionRepository, RestTemplate restTemplate, ExamProducer examProducer) {
+    public CourseService(CourseRepository courseRepository, ExamRepository examRepository, QuestionRepository questionRepository, RestTemplate restTemplate, ExamProducer examProducer, ObjectMapper objectMapper, CouchbaseTemplate couchbaseTemplate) {
         this.courseRepository = courseRepository;
         this.examRepository = examRepository;
         this.questionRepository = questionRepository;
         this.restTemplate = restTemplate;
         this.examProducer = examProducer;
+        this.objectMapper = objectMapper;
+        this.couchbaseTemplate = couchbaseTemplate;
     }
 
     public List<CourseResponse> getAllCourses() {
+
             List<Course> allCourses = courseRepository.findAll();
         List<CourseResponse> courseDTOs = new ArrayList<>();
         for (Course course : allCourses){
@@ -55,7 +62,7 @@ public class CourseService {
         return courseDTOs;
     }
 
-    public CourseResponse getCourseById(Long id) {
+    public CourseResponse getCourseById(String id) {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No course with id: " + id + " found!"));
 
@@ -68,20 +75,20 @@ public class CourseService {
         return getCourseResponse(savedCourse);
     }
 
-    public CourseResponse deleteCourse(Long id) {
+    public CourseResponse deleteCourse(String id) {
         CourseResponse oldDTO = getCourseById(id);
         courseRepository.deleteById(id);
         return oldDTO;
     }
 
-    public CourseResponse addTeacherToCourse(Long courseId, Long teacherId) {
+    public CourseResponse addTeacherToCourse(String courseId, String teacherId) {
         Course course=courseRepository.findById(courseId).orElseThrow();
         course.addTeacher(teacherId);
         courseRepository.save(course);
         return getCourseResponse(course);
     }
 
-    public CourseResponse addTestToCourse(Long courseId, Long testId) {
+    public CourseResponse addTestToCourse(String courseId, String testId) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found"));
 
@@ -94,18 +101,7 @@ public class CourseService {
         return getCourseResponse(course);
     }
 
-    public List<ExamResponse> getAllTestsByCourseId(Long courseId) {
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No course with id: " + courseId + " found!"));
-
-        List<ExamResponse> examResponses = new ArrayList<>();
-        for (Exam exam : course.getApprovedExams()) {
-            examResponses.add(getExamResponse(exam));
-        }
-
-        return examResponses;
-    }
-    public ExamResponse getApprovedExamByCourse(Long courseId,Long examId){
+    public ExamResponse getApprovedExamByCourse(String courseId,String examId){
             Course course=courseRepository.findById(courseId).orElseThrow();
             Exam exam=examRepository.findById(examId).orElseThrow();
 
@@ -115,7 +111,7 @@ public class CourseService {
             else throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Exam not Approved");
     }
 
-    public ExamResponse acceptExam(long examId, Long courseId) throws Exception {
+    public ExamResponse acceptExam(String examId, String courseId) throws Exception {
         Exam exam = examRepository.findById(examId).orElseThrow();
         Course course = courseRepository.findById(courseId).orElseThrow();
 
@@ -125,7 +121,7 @@ public class CourseService {
         return getExamResponse(exam);
     }
 
-    public ExamResponse rejectExam(long examId, Long courseId, String reason) throws Exception {
+    public ExamResponse rejectExam(String examId, String courseId, String reason) throws Exception {
         Exam exam = examRepository.findById(examId).orElseThrow();
         Course course = courseRepository.findById(courseId).orElseThrow();
         course.rejectExam(exam,exam.getExamValidatorId(),reason);
@@ -134,14 +130,14 @@ public class CourseService {
         return getExamResponse(exam);
     }
 
-    public ExamResponse viewDeniedExam(long examId, Long courseId) throws Exception {
+    public ExamResponse viewDeniedExam(String examId, String courseId) throws Exception {
         Exam exam = examRepository.findById(examId).orElseThrow();
         Course course = courseRepository.findById(courseId).orElseThrow();
         course.viewWrongExam(exam);
         return getExamResponse(exam);
     }
   
-    public ExamResponse modifyWrongExam(long examId, Long courseId, List<QuestionEntity>newQuestions) throws Exception {
+    public ExamResponse modifyWrongExam(String examId, String courseId, List<QuestionEntity>newQuestions) throws Exception {
         Exam exam = examRepository.findById(examId).orElseThrow();
         Course course = courseRepository.findById(courseId).orElseThrow();
         course.modifyQuestions(exam,exam.getQuestions(),newQuestions);
@@ -151,10 +147,10 @@ public class CourseService {
         return getExamResponse(exam);
     }
 
-    private TeacherResponse getTeacherResponse(Long teacherId) {
+    private TeacherResponse getTeacherResponse(String teacherId) {
         return getTeacherById(teacherId);
     }
-    public void sendAndProcessCourse(Long id) {
+    public void sendAndProcessCourse(String id) {
 
         this.examProducer.sendCourseResponse((getCourseById(id)));
     }
@@ -174,7 +170,7 @@ public class CourseService {
         }
 
         List<TeacherResponse> teacherResponses = new ArrayList<>();
-        for (Long teacherId : course.getTeacherIds()){
+        for (String teacherId : course.getTeacherIds()){
             teacherResponses.add(getTeacherResponse(teacherId));
         }
       
@@ -217,13 +213,13 @@ public class CourseService {
             if (question.getClass().equals(MultipleChoiceQuestion.class)){
                 MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion)question;
 
-                responses.add(new MultipleChoiceQuestionResponse(mcQuestion.getPoints(),
+                responses.add(new MultipleChoiceQuestionResponse(mcQuestion.getId(), mcQuestion.getPoints(),
                         mcQuestion.getQuestion(), mcQuestion.getAnswers(),
                         mcQuestion.getCorrectAnswerIndexes(), mcQuestion.getGivenAnswers()));
             } else {
                 OpenQuestion openQuestion = (OpenQuestion)question;
 
-                responses.add(new OpenQuestionResponse(openQuestion.getPoints(),
+                responses.add(new OpenQuestionResponse(openQuestion.getId(), openQuestion.getPoints(),
                         openQuestion.getQuestion(), openQuestion.getCorrectAnswer(),
                         openQuestion.getAnswer(), openQuestion.getTeacherFeedback()));
             }
@@ -231,8 +227,8 @@ public class CourseService {
         return responses;
     }
 
-    public SubmissionResponse getSubmissionById(Long id) {
-        String url = "https://inno-testvision-grading-abaybzgufxdvh5cy.northeurope-01.azurewebsites.net/submission/" + id;
+    public SubmissionResponse getSubmissionById(String id) {
+        String url = " https://inno-testvision-grading-abaybzgufxdvh5cy.northeurope-01.azurewebsites.net/" + id;
         ResponseEntity<SubmissionResponse> response = restTemplate.exchange(
                 url,
                 HttpMethod.GET,
@@ -242,15 +238,15 @@ public class CourseService {
         return response.getBody();
     }
 
-    public TeacherResponse getTeacherById(Long id) {
-        String url = "https://userss-fje9bmb2b3gtdafe.northeurope-01.azurewebsites.net/teacher/" + id;
+    public TeacherResponse getTeacherById(String id) {
+        String url = " https://userss-fje9bmb2b3gtdafe.northeurope-01.azurewebsites.net/" + id;
         examProducer.sendTeacherRequest(id);
 
         return restTemplate.getForObject(url, TeacherResponse.class);
     }
 
     // rpc
-    public CourseResponse findCourseResponseByExamId(Long examId) {
+    public CourseResponse findCourseResponseByExamId(String examId) {
 
         Course course = courseRepository.findByApprovedExamsId(examId);
         return getCourseResponse(course);
