@@ -24,7 +24,7 @@ jobs:
 
 
       - name: Install Parent POM
-        run: mvn -N clean install
+        run: mvn -pl clean install
 
 
       - name: Build and install Commons module
