@@ -12,8 +12,8 @@ public class OpenQuestionResponse extends QuestionResponse implements Serializab
     private String answer;
     private String teacherFeedback;
 
-    public OpenQuestionResponse(int points,String question,String correctAnswer, String answer, String teacherFeedback) {
-        super(points,question);
+    public OpenQuestionResponse(String id,int points,String question,String correctAnswer, String answer, String teacherFeedback) {
+        super(id,points,question);
         this.correctAnswer = correctAnswer;
         this.answer = answer;
         this.teacherFeedback = teacherFeedback;

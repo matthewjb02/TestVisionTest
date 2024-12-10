@@ -6,6 +6,7 @@ import nl.hu.inno.hulp.exam.domain.Course;
 import org.springframework.data.couchbase.repository.CouchbaseRepository;
 import org.springframework.data.couchbase.repository.Query;
 import org.springframework.data.couchbase.repository.ScanConsistency;
+import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,5 +15,6 @@ import java.util.List;
 public interface CourseRepository extends CouchbaseRepository<Course, String> {
     @ScanConsistency(query= QueryScanConsistency.REQUEST_PLUS)
     Course findByApprovedExamsId(String examId);
-
+@Query("select * from exam.course.course")
+List<Course> findAllCourses();
 }

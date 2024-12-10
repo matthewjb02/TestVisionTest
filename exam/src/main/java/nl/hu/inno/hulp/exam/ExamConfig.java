@@ -1,11 +1,12 @@
 package nl.hu.inno.hulp.exam;
 
+import com.couchbase.client.core.deps.com.fasterxml.jackson.databind.ObjectMapper;
 import com.couchbase.client.core.error.BucketNotFoundException;
 import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.env.ClusterEnvironment;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.QueueBuilder;
@@ -38,7 +39,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-@EnableCouchbaseRepositories
+@EnableCouchbaseRepositories(basePackages = "nl.hu.inno.hulp.exam")
 public class ExamConfig extends AbstractCouchbaseConfiguration {
     @Value("${spring.couchbase.connection-string}")
     private String connectionString;
@@ -105,10 +106,6 @@ public class ExamConfig extends AbstractCouchbaseConfiguration {
     }
 
     @Override
-    public String typeKey() {
-        return "_class";
-    }
-    @Override
     @Bean(destroyMethod = "disconnect")
     public Cluster couchbaseCluster(ClusterEnvironment couchbaseClusterEnvironment) {
         try {
@@ -130,4 +127,9 @@ public class ExamConfig extends AbstractCouchbaseConfiguration {
             throw e;
         }
 
-}}
+}
+    @Bean
+    public com.couchbase.client.core.deps.com.fasterxml.jackson.databind.ObjectMapper objectMapper()
+    { return new ObjectMapper(); }
+
+}

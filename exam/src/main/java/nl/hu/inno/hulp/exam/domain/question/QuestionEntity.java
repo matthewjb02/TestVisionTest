@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 import org.springframework.data.couchbase.core.mapping.Document;
+import org.springframework.data.couchbase.core.mapping.Field;
+import org.springframework.data.couchbase.repository.Collection;
 import org.springframework.data.couchbase.repository.Scope;
 
 import java.util.UUID;
@@ -23,9 +25,11 @@ public class QuestionEntity implements Question{
     @Id
 
     protected String id= UUID.randomUUID().toString();
-
+@Field
     protected int points;
+@Field
     protected String question;
+@Field
     protected int givenPoints;
 
     protected QuestionEntity() {

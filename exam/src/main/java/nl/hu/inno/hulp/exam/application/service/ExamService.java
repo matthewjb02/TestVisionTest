@@ -43,7 +43,7 @@ public class ExamService {
         this.examProducer = examProducer;
     }
 
-    public ExamResponse addExam(long examMakerId, long examValidatorId) {
+    public ExamResponse addExam(String examMakerId, String  examValidatorId) {
 
         Exam exam = new Exam(getTeacherById(examMakerId), getTeacherById(examValidatorId));
 
@@ -147,13 +147,13 @@ public void sendAndProcessExam(String id) {
             if (question.getClass().equals(MultipleChoiceQuestion.class)){
                 MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion)question;
 
-                responses.add(new MultipleChoiceQuestionResponse(mcQuestion.getPoints(),
+                responses.add(new MultipleChoiceQuestionResponse(mcQuestion.getId(), mcQuestion.getPoints(),
                         mcQuestion.getQuestion(), mcQuestion.getAnswers(),
                         mcQuestion.getCorrectAnswerIndexes(), mcQuestion.getGivenAnswers()));
             } else {
                 OpenQuestion openQuestion = (OpenQuestion)question;
 
-                responses.add(new OpenQuestionResponse(openQuestion.getPoints(),
+                responses.add(new OpenQuestionResponse(openQuestion.getId(), openQuestion.getPoints(),
                         openQuestion.getQuestion(), openQuestion.getCorrectAnswer(),
                         openQuestion.getAnswer(), openQuestion.getTeacherFeedback()));
             }
@@ -161,12 +161,12 @@ public void sendAndProcessExam(String id) {
         return responses;
     }
 
-    public Long getTeacherById(Long id) {
+    public String getTeacherById(String id) {
         String url = "http://localhost:8081/teacher/" + id;
         examProducer.sendTeacherRequest(id);
         return restTemplate.getForObject(url, TeacherResponse.class).getId();
     }
-    public SubmissionResponse getSubmissionById(Long id) {
+    public SubmissionResponse getSubmissionById(String id) {
         String url = "http://localhost:8084/submission/" + id;
         return restTemplate.getForObject(url, SubmissionResponse.class);
     }
@@ -174,7 +174,7 @@ public void sendAndProcessExam(String id) {
 
     // used by other modules via rpc
 
-    public SubmissionResponse getSubmissionByExamAndStudentId(String examId, Long studentId){
+    public SubmissionResponse getSubmissionByExamAndStudentId(String examId, String studentId){
         Exam exam = getExam(examId);
         SubmissionResponse submissionResponse = exam.getSubmissionIds().stream()
                 .map(submissionId -> getSubmissionById(submissionId))

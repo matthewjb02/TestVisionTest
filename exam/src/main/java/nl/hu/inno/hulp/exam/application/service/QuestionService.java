@@ -1,5 +1,8 @@
 package nl.hu.inno.hulp.exam.application.service;
 
+import com.couchbase.client.core.deps.com.fasterxml.jackson.core.JsonProcessingException;
+import com.couchbase.client.core.deps.com.fasterxml.jackson.databind.JsonMappingException;
+import com.couchbase.client.core.deps.com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import nl.hu.inno.hulp.commons.request.MultipleChoiceQuestionRequest;
 import nl.hu.inno.hulp.commons.request.OpenQuestionRequest;
@@ -12,21 +15,27 @@ import nl.hu.inno.hulp.exam.domain.question.MultipleChoiceQuestion;
 import nl.hu.inno.hulp.exam.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.exam.domain.question.QuestionEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.couchbase.core.CouchbaseTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class QuestionService {
 
     private final QuestionRepository questionRepository;
+    private final ObjectMapper objectMapper;
+    private final CouchbaseTemplate couchbaseTemplate;
 
     @Autowired
-    public QuestionService(QuestionRepository questionRepository) {
+    public QuestionService(QuestionRepository questionRepository, ObjectMapper objectMapper, CouchbaseTemplate couchbaseTemplate) {
         this.questionRepository = questionRepository;
+        this.objectMapper = objectMapper;
+        this.couchbaseTemplate = couchbaseTemplate;
     }
 
     public List<QuestionResponse> getAllQuestions() {
@@ -40,19 +49,24 @@ public class QuestionService {
     }
 
     public QuestionResponse getQuestionById(String id) {
-//        QuestionEntity qu =questionRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,""));
-//        System.out.println(qu);
-//        String raw = questionRepository.findRawOpenQuestionById(id);
-//        System.out.println(raw);
-        try{
-             questionRepository.findOpenQuestionById(id);
-       }
-        catch (Error e){
-         throw new IllegalArgumentException(e);
+       QuestionResponse question= null;
+        try { Optional<QuestionEntity> questionEntity = Optional.ofNullable(couchbaseTemplate.findById(OpenQuestion.class).one(id));
+            if (questionEntity.isPresent())
+            { String entityAsString = objectMapper.writeValueAsString(questionEntity.get());
+                System.out.println("Retrieved Entity JSON: " + entityAsString);
+                question= getQuestionResponse(  objectMapper.readValue(entityAsString, OpenQuestion.class)) ;}
+            else
+            {
+                Optional<QuestionEntity> questionEntity2 = Optional.ofNullable(couchbaseTemplate.findById(MultipleChoiceQuestion.class).one(id));
+
+                if (questionEntity2.isPresent())
+                { String entityAsString = objectMapper.writeValueAsString(questionEntity2.get());
+                    System.out.println("Retrieved Entity JSON: " + entityAsString);
+                   question= getQuestionResponse(  objectMapper.readValue(entityAsString, MultipleChoiceQuestion.class)); }}
+    } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
-//        if (question != null) { System.out.println("Retrieved JSON: " + question); }
-        OpenQuestion question = questionRepository.findOpenQuestionById(id);
-        return getQuestionResponse(question);
+        return question;
     }
 
     public QuestionResponse addQuestion(QuestionRequest question) {
@@ -69,7 +83,7 @@ public class QuestionService {
 
         QuestionEntity savedEntity = questionRepository.save(entity);
 
-        return getQuestionById(savedEntity.getId());
+        return getQuestionResponse(savedEntity);
     }
 
     public QuestionResponse deleteQuestion(String id) {
@@ -81,12 +95,12 @@ public class QuestionService {
     public QuestionResponse getQuestionResponse(QuestionEntity question){
         if (question instanceof MultipleChoiceQuestion){
             MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion)question;
-            return new MultipleChoiceQuestionResponse(mcQuestion.getPoints(), mcQuestion.getQuestion(),
+            return new MultipleChoiceQuestionResponse(mcQuestion.getId(), mcQuestion.getPoints(), mcQuestion.getQuestion(),
                     mcQuestion.getAnswers(),
                     mcQuestion.getCorrectAnswerIndexes(), mcQuestion.getGivenAnswers());
         } else {
             OpenQuestion openQuestion = (OpenQuestion) question;
-            return new OpenQuestionResponse(openQuestion.getPoints(), openQuestion.getQuestion(), openQuestion.getCorrectAnswer(),
+            return new OpenQuestionResponse(openQuestion.getId(),openQuestion.getPoints(), openQuestion.getQuestion(), openQuestion.getCorrectAnswer(),
                     openQuestion.getAnswer(), openQuestion.getTeacherFeedback());
         }
     }

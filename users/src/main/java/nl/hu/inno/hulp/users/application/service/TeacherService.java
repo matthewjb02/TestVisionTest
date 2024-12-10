@@ -17,7 +17,7 @@ public class TeacherService {
         this.usersProducer = usersProducer;
     }
 
-    public Teacher getTeacherById(Long id) {
+    public Teacher getTeacherById(String id) {
         return teacherRepository.findById(id).orElseThrow();
     }
 

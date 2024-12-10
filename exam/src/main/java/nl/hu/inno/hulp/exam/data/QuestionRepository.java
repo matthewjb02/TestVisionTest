@@ -6,10 +6,16 @@ import org.springframework.data.couchbase.repository.CouchbaseRepository;
 import org.springframework.data.couchbase.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface QuestionRepository extends CouchbaseRepository<QuestionEntity, String> {
-    @Query("SELECT * FROM exam.question.openQuestion use keys 1$")
-    OpenQuestion findOpenQuestionById(String id);
-    @Query("SELECT RAW e FROM exam.question.openQuestion AS e WHERE META(e).id = 1$")
-    String findRawOpenQuestionById( String id);
+    @Query("""
+        SELECT * 
+        FROM `exam`.question.openQuestion USE KEYS $1
+        UNION ALL
+        SELECT * 
+        FROM `exam`.question.multipleChoiceQuestion USE KEYS $1
+    """)
+    QuestionEntity findQuestionsById(String id);
 }

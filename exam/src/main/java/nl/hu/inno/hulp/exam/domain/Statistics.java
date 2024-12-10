@@ -6,6 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import org.springframework.data.couchbase.core.mapping.Document;
+import org.springframework.data.couchbase.core.mapping.Field;
 import org.springframework.data.couchbase.repository.Collection;
 import org.springframework.data.couchbase.repository.Scope;
 
@@ -20,10 +21,13 @@ public class Statistics {
     @Id
 
     private String id= UUID.randomUUID().toString();
-
+    @Field
     private int submissionCount;
+    @Field
     private int passCount;
+    @Field
     private int failCount;
+    @Field
     private double averageScore;
 
 

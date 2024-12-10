@@ -63,7 +63,7 @@ public class Course {
         } else throw new Exception("The Teacher does not teach this course");
     }
 
-    private boolean canIApproveThisExam(Long examValidatorId, Exam exam) throws Exception {
+    private boolean canIApproveThisExam(String examValidatorId, Exam exam) throws Exception {
         if (getValidatingExams().contains(exam) && exam.getExamValidatorId() == examValidatorId){
             return true;
         }
@@ -73,7 +73,7 @@ public class Course {
         else throw new Exception("The exam cannot be validated");
     }
 
-    public void approveExam(Exam exam, Long examValidatorId) throws Exception {
+    public void approveExam(Exam exam, String  examValidatorId) throws Exception {
         if (doesTeacherTeachCourse(exam)&& canIApproveThisExam(examValidatorId,exam)){
             exam.setValidationStatus(ValidationStatus.APPROVED);
             this.getValidatingExams().remove(exam);
@@ -81,7 +81,7 @@ public class Course {
         }
     }
 
-    public void rejectExam(Exam exam, Long examValidatorId, String reason) throws Exception {
+    public void rejectExam(Exam exam, String  examValidatorId, String reason) throws Exception {
         if (doesTeacherTeachCourse(exam)&& canIApproveThisExam(examValidatorId, exam)){
             exam.setValidationStatus(ValidationStatus.DENIED);
             this.getValidatingExams().remove(exam);

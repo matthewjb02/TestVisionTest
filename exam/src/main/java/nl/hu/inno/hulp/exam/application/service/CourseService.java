@@ -1,5 +1,6 @@
 package nl.hu.inno.hulp.exam.application.service;
 
+import com.couchbase.client.core.deps.com.fasterxml.jackson.databind.ObjectMapper;
 import nl.hu.inno.hulp.commons.dto.GradingCriteriaDTO;
 import nl.hu.inno.hulp.commons.request.CourseRequest;
 import nl.hu.inno.hulp.commons.response.CourseResponse;
@@ -15,6 +16,7 @@ import nl.hu.inno.hulp.exam.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.exam.domain.question.QuestionEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.couchbase.core.CouchbaseTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,21 +36,24 @@ public class CourseService {
     private final QuestionRepository questionRepository;
     private final RestTemplate restTemplate;
     private final ExamProducer examProducer;
+    private  final ObjectMapper objectMapper;
+    private final CouchbaseTemplate couchbaseTemplate;
 
 
     @Autowired
-    public CourseService(CourseRepository courseRepository, ExamRepository examRepository, QuestionRepository questionRepository, RestTemplate restTemplate, ExamProducer examProducer) {
+    public CourseService(CourseRepository courseRepository, ExamRepository examRepository, QuestionRepository questionRepository, RestTemplate restTemplate, ExamProducer examProducer, ObjectMapper objectMapper, CouchbaseTemplate couchbaseTemplate) {
         this.courseRepository = courseRepository;
         this.examRepository = examRepository;
         this.questionRepository = questionRepository;
         this.restTemplate = restTemplate;
         this.examProducer = examProducer;
+        this.objectMapper = objectMapper;
+        this.couchbaseTemplate = couchbaseTemplate;
     }
 
     public List<CourseResponse> getAllCourses() {
 
             List<Course> allCourses = courseRepository.findAll();
-            System.out.println(allCourses);
         List<CourseResponse> courseDTOs = new ArrayList<>();
         for (Course course : allCourses){
             courseDTOs.add(getCourseResponse(course));
@@ -96,17 +101,6 @@ public class CourseService {
         return getCourseResponse(course);
     }
 
-    public List<ExamResponse> getAllTestsByCourseId(String courseId) {
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No course with id: " + courseId + " found!"));
-
-        List<ExamResponse> examResponses = new ArrayList<>();
-        for (Exam exam : course.getApprovedExams()) {
-            examResponses.add(getExamResponse(exam));
-        }
-
-        return examResponses;
-    }
     public ExamResponse getApprovedExamByCourse(String courseId,String examId){
             Course course=courseRepository.findById(courseId).orElseThrow();
             Exam exam=examRepository.findById(examId).orElseThrow();
@@ -219,13 +213,13 @@ public class CourseService {
             if (question.getClass().equals(MultipleChoiceQuestion.class)){
                 MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion)question;
 
-                responses.add(new MultipleChoiceQuestionResponse(mcQuestion.getPoints(),
+                responses.add(new MultipleChoiceQuestionResponse(mcQuestion.getId(), mcQuestion.getPoints(),
                         mcQuestion.getQuestion(), mcQuestion.getAnswers(),
                         mcQuestion.getCorrectAnswerIndexes(), mcQuestion.getGivenAnswers()));
             } else {
                 OpenQuestion openQuestion = (OpenQuestion)question;
 
-                responses.add(new OpenQuestionResponse(openQuestion.getPoints(),
+                responses.add(new OpenQuestionResponse(openQuestion.getId(), openQuestion.getPoints(),
                         openQuestion.getQuestion(), openQuestion.getCorrectAnswer(),
                         openQuestion.getAnswer(), openQuestion.getTeacherFeedback()));
             }
@@ -233,7 +227,7 @@ public class CourseService {
         return responses;
     }
 
-    public SubmissionResponse getSubmissionById(Long id) {
+    public SubmissionResponse getSubmissionById(String id) {
         String url = "http://localhost:8080/submission/" + id;
         ResponseEntity<SubmissionResponse> response = restTemplate.exchange(
                 url,
@@ -244,7 +238,7 @@ public class CourseService {
         return response.getBody();
     }
 
-    public TeacherResponse getTeacherById(Long id) {
+    public TeacherResponse getTeacherById(String id) {
         String url = "http://localhost:8081/teacher/" + id;
         examProducer.sendTeacherRequest(id);
 

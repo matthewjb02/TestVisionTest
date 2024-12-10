@@ -9,6 +9,7 @@ import nl.hu.inno.hulp.exam.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.exam.domain.question.QuestionEntity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.couchbase.core.mapping.Document;
+import org.springframework.data.couchbase.core.mapping.Field;
 import org.springframework.data.couchbase.repository.Collection;
 import org.springframework.data.couchbase.repository.Scope;
 
@@ -25,25 +26,27 @@ public class Exam {
     private String id;
     @Embedded
     private GradingCriteria gradingCriteria;
-
-    private List<Long> submissionIds = new ArrayList<>();
-
+    @Field
+    private List<String> submissionIds = new ArrayList<>();
+    @Field
     private ValidationStatus validationStatus= ValidationStatus.WAITING;
+    @Field
     private String reason;
-
+    @Field
     private List<QuestionEntity> questions;
-
-    private Long examValidatorId;
-
+    @Field
+    private String examValidatorId;
+    @Field
     private Statistics statistics;
-
-    private Long examMakerId;
+    @Field
+    private String examMakerId;
+    @Field
     private int totalPoints;
     protected Exam(){
 
     }
 
-    public Exam(Long examMakerId, Long examValidatorId){
+    public Exam(String examMakerId, String examValidatorId){
             this.examMakerId = examMakerId;
             this.examValidatorId = examValidatorId;
             this.questions = new ArrayList<>();
@@ -129,15 +132,8 @@ public class Exam {
                 .sum();
     }
 
-    public void addSubmissionId(Long submissionId) {
+    public void addSubmissionId(String  submissionId) {
         this.submissionIds.add(submissionId);
-    }
-
-    public void addExamMakerId(Long examMakerId) {
-        this.examMakerId = examMakerId;
-    }
-    public void addExamValidatorId(Long examValidatorId) {
-        this.examValidatorId = examValidatorId;
     }
 
     public void addGradingCriteria(GradingCriteria gradingCriteria) {
