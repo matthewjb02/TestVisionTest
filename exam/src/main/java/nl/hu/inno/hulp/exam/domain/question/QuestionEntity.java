@@ -3,8 +3,14 @@ package nl.hu.inno.hulp.exam.domain.question;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
+import org.springframework.data.couchbase.core.mapping.Document;
+import org.springframework.data.couchbase.core.mapping.Field;
+import org.springframework.data.couchbase.repository.Collection;
+import org.springframework.data.couchbase.repository.Scope;
 
-@Entity
+import java.util.UUID;
+
+@Document
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
@@ -17,11 +23,13 @@ import jakarta.persistence.*;
 })
 public class QuestionEntity implements Question{
     @Id
-    @GeneratedValue
-    protected Long id;
 
+    protected String id= UUID.randomUUID().toString();
+@Field
     protected int points;
+@Field
     protected String question;
+@Field
     protected int givenPoints;
 
     protected QuestionEntity() {
@@ -32,7 +40,7 @@ public class QuestionEntity implements Question{
         this.question = question;
     }
 
-    public Long getId(){
+    public String getId(){
         return id;
     }
 

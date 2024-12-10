@@ -9,20 +9,40 @@ services:
       - "15672:15672"
     networks:
       - app_network
+  couchbase:
+    image: couchbase:community
+    container_name: couchbase
+    ports:
+      - "8091:8091"  # Couchbase Web UI
+      - "8092:8092"  # Query Port
+      - "11210:11210" # Data Service Port
+    environment:
+      - COUCHBASE_ADMIN_USERNAME=${COUCHBASE_ADMIN_USERNAME}
+      - COUCHBASE_ADMIN_PASSWORD=${COUCHBASE_ADMIN_PASSWORD}
+    networks:
+      - couchbase_network
+    volumes:
+      - couchbase_data:/opt/couchbase/var
+  couchbase-ui:
+    image: couchbase:community
+    container_name: couchbase-ui
+    ports:
+      - "8093:8091"
+    depends_on:
+      - couchbase
+    networks:
+      - couchbase_network
 
 
   users_aerospike:
     image: aerospike/aerospike-server:latest
     container_name: users_aerospike
-    ports:
-      - "3000:3000"  # Client access
-      - "3001:3001"  # Management access
-      - "3002:3002"  # Cluster heartbeat
-      - "3003:3003"  # Fabric protocol
-    volumes:
-      - users_aerospike_data:/opt/aerospike/data
     environment:
       - SERVICE_TYPE=load-balancer
+    ports:
+      - "3000:3000"
+    volumes:
+      - users_aerospike_data:/opt/aerospike/data
     networks:
       - app_network
 
@@ -39,11 +59,30 @@ services:
       - examination_mongo_data:/data/db
     networks:
       - app_network
+  neo4j:
+    image: neo4j:latest
+    container_name: grading_neo4j
+    ports:
+      - "7474:7474"  # HTTP access for browser
+      - "7687:7687"  # Bolt protocol for client access
+    environment:
+      - NEO4J_AUTH=${GRADING_NEO4J_USERNAME}/${GRADING_NEO4J_PASSWORD}
+      - NEO4J_dbms_memory_heap_initial__size=512m
+      - NEO4J_dbms_memory_heap_max__size=512m
+    volumes:
+      - grading_neo4j_data:/data
+    networks:
+      - app_network
 
 volumes:
   users_aerospike_data:
+  couchbase_data:
+  grading_neo4j_data:
   examination_mongo_data:
 
+
 networks:
+  couchbase_network:
+    driver: bridge
   app_network:
     driver: bridge

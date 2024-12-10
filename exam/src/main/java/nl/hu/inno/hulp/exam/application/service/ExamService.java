@@ -1,5 +1,7 @@
 package nl.hu.inno.hulp.exam.application.service;
 
+import com.couchbase.client.core.deps.com.fasterxml.jackson.core.JsonProcessingException;
+import com.couchbase.client.core.deps.com.fasterxml.jackson.databind.ObjectMapper;
 import nl.hu.inno.hulp.commons.dto.GradingCriteriaDTO;
 import nl.hu.inno.hulp.commons.request.UpdateOpenQuestionPointsRequest;
 import nl.hu.inno.hulp.commons.response.*;
@@ -15,6 +17,7 @@ import nl.hu.inno.hulp.exam.domain.question.MultipleChoiceQuestion;
 import nl.hu.inno.hulp.exam.domain.question.OpenQuestion;
 import nl.hu.inno.hulp.exam.domain.question.QuestionEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.couchbase.core.CouchbaseTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -22,6 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,18 +36,24 @@ public class ExamService {
     private final CourseRepository courseRepository;
     private final RestTemplate restTemplate;
     private final ExamProducer examProducer;
+    private final ObjectMapper objectMapper;
+    private final CouchbaseTemplate couchbaseTemplate;
+    private final QuestionService questionService;
 
     @Autowired
     public ExamService(ExamRepository examRepository, QuestionRepository questionRepository, CourseRepository courseRepository,
-                       RestTemplate restTemplate, ExamProducer examProducer) {
+                       RestTemplate restTemplate, ExamProducer examProducer, ObjectMapper objectMapper, CouchbaseTemplate couchbaseTemplate, QuestionService questionService) {
         this.examRepository = examRepository;
         this.questionRepository = questionRepository;
         this.courseRepository = courseRepository;
         this.restTemplate = restTemplate;
         this.examProducer = examProducer;
+        this.objectMapper = objectMapper;
+        this.couchbaseTemplate = couchbaseTemplate;
+        this.questionService = questionService;
     }
 
-    public ExamResponse addExam(long examMakerId, long examValidatorId) {
+    public ExamResponse addExam(String examMakerId, String  examValidatorId) {
 
         Exam exam = new Exam(getTeacherById(examMakerId), getTeacherById(examValidatorId));
 
@@ -54,7 +64,7 @@ public class ExamService {
         return toExamResponse(savedExam);
     }
 
-    public ExamResponse deleteExam(Long id) {
+    public ExamResponse deleteExam(String id) {
         ExamResponse oldExamDTO = getExamById(id);
         examRepository.deleteById(id);
         return oldExamDTO;
@@ -71,26 +81,49 @@ public class ExamService {
         return examDTOS;
     }
 
-    public ExamResponse getExamById(Long id) {
+    public ExamResponse getExamById(String id) {
         Exam exam = examRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No exam with id: " + id + " found!"));
 
         ExamResponse response = toExamResponse(exam);
         return response;
     }
-public void sendAndProcessExam(Long id) {
+public void sendAndProcessExam(String id) {
         this.examProducer.sendExamResponse(getExamById(id));
 }
 
-    public Exam getExam(Long id) {
+    public Exam getExam(String id) {
         return examRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No exam with id: " + id + " found!"));
     }
+    public QuestionEntity toQuestion(String id) {
+        QuestionEntity question= null;
+        try { Optional<QuestionEntity> questionEntity = Optional.ofNullable(couchbaseTemplate.findById(OpenQuestion.class).one(id));
+            if (questionEntity.isPresent()){
 
-    public ExamResponse addQuestionsByIdsToExam(Long examId, List<Long> questionIds) {
+                question= questionEntity.orElseThrow();}
+            else
+            {
+                Optional<QuestionEntity> questionEntity2 = Optional.ofNullable(couchbaseTemplate.findById(MultipleChoiceQuestion.class).one(id));
+
+                if (questionEntity2.isPresent())
+                { question= questionEntity2.orElseThrow(); }
+        }
+
+        }
+        catch (Error e){
+            e.printStackTrace();
+        }
+        return question;
+    }
+    public ExamResponse addQuestionsByIdsToExam(String examId, List<String> questionIds) {
         Exam exam = examRepository.findById(examId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Exam not found"));
-        List<QuestionEntity> newQuestions = questionRepository.findAllById(questionIds);
+
+        List<QuestionEntity> newQuestions = new ArrayList<>();
+        for (String questionID : questionIds){
+            newQuestions.add(toQuestion(questionID));
+        }
         exam.getQuestions().addAll(newQuestions);
         exam.calculateTotalPoints();
         examRepository.save(exam);
@@ -98,7 +131,7 @@ public void sendAndProcessExam(Long id) {
     }
 
 
-    public ExamResponse addGradingCriteriaToExam(Long examId, GradingCriteriaDTO gradingCriteriaDTO) {
+    public ExamResponse addGradingCriteriaToExam(String  examId, GradingCriteriaDTO gradingCriteriaDTO) {
         Exam exam = examRepository.findById(examId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Exam not found"));
 
@@ -147,13 +180,13 @@ public void sendAndProcessExam(Long id) {
             if (question.getClass().equals(MultipleChoiceQuestion.class)){
                 MultipleChoiceQuestion mcQuestion = (MultipleChoiceQuestion)question;
 
-                responses.add(new MultipleChoiceQuestionResponse(mcQuestion.getPoints(),
+                responses.add(new MultipleChoiceQuestionResponse(mcQuestion.getId(), mcQuestion.getPoints(),
                         mcQuestion.getQuestion(), mcQuestion.getAnswers(),
                         mcQuestion.getCorrectAnswerIndexes(), mcQuestion.getGivenAnswers()));
             } else {
                 OpenQuestion openQuestion = (OpenQuestion)question;
 
-                responses.add(new OpenQuestionResponse(openQuestion.getPoints(),
+                responses.add(new OpenQuestionResponse(openQuestion.getId(), openQuestion.getPoints(),
                         openQuestion.getQuestion(), openQuestion.getCorrectAnswer(),
                         openQuestion.getAnswer(), openQuestion.getTeacherFeedback()));
             }
@@ -161,20 +194,20 @@ public void sendAndProcessExam(Long id) {
         return responses;
     }
 
-    public Long getTeacherById(Long id) {
-        String url = "https://userss-fje9bmb2b3gtdafe.northeurope-01.azurewebsites.net/teacher/" + id;
+    public String getTeacherById(String id) {
+        String url = " https://userss-fje9bmb2b3gtdafe.northeurope-01.azurewebsites.net/" + id;
         examProducer.sendTeacherRequest(id);
         return restTemplate.getForObject(url, TeacherResponse.class).getId();
     }
-    public SubmissionResponse getSubmissionById(Long id) {
-        String url = "https://inno-testvision-grading-abaybzgufxdvh5cy.northeurope-01.azurewebsites.net/submission/" + id;
+    public SubmissionResponse getSubmissionById(String id) {
+        String url = " https://inno-testvision-grading-abaybzgufxdvh5cy.northeurope-01.azurewebsites.net/" + id;
         return restTemplate.getForObject(url, SubmissionResponse.class);
     }
 
 
     // used by other modules via rpc
 
-    public SubmissionResponse getSubmissionByExamAndStudentId(Long examId, Long studentId){
+    public SubmissionResponse getSubmissionByExamAndStudentId(String examId, String studentId){
         Exam exam = getExam(examId);
         SubmissionResponse submissionResponse = exam.getSubmissionIds().stream()
                 .map(submissionId -> getSubmissionById(submissionId))
@@ -188,7 +221,7 @@ public void sendAndProcessExam(Long id) {
 
     }
 
-    public List<SubmissionResponse> getSubmissionsByExamId(Long examId) {
+    public List<SubmissionResponse> getSubmissionsByExamId(String examId) {
 
         Exam exam = getExam(examId);
         List<SubmissionResponse> submissionResponses = exam.getSubmissionIds().stream()
@@ -200,7 +233,7 @@ public void sendAndProcessExam(Long id) {
     }
 
 
-    public void updatePointsForOpenQuestion(Long examId, int questionNr, UpdateOpenQuestionPointsRequest request) {
+    public void updatePointsForOpenQuestion(String examId, int questionNr, UpdateOpenQuestionPointsRequest request) {
         Exam exam = getExam(examId);
         QuestionEntity question = exam.getQuestions().get(questionNr - 1);
         if (question != null) {
@@ -216,13 +249,13 @@ public void sendAndProcessExam(Long id) {
         }
     }
 
-    public double calculateGrade(Long examId) {
+    public double calculateGrade(String examId) {
         Exam exam = getExam(examId);
         return exam.calculateGrade();
 
     }
 
-    public void updateStatistics(Long examId) {
+    public void updateStatistics(String examId) {
         Exam exam = getExam(examId);
         double passGrade = 5.5;
 
@@ -244,7 +277,7 @@ public void sendAndProcessExam(Long id) {
         saveExam(exam);
     }
 
-    public void addSubmission(Long examId, Long submissionId) {
+    public void addSubmission(String examId, String submissionId) {
         Exam exam = getExam(examId);
         exam.addSubmissionId(submissionId);
 
